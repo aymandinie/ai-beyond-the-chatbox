@@ -74,7 +74,7 @@ input:focus,textarea:focus,select:focus{outline:3px solid rgba(43,74,203,.25);bo
 .choices label{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:9px 15px;font-size:15px;cursor:pointer}
 .choices input{accent-color:var(--blue)}
 .choices label:has(input:checked){border-color:var(--blue);background:#E7ECFB}
-.tickets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tickets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .tickets label{display:grid;gap:2px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer}
 .tickets label:has(input:checked){border-color:var(--blue);background:#E7ECFB}
 .tickets label.off{opacity:.45;cursor:not-allowed}
@@ -145,7 +145,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <p class="mono eyebrow">Pricing</p><h2>One ticket, one app</h2>
 <div class="prices">
 <div class="price"><span class="mono">Students</span><b>RM130</b><span>Valid student ID, aged 25 and under</span></div>
-<div class="price hi"><span class="mono">Early bird</span><b>RM200</b><span>Normal price <s>RM230</s></span></div>
+<div class="price hi"><span class="mono">Early bird</span><b>RM200</b><span id="ebPriceNote">Normal price <s>RM230</s></span></div>
 <div class="price"><span class="mono">Normal</span><b>RM230</b><span>After early bird ends</span></div>
 </div>
 <p class="note">Pay by DuitNow QR with any banking app or e-wallet. SPayLater, Atome and GrabPayLater work too. Full refund up to 7 days before the session.</p>
@@ -165,12 +165,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <fieldset><legend>2 · Your ticket</legend>
 <div class="tickets" id="tickets">
 <label><input type="radio" name="ticket" value="Student" required><span class="mono">Student</span><b>RM130</b><span>Valid student ID, 25 and under</span></label>
-<label id="ebLabel"><input type="radio" name="ticket" value="Early bird"><span class="mono">Early bird</span><b>RM200</b><span>Normal price RM230</span></label>
-<label><input type="radio" name="ticket" value="Normal"><span class="mono">Normal</span><b>RM230</b><span>After early bird ends</span></label>
+<label id="ebLabel"><input type="radio" name="ticket" value="Early bird"><span class="mono">Early bird</span><b>RM200</b><span id="ebNote">Normal price RM230</span></label>
+<label id="nLabel" hidden><input type="radio" name="ticket" value="Normal"><span class="mono">Normal</span><b>RM230</b><span>Early bird has ended</span></label>
 </div>
 <div class="row2" id="student" hidden>
 <label class="f">College or university<input type="text" name="college"></label>
-<label class="f">Student ID number <em>We check your card on camera at the start</em><input type="text" name="sid"></label></div>
+<label class="f">Student ID number<input type="text" name="sid"></label>
+<label class="f" style="grid-column:1/-1">Photo of your student card <em>JPG, PNG or PDF. Kept private and deleted after the session</em><input type="file" name="cardFile" accept="image/*,application/pdf"></label></div>
 </fieldset>
 
 <fieldset><legend>3 · About you</legend>
@@ -197,7 +198,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </fieldset>
 
 <fieldset><legend>5 · Agreements</legend>
-<label class="agree"><input type="checkbox" name="consent" required><span>I agree to my details being used only to run this workshop: confirmation, receipt, reminders and certificate. They are never sold or shared.</span></label>
+<label class="agree"><input type="checkbox" name="consent" required><span>I agree to my details being used only to run this workshop: confirmation, receipt, reminders and certificate. They are never sold or shared. Student card photos are deleted after the session.</span></label>
 <label class="agree"><input type="checkbox" name="policy" required><span>I agree to the <a href="#faq-refund">refund policy</a> and house rules: join 5 minutes early (entry closes 45 minutes in), stay muted, never paste private or company data into AI, no recording, one seat per person.</span></label>
 <label class="f">How did you hear about this? <em>Optional</em><select name="heard"><option value="">Choose one</option><option>WhatsApp</option><option>Instagram</option><option>LinkedIn</option><option>Adam Fauzi</option><option>A friend</option><option>Other</option></select></label>
 <label class="trap" aria-hidden="true">Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
@@ -230,11 +231,13 @@ const f = document.getElementById('f'), err = document.getElementById('err'), go
 const $ = s => f.querySelector(s);
 const ERRORS = {
   missing: 'Please fill in every required field and tick both agreements.', email: 'That email doesn\'t look right. Please check it.',
-  student: 'Student tickets need your college and student ID number.', ticket: 'Please pick a ticket.',
+  student: 'Student tickets need your college, student ID number and a photo of your student card.', ticket: 'Please pick a ticket.',
   duplicate: 'This email is already registered. Check your inbox for our email, or WhatsApp +6011 1068 2544.',
   full: 'Sorry, this session just filled up. WhatsApp +6011 1068 2544 to join the waitlist.',
   over: 'Registration for this session has closed.', paused: 'Registration is paused right now. Please try again later.',
-  'early-bird-closed': 'Early bird has just ended. Please pick the Normal ticket.'
+  'early-bird-closed': 'Early bird has just ended. Please reload the page for the Normal ticket.',
+  'normal-not-yet': 'Early bird is still on, so please pick the Early bird ticket.',
+  card: 'Your student card must be a JPG, PNG or PDF under 5 MB.'
 };
 
 function showClosed(reason) {
@@ -248,26 +251,46 @@ fetch(ENDPOINT).then(r => r.json()).then(s => {
   if (s.session) document.getElementById('when').textContent = s.session;
   if (!s.open) return showClosed(s.reason);
   if (s.seatsLeft <= 10) document.getElementById('seats').textContent = `Only ${s.seatsLeft} seats left.`;
-  if (!s.earlyBird) { const eb = document.getElementById('ebLabel'); eb.classList.add('off'); eb.querySelector('input').disabled = true; }
+  if (s.earlyBird) {
+    if (s.earlyBirdEnds) { document.getElementById('ebNote').textContent = `Until ${s.earlyBirdEnds}, then RM230`; document.getElementById('ebPriceNote').innerHTML = `Until ${s.earlyBirdEnds}, then <s>RM230</s>`; }
+  } else {
+    document.getElementById('ebLabel').hidden = true; document.getElementById('nLabel').hidden = false;
+  }
 }).catch(() => {});
 
 f.addEventListener('change', e => {
   if (e.target.name !== 'ticket') return;
   const t = e.target.value;
   document.getElementById('student').hidden = t !== 'Student';
-  $('[name=college]').required = $('[name=sid]').required = t === 'Student';
+  $('[name=college]').required = $('[name=sid]').required = $('[name=cardFile]').required = t === 'Student';
   document.getElementById('amt').textContent = 'RM' + PRICES[t];
 });
+
+/** Shrinks photos to 1600 px JPEG before sending; PDFs go as they are (up to 5 MB). */
+async function readCard(file) {
+  if (!file) throw new Error('student');
+  const toB64 = blob => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = no; r.readAsDataURL(blob); });
+  if (file.type === 'application/pdf') { if (file.size > 5e6) throw new Error('card'); return { type: file.type, data: await toB64(file) }; }
+  if (!file.type.startsWith('image/')) throw new Error('card');
+  const img = await createImageBitmap(file).catch(() => null);
+  if (!img) { if (file.size > 5e6) throw new Error('card'); return { type: file.type, data: await toB64(file) }; }
+  const k = Math.min(1, 1600 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+  c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  const blob = await new Promise(ok => c.toBlob(ok, 'image/jpeg', 0.82));
+  return { type: 'image/jpeg', data: await toB64(blob) };
+}
 
 f.addEventListener('submit', async e => {
   e.preventDefault(); err.hidden = true;
   const fd = new FormData(f);
   const data = Object.fromEntries([...fd.entries()].filter(([k]) => k !== 'tools'));
+  delete data.cardFile;
   data.tools = fd.getAll('tools'); data.consent = $('[name=consent]').checked; data.policy = $('[name=policy]').checked;
   const missing = !f.checkValidity() || !data.tools.length;
   if (missing) { err.textContent = !data.tools.length && f.checkValidity() ? 'Please tick at least one AI tool (or "None yet").' : ERRORS.missing; err.hidden = false; f.reportValidity(); return; }
   go.disabled = true; go.textContent = 'Sending…';
   try {
+    if (data.ticket === 'Student') data.card = await readCard($('[name=cardFile]').files[0]);
     const res = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
     if (!res.ok) throw new Error(res.error || 'unknown');
     f.hidden = true;
