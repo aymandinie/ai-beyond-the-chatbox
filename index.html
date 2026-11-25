@@ -1,110 +1,285 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Beyond the Chatbox</title>
-<meta name="description" content="Slides and live demos from AI Beyond the Chatbox, a 4-hour hands-on workshop on everyday uses of AI by Ayman Dinie.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Courier+Prime:wght@400;700&family=Geist:wght@400;500;600&display=swap">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Beyond the Chatbox · Register</title>
+<meta name="description" content="A 3-hour online, hands-on workshop. Build a small app you'll actually use, with AI. No coding needed.">
+<meta property="og:title" content="AI Beyond the Chatbox"><meta property="og:description" content="A 3-hour hands-on workshop. Build something you'll actually use, with AI."><meta property="og:image" content="assets/hero.jpg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Courier+Prime:wght@700&display=swap">
 <style>
-/* Layout: an annotated contact sheet. Each demo gets a big framed screenshot beside a short write-up:
-   what it is, what to try, the prompt idea, and an open button. Rows alternate sides. The landing page adds a slides block and a short HTML explainer.
-   Deliberately one look (warm paper, blue pen) to match the workshop deck. */
-:root{--paper:#F3EAD8;--sheet:#FDF8EC;--ink:#1F2433;--muted:#5C574C;--pen:#2B4ACB;--navy:#1B2140;--line:#E2D6BE;
---serif:'Instrument Serif',Georgia,serif;--mono:'Courier Prime','Courier New',monospace;--sans:'Geist',Arial,sans-serif;color-scheme:light}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55}
-.wrap{max-width:1200px;margin:0 auto;padding-block:44px 70px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:56px}
-.eyebrow{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--pen);margin:0}
-header{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:end}
-h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(48px,7.5vw,96px);line-height:.95;margin:10px 0 0;text-wrap:balance}
-.intro{display:flex;flex-direction:column;gap:14px}
-.intro p{margin:0;color:var(--muted);max-width:52ch}
-.wave{width:220px;height:22px;display:block}
-.how{display:flex;gap:10px;flex-wrap:wrap}
-.how span{font-family:var(--mono);font-size:13px;background:var(--sheet);border-radius:999px;padding:6px 12px;color:var(--ink)}
-.demo{display:grid;grid-template-columns:1.35fr 1fr;gap:40px;align-items:center}
-.demo:nth-of-type(even){grid-template-columns:1fr 1.35fr}
-.demo:nth-of-type(even) .shot{order:2}
-.demo>*,header>*{min-width:0}
-.shot{display:block;text-decoration:none;color:inherit;background:var(--navy);border-radius:18px;padding:10px;transition:transform .25s}
-.shot:hover{transform:translateY(-4px) rotate(-.3deg)}
-.bar{display:flex;align-items:center;gap:8px;padding:2px 6px 10px}
-.bar i{width:10px;height:10px;border-radius:50%;background:#3A4366}
-.bar span{flex:1;font-family:var(--mono);font-size:12px;color:#9DB2FF;background:#262D4D;border-radius:999px;padding:4px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.shot img{display:block;width:100%;max-width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:10px;background:var(--sheet)}
-.txt{display:flex;flex-direction:column;gap:14px;min-width:0}
-.num{font-family:var(--serif);font-style:italic;font-size:44px;line-height:1;color:var(--pen)}
-.txt h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(34px,4vw,48px);line-height:1;margin:0}
-.txt p{margin:0;color:var(--muted)}
-.try{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
-.try li{display:flex;gap:10px}
-.try li::before{content:"";flex:none;width:14px;height:14px;margin-top:5px;border:2px solid var(--pen);border-radius:50%}
-.prompt{font-family:var(--mono);font-size:14px;color:var(--ink);background:var(--sheet);border-radius:14px;padding:14px 16px}
-.prompt b{color:var(--pen)}
-.open{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;background:var(--pen);color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:999px}
-.open:hover{background:var(--navy)}
-a:focus-visible{outline:3px solid var(--pen);outline-offset:4px}
-footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:2px dashed var(--line);padding-top:20px;font-family:var(--mono);font-size:13px;color:var(--muted)}
-@media (max-width:860px){header,.demo,.demo:nth-of-type(even){grid-template-columns:1fr}.demo:nth-of-type(even) .shot{order:0}}
-@media (prefers-reduced-motion:reduce){.shot{transition:none}}
-
-.btns{display:flex;gap:12px;flex-wrap:wrap}
-.ghost{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;background:var(--sheet);color:var(--ink);text-decoration:none;font-weight:600;padding:12px 20px;border-radius:999px}
-.ghost:hover{background:#fff}
-.sec{display:flex;flex-direction:column;gap:22px}
-.sec>h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(38px,5vw,60px);line-height:1;margin:0}
-.explain{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:center}
-.explain .txt p b{color:var(--ink)}
-.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.trio div{background:var(--sheet);border-radius:14px;padding:14px 16px}
-.trio b{display:block;color:var(--pen);font-family:var(--mono)}
-.trio span{color:var(--muted);font-size:15px}
-.keys{font-family:var(--mono);font-size:14px;color:var(--muted)}
-@media (max-width:860px){.explain{grid-template-columns:1fr}.trio{grid-template-columns:1fr}}
+/* Registration site for cohort 1. Same palette and type as the poster: navy gradient hero with the poster's
+   3D title, then cream sections. The form posts to Ayman's Google Apps Script (see ENDPOINT below). */
+:root{--navy:#1B2140;--blue:#2B4ACB;--lb:#9DB2FF;--cream:#F3EAD8;--paper:#FDF8EC;--ink:#1F2433;--mut:#5C574C;--line:#E2D6BE;--ok:#2E7D4F;--err:#B3261E;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font:17px/1.55 Geist,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.mono{font-family:'Courier Prime',monospace;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:13px}
+.serif{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400}
+a{color:var(--blue)}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;font-weight:700;font-size:17px;padding:15px 26px;border-radius:999px;text-decoration:none;border:0;cursor:pointer;font-family:inherit}
+.btn:hover{background:#2440B8}.btn.ghost{background:transparent;border:1.5px solid rgba(243,234,216,.55);color:var(--cream)}
+.btn:disabled{opacity:.55;cursor:wait}
+/* hero */
+.hero{background:linear-gradient(180deg,#131834 0%,#1B2350 45%,#2B4ACB 120%);color:var(--cream);padding-block:28px 64px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:16px}
+nav .mono{color:var(--lb)}
+.hgrid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;margin-top:28px}
+.hero img{width:100%;max-width:100%;height:auto;display:block;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.hero h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.promise{font-size:clamp(30px,3.6vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.08}
+.lead{color:#C9CCDA;font-size:19px;margin-top:14px}
+.lead b{color:var(--cream)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0}
+.facts div{background:rgba(255,255,255,.08);border:1px solid rgba(243,234,216,.22);border-radius:16px;padding:12px 16px}
+.facts small{display:block;color:var(--lb)}
+.facts b{display:block;font-size:17px;margin-top:2px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.seats{margin-top:14px;font-size:15px;color:#C9CCDA}
+/* sections */
+section{padding-block:64px}
+h2{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(36px,4.6vw,56px);line-height:1;margin:10px 0 14px;text-wrap:balance}
+.eyebrow{color:var(--blue)}
+.sub{color:var(--mut);max-width:62ch}
+.cards{display:grid;gap:14px;margin-top:26px}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:var(--paper);border-radius:20px;padding:24px}
+.card h3{font-size:21px;line-height:1.2;margin:10px 0 6px}
+.card p{color:var(--mut);font-size:16px}
+.num{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:54px;line-height:.8;color:var(--blue)}
+.ic{width:46px;height:46px;border-radius:13px;background:var(--navy);display:grid;place-items:center}
+.ic svg{width:26px;height:26px;fill:none;stroke:var(--lb);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.person{display:flex;gap:16px;align-items:center}
+.person img{width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none}
+.person b{display:block;font-size:20px}.person span{display:block;color:var(--mut);font-size:15px}
+.badge{display:inline-block!important;margin:6px 0 4px;border:1.5px solid var(--blue);color:var(--blue);border-radius:6px;padding:3px 8px 2px;font-size:11px!important;letter-spacing:.06em;white-space:nowrap}
+.prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:26px}
+.price{background:var(--paper);border-radius:20px;padding:22px 24px}
+.price b{display:block;font-size:44px;font-weight:800;letter-spacing:-.03em;color:var(--navy);line-height:1.1;margin-top:6px}
+.price span{color:var(--mut);font-size:15px}
+.price.hi{background:var(--blue);color:var(--cream)}.price.hi b{color:var(--cream)}.price.hi span,.price.hi .mono{color:#DCE3FA}
+.price s{opacity:.8}
+.note{margin-top:16px;color:var(--mut);font-size:15px}
+.dark{background:var(--navy);color:var(--cream)}
+.dark .sub,.dark .card p,.dark .person span{color:#C9CCDA}.dark .person b{color:var(--cream)}.dark .eyebrow{color:var(--lb)}.dark .card{background:#262D4D}
+/* form */
+form{display:grid;gap:18px;margin-top:26px}
+fieldset{color:var(--ink);border:0;background:var(--paper);border-radius:22px;padding:24px;display:grid;gap:16px;min-width:0}
+legend{float:left;width:100%;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:30px;line-height:1;margin-bottom:6px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+label.f{display:grid;gap:6px;font-weight:600;font-size:15px;min-width:0}
+label.f em{font-style:normal;font-weight:400;color:var(--mut);font-size:13.5px}
+input[type=text],input[type=email],input[type=tel],textarea,select{font:inherit;font-size:16px;width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+textarea{min-height:84px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:3px solid rgba(43,74,203,.25);border-color:var(--blue)}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choices label{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:9px 15px;font-size:15px;cursor:pointer}
+.choices input{accent-color:var(--blue)}
+.choices label:has(input:checked){border-color:var(--blue);background:#E7ECFB}
+.tickets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tickets label{display:grid;gap:2px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer}
+.tickets label:has(input:checked){border-color:var(--blue);background:#E7ECFB}
+.tickets label.off{opacity:.45;cursor:not-allowed}
+.tickets input{position:absolute;opacity:0;pointer-events:none}
+.tickets b{font-size:26px;font-weight:800;color:var(--navy)}
+.tickets span{font-size:13.5px;color:var(--mut)}
+.pay{display:grid;grid-template-columns:240px 1fr;gap:22px;align-items:start}
+.pay img{width:100%;border-radius:14px;background:#fff}
+.amount{font-size:15px;color:var(--mut)}.amount b{font-size:36px;color:var(--navy);display:block;letter-spacing:-.02em}
+.agree{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.agree input{margin-top:4px;accent-color:var(--blue);width:18px;height:18px;flex:none}
+.trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.msg{border-radius:16px;padding:16px 18px;font-weight:600}
+.msg.err{background:#FBEBEB;color:var(--err)}
+.done{background:var(--navy);color:var(--cream);border-radius:22px;padding:30px}
+.done h3{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:40px;line-height:1}
+.done p{color:#C9CCDA;margin-top:10px}.done b{color:var(--cream)}
+.closed{color:var(--ink);background:var(--paper);border-radius:22px;padding:28px;font-size:18px}
+details{background:var(--paper);border-radius:16px;padding:16px 20px}
+details+details{margin-top:10px}
+summary{font-weight:700;cursor:pointer}
+details p{color:var(--mut);margin-top:8px}
+footer{background:var(--navy);color:#C9CCDA;padding-block:30px;font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+[hidden]{display:none!important}
+@media (max-width:860px){.hgrid,.c3,.c2,.prices,.row2,.pay{grid-template-columns:1fr}.tickets{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}section{padding-block:48px}.pay img{max-width:260px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style></head><body>
-<div class="wrap">
-<header><div><p class="eyebrow">A 4-hour hands-on workshop · Ayman Dinie</p><h1>AI Beyond the Chatbox</h1></div>
-<div class="intro"><svg class="wave" viewBox="0 0 220 22" aria-hidden="true"><path d="M3 12 C 20 3, 34 20, 52 11 S 86 3, 104 11 S 138 20, 156 11 S 196 3, 217 11" fill="none" stroke="#2B4ACB" stroke-width="3.5" stroke-linecap="round"/></svg>
-<p>Everyday uses of AI at work and at home, and how to turn a chat into something you can open, click and send. Here are the slides and five live examples, all made with AI.</p>
-<div class="btns"><a class="open" href="slides.html">Open the slides →</a><a class="ghost" href="#demos">See the live demos ↓</a></div></div></header>
 
-<section class="demo"><a class="shot" href="slides.html" aria-label="Open the slides"><div class="bar"><i></i><i></i><i></i><span>AI Beyond the Chatbox · 30 slides</span></div><img src="assets/slides-cover.png" alt="Cover slide of AI Beyond the Chatbox, with a hand-drawn chat bubble doodle"></a>
-<div class="txt"><span class="num">00</span><p class="eyebrow">The slides</p><h2>Three phases, one app</h2><p>See what AI can do, learn to brief it well, then build and share one small app of your own.</p>
-<ul class="try"><li>12 everyday uses, each with a line to try</li><li>What HTML is, and what one file can be</li><li>Three short steps to build your own app</li></ul>
-<p class="keys">Arrow keys or click to move · F for full screen</p>
-<a class="open" href="slides.html">Open the slides →</a></div></section>
+<header class="hero"><div class="wrap">
+<nav><span class="mono">A 3-hour hands-on workshop</span><a class="btn ghost" href="#register">Register</a></nav>
+<div class="hgrid">
+<div><h1>AI Beyond the Chatbox</h1><img src="assets/hero.jpg" width="1400" height="1089" alt="AI Beyond the Chatbox: the word BEYOND in 3D with a chat bubble as the O, and the line 'Most people stop at the chat.'"></div>
+<div>
+<p class="promise">Build something you'll actually use.</p>
+<p class="lead">A small app that takes one everyday task off your plate. Leave with 12 everyday uses for AI, a clear idea of what HTML is, and a working app you built yourself. <b>No coding needed.</b></p>
+<div class="facts">
+<div><small class="mono">When</small><b id="when">Date to be announced</b></div>
+<div><small class="mono">Where</small><b>Online, Google Meet</b></div>
+<div><small class="mono">Length</small><b>3 hours, one break</b></div>
+<div><small class="mono">From</small><b>RM130</b></div></div>
+<div class="ctas"><a class="btn" href="#register">Register now →</a><a class="btn ghost" href="demos/">See what you'll build</a></div>
+<p class="seats" id="seats"></p>
+</div></div></div></header>
 
-<section class="sec" id="html"><p class="eyebrow">Quick explainer</p><h2>What is HTML?</h2>
-<div class="explain"><div class="txt">
-<p>HTML is the language every web page is written in. It’s a plain text file with tags that tell your browser what’s a heading, a paragraph or a button.</p>
-<div class="trio"><div><b>HTML</b><span>what’s on the page</span></div><div><b>CSS</b><span>how it looks</span></div><div><b>JavaScript</b><span>what clicks do</span></div></div>
-<p>You never have to write it. Ask an AI for <b>“one HTML file”</b> and you get a single file that opens in any browser, on any phone or laptop, with nothing to install. Keep it on your laptop and only people you send it to can see it. Upload it, like this site, and anyone with the link can open it.</p>
-</div><a class="shot" href="slides.html#22" aria-label="Open the What is HTML slide"><div class="bar"><i></i><i></i><i></i><span>Slide 22 · What is HTML?</span></div><img src="assets/slides-html.png" alt="Slide showing a few lines of HTML code next to the web page the browser draws from it"></a></div></section>
-
-<section class="sec" id="demos"><p class="eyebrow">Live demos</p><h2>Five things built from a prompt</h2><p style="margin:0;color:var(--muted);max-width:60ch">Each one is a single HTML file. Click a screenshot to open it, then use “All demos” to come back. All brands and figures are fictional.</p></section>
-<section class="demo" ><a class="shot" href="demos/kopi-pagi.html" aria-label="Open the Kopi Pagi website"><div class="bar"><i></i><i></i><i></i><span>kopipagi.my · Home</span></div><img src="demos/shots/kopi-home.png" alt="Kopi Pagi website home page with a large headline, menu ticker and buttons"></a>
-<div class="txt"><span class="num">01</span><p class="eyebrow">Brand website · 5 pages</p><h2>Kopi Pagi</h2><p>A full site for a kopitiam kiosk brand: home, menu, outlets, loyalty club and brand story.</p>
-<ul class="try"><li>Filter the menu and add items to the cart</li><li>Build a drink and see what to say at the counter</li><li>Outlets show “open now” in Malaysia time</li></ul>
-<p class="prompt"><b>Prompt idea:</b> “Website for a heritage kopitiam kiosk. Office workers grabbing breakfast. 3 sites I like attached. Bold type, kopitiam tiles and marble. Pages: home, menu, outlets, club, story.”</p>
-<a class="open" href="demos/kopi-pagi.html">Open the website →</a></div></section>
-<section class="demo"><a class="shot" href="demos/club-app.html" aria-label="Open the Kopi Pagi Club app prototype"><div class="bar"><i></i><i></i><i></i><span>Kopi Pagi Club · prototype</span></div><img src="demos/shots/club-app.png" alt="Loyalty app prototype with a paper stamp card, points, and a feature list beside the phone"></a>
-<div class="txt"><span class="num">02</span><p class="eyebrow">Clickable app prototype</p><h2>Kopi Pagi Club</h2><p>What a client clicks through before any developer starts: a loyalty app that feels like the real paper stamp card.</p>
-<ul class="try"><li>Order the usual, then watch the live order ticket</li><li>Collect outlet stamps in the Kopi Passport</li><li>Gift a kopi to a friend with a note</li></ul>
-<p class="prompt"><b>Prompt idea:</b> “Phone prototype of our loyalty app. Stamp card, order ahead, rewards, member QR. Screenshots of 2 apps the client likes attached. Not glossy. Make it feel like the paper card.”</p>
-<a class="open" href="demos/club-app.html">Open the prototype →</a></div></section>
-<section class="demo"><a class="shot" href="demos/dashboard.html" aria-label="Open the sales dashboard"><div class="bar"><i></i><i></i><i></i><span>Kopi Pagi Ops · Overview</span></div><img src="demos/shots/dashboard.png" alt="Light sales dashboard with KPI cards, a revenue chart, auto-written insights and a sales mix"></a>
-<div class="txt"><span class="num">03</span><p class="eyebrow">Data visualisation · 5 pages</p><h2>Outlet sales dashboard</h2><p>A spreadsheet turned into a working dashboard for an ops manager, with insights written from the numbers.</p>
-<ul class="try"><li>Filter by outlet and period</li><li>Menu engineering: stars, workhorses, puzzles, dogs</li><li>Forecast with what-if sliders for price and promos</li></ul>
-<p class="prompt"><b>Prompt idea:</b> “Here’s sales_h1.xlsx. Dashboard for the ops manager: KPIs, trend vs last year, busy hours, menu matrix, outlets and a 3-month forecast. Use only numbers in the file.”</p>
-<a class="open" href="demos/dashboard.html">Open the dashboard →</a></div></section>
-<section class="demo"><a class="shot" href="demos/trip.html" aria-label="Open the KL trip planner"><div class="bar"><i></i><i></i><i></i><span>KL family weekend · planner</span></div><img src="demos/shots/trip.png" alt="Trip planner with a map of Kuala Lumpur showing rail lines and numbered stops, and a timed schedule"></a>
-<div class="txt"><span class="num">04</span><p class="eyebrow">Planner on a real map</p><h2>KL family weekend</h2><p>Three days in KL for five people, on a map drawn from OpenStreetMap data with the LRT, MRT, monorail and KTM lines.</p>
-<ul class="try"><li>Switch each leg between train, Grab or walking</li><li>Time and cost update for the day and the trip</li><li>Click a stop to fly to it on the map</li></ul>
-<p class="prompt"><b>Prompt idea:</b> “Plan 3 days in KL for 5 incl. a grandparent. Base at KL Sentral. For every leg give train vs Grab with time and fare. Show it on a map.”</p>
-<a class="open" href="demos/trip.html">Open the planner →</a></div></section>
-<section class="demo"><a class="shot" href="demos/car.html" aria-label="Open the car affordability calculator"><div class="bar"><i></i><i></i><i></i><span>Can I afford this car?</span></div><img src="demos/shots/car.png" alt="Car affordability calculator with sliders, the real monthly cost and a breakdown of running costs"></a>
-<div class="txt"><span class="num">05</span><p class="eyebrow">Decision calculator</p><h2>Can I afford this car?</h2><p>Malaysian hire purchase plus the running costs people forget, measured against your own limit.</p>
-<ul class="try"><li>See the real monthly cost, not just the instalment</li><li>Compare three cars side by side</li><li>Work backwards from your pay to a car price</li></ul>
-<p class="prompt"><b>Prompt idea:</b> “I earn RM 4,500 and want a car under RM 120k. Malaysian flat-rate hire purchase. Include insurance, road tax, petrol, parking. Compare 3 cars and tell me my max price.”</p>
-<a class="open" href="demos/car.html">Open the calculator →</a></div></section>
-
-<footer><span>Made by Ayman Dinie for the AI Beyond the Chatbox workshop</span><span>Map data © OpenStreetMap contributors</span></footer>
+<section><div class="wrap">
+<p class="mono eyebrow">What you'll build</p><h2>One small app, three short steps</h2>
+<p class="sub">Every participant picks one everyday task and builds a small app for it during the session, on a free Claude account.</p>
+<div class="cards c3">
+<div class="card"><span class="num">1</span><h3>See what it can do</h3><p>Eight things AI can make, 12 everyday uses at work and at home, and how it actually works. Then you pick your app.</p></div>
+<div class="card"><span class="num">2</span><h3>Brief it well</h3><p>Three habits that turn a vague request into a useful result, shown in a live before-and-after demo. Then you write your app's brief.</p></div>
+<div class="card"><span class="num">3</span><h3>Build and share</h3><p>What HTML is and can't do, what's safe to paste, and how to put your app online for free. Then you build it.</p></div>
 </div>
+<div class="cards c3">
+<div class="card"><div class="ic"><svg viewBox="0 0 96 96"><path d="M10 38 L 86 37 L 86 80 L 10 81 Z M34 37 L 34 26 C 34 22, 36 20, 40 20 L 56 20 C 60 20, 62 22, 62 26 L 62 37 M10 54 L 86 53"/></svg></div><h3>For your work</h3><p>A quote calculator, a checklist, a tracker you'd open every week.</p></div>
+<div class="card"><div class="ic"><svg viewBox="0 0 96 96"><path d="M10 34 L 18 14 L 78 14 L 86 34 Z M14 34 L 14 84 L 82 84 L 82 34 M38 84 L 38 58 L 58 58 L 58 84"/></svg></div><h3>For your business</h3><p>A price list, an order form, a simple page for customers.</p></div>
+<div class="card"><div class="ic"><svg viewBox="0 0 96 96"><path d="M10 48 L 48 14 L 86 48 M22 40 L 22 84 L 74 84 L 74 40 M40 84 L 40 60 L 56 60 L 56 84"/></svg></div><h3>For your home</h3><p>A budget, a meal planner, a weekend trip plan for the family.</p></div>
+</div></div></section>
+
+<section class="dark"><div class="wrap">
+<p class="mono eyebrow">Your trainers</p><h2>Taught by people who build with AI daily</h2>
+<div class="cards c2">
+<div class="card person"><img src="assets/ayman.jpg" alt="Ayman Dinie"><div><b>Ayman Dinie</b><span>Front-end developer and AI-driven systems consultant</span></div></div>
+<div class="card person"><img src="assets/adam.jpg" alt="Adam Fauzi"><div><b>Adam Fauzi</b><span class="badge mono" style="color:var(--lb);border-color:var(--lb)">HRD Corp Accredited Trainer · ID 25432</span><span>Founder, Adam Fauzi Solutions</span></div></div>
+</div></div></section>
+
+<section><div class="wrap">
+<p class="mono eyebrow">Pricing</p><h2>One ticket, one app</h2>
+<div class="prices">
+<div class="price"><span class="mono">Students</span><b>RM130</b><span>Valid student ID, aged 25 and under</span></div>
+<div class="price hi"><span class="mono">Early bird</span><b>RM200</b><span>Normal price <s>RM230</s></span></div>
+<div class="price"><span class="mono">Normal</span><b>RM230</b><span>After early bird ends</span></div>
+</div>
+<p class="note">Pay by DuitNow QR with any banking app or e-wallet. SPayLater, Atome and GrabPayLater work too. Full refund up to 7 days before the session.</p>
+</div></section>
+
+<section id="register" class="dark"><div class="wrap">
+<p class="mono eyebrow">Register</p><h2>Save your seat</h2>
+<p class="sub">About 3 minutes. Pay in step 4, then you'll get an email right away. Your seat is confirmed once we match your payment, within 24 hours.</p>
+<div id="closed" class="closed" hidden></div>
+<form id="f" novalidate>
+<fieldset><legend>1 · Your details</legend>
+<label class="f">Full name <em>As it should appear on your certificate</em><input type="text" name="name" autocomplete="name" required></label>
+<div class="row2"><label class="f">Email<input type="email" name="email" autocomplete="email" required></label>
+<label class="f">WhatsApp number <em>For the class group</em><input type="tel" name="wa" autocomplete="tel" placeholder="+6012 345 6789" required></label></div>
+</fieldset>
+
+<fieldset><legend>2 · Your ticket</legend>
+<div class="tickets" id="tickets">
+<label><input type="radio" name="ticket" value="Student" required><span class="mono">Student</span><b>RM130</b><span>Valid student ID, 25 and under</span></label>
+<label id="ebLabel"><input type="radio" name="ticket" value="Early bird"><span class="mono">Early bird</span><b>RM200</b><span>Normal price RM230</span></label>
+<label><input type="radio" name="ticket" value="Normal"><span class="mono">Normal</span><b>RM230</b><span>After early bird ends</span></label>
+</div>
+<div class="row2" id="student" hidden>
+<label class="f">College or university<input type="text" name="college"></label>
+<label class="f">Student ID number <em>We check your card on camera at the start</em><input type="text" name="sid"></label></div>
+</fieldset>
+
+<fieldset><legend>3 · About you</legend>
+<label class="f">What do you do? <em>Job or field of study (optional)</em><input type="text" name="job"></label>
+<div class="f"><span style="font-weight:600;font-size:15px">How often do you use AI now?</span><div class="choices">
+<label><input type="radio" name="freq" value="Never" required>Never</label><label><input type="radio" name="freq" value="Sometimes">Sometimes</label><label><input type="radio" name="freq" value="Weekly">Weekly</label><label><input type="radio" name="freq" value="Daily">Daily</label></div></div>
+<div class="f"><span style="font-weight:600;font-size:15px">Which AI tools have you used?</span><div class="choices">
+<label><input type="checkbox" name="tools" value="Claude">Claude</label><label><input type="checkbox" name="tools" value="ChatGPT">ChatGPT</label><label><input type="checkbox" name="tools" value="Gemini">Gemini</label><label><input type="checkbox" name="tools" value="Copilot">Copilot</label><label><input type="checkbox" name="tools" value="None yet">None yet</label></div></div>
+<label class="f">One everyday task you'd like an app for <em>Optional: a budget tracker, a quote calculator, a trip planner</em><textarea name="idea"></textarea></label>
+<div class="f"><span style="font-weight:600;font-size:15px">Will you join on a laptop with Chrome? <em style="font-weight:400;color:var(--mut)">A phone is not enough to build</em></span><div class="choices">
+<label><input type="radio" name="laptop" value="Yes" required>Yes</label><label><input type="radio" name="laptop" value="No, I need advice">No, I need advice</label></div></div>
+</fieldset>
+
+<fieldset><legend>4 · Payment</legend>
+<div class="pay"><img src="assets/duitnow-qr.png" alt="DuitNow QR for AYMAN DINIE BIN ZAHARI">
+<div style="display:grid;gap:14px">
+<p class="amount">Amount to pay<b id="amt">Pick a ticket first</b></p>
+<p style="font-size:15px;color:var(--mut)">Scan the QR with any banking app or e-wallet. On your phone? <a id="payLink" href="https://payment.tngdigital.com.my/sc/bDLom4JD3M" target="_blank" rel="noopener">Pay with this link</a> instead. Then copy the reference number from your receipt below.</p>
+<div class="f"><span style="font-weight:600;font-size:15px">How did you pay?</span><div class="choices">
+<label><input type="radio" name="paidWith" value="Banking app" required>Banking app</label><label><input type="radio" name="paidWith" value="Touch 'n Go eWallet">TNG eWallet</label><label><input type="radio" name="paidWith" value="Other e-wallet">Other e-wallet</label><label><input type="radio" name="paidWith" value="SPayLater">SPayLater</label><label><input type="radio" name="paidWith" value="Atome">Atome</label><label><input type="radio" name="paidWith" value="GrabPayLater">GrabPayLater</label></div></div>
+<div class="row2"><label class="f">Payment reference number<input type="text" name="ref" required></label>
+<label class="f">Name on the paying account <em>If someone paid for you</em><input type="text" name="payName" required></label></div>
+</div></div>
+</fieldset>
+
+<fieldset><legend>5 · Agreements</legend>
+<label class="agree"><input type="checkbox" name="consent" required><span>I agree to my details being used only to run this workshop: confirmation, receipt, reminders and certificate. They are never sold or shared.</span></label>
+<label class="agree"><input type="checkbox" name="policy" required><span>I agree to the <a href="#faq-refund">refund policy</a> and house rules: join 5 minutes early (entry closes 45 minutes in), stay muted, never paste private or company data into AI, no recording, one seat per person.</span></label>
+<label class="f">How did you hear about this? <em>Optional</em><select name="heard"><option value="">Choose one</option><option>WhatsApp</option><option>Instagram</option><option>LinkedIn</option><option>Adam Fauzi</option><option>A friend</option><option>Other</option></select></label>
+<label class="trap" aria-hidden="true">Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+</fieldset>
+
+<div id="err" class="msg err" hidden role="alert"></div>
+<button class="btn" id="go" type="submit" style="justify-self:start">Register and confirm payment →</button>
+</form>
+<div id="done" class="done" hidden role="status"></div>
+</div></section>
+
+<section><div class="wrap">
+<p class="mono eyebrow">Questions</p><h2>Good to know</h2>
+<div style="margin-top:22px">
+<details><summary>Do I need to know how to code?</summary><p>No. You describe what you want in plain words and the AI writes the code. You'll learn just enough to know what you're looking at.</p></details>
+<details><summary>What do I need to bring?</summary><p>A laptop with Chrome, steady internet and a free Claude account. Nothing to study beforehand. We send a short checklist a week before.</p></details>
+<details><summary>Is it recorded?</summary><p>No. It's live and hands-on. You get the slides, a one-page summary and a hosting guide afterwards.</p></details>
+<details><summary>Do I get a certificate?</summary><p>Yes, the day after, if you check in at the start, stay to the end and send the short feedback form.</p></details>
+<details id="faq-refund"><summary>What's the refund policy?</summary><p>Full refund 7 or more days before the session. After that, no refund, but you can give your seat to someone else or move to the next date for free. Bank and e-wallet payments are refunded by bank transfer within 7 working days; pay-later payments are refunded by Touch 'n Go in 14 to 30 days.</p></details>
+<details><summary>Is it HRDC-claimable?</summary><p>No. This workshop is not HRDC-claimable.</p></details>
+<details><summary>Who do I ask if I'm stuck?</summary><p>WhatsApp +6011 1068 2544 or email jslaymandinie@gmail.com.</p></details>
+</div></div></section>
+
+<footer><div class="wrap"><span>Ayman Dinie · AYMAN DINIE BIN ZAHARI (SSM 202603268059)</span><span>WhatsApp +6011 1068 2544 · jslaymandinie@gmail.com</span></div></footer>
+
+<script>
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxad2ugFPJ1kPqEXEMzr0Gth8CPIjaBw0CP8rvPbPUV2PFCR-669Ep9YYf99qpA9nBh/exec';
+const PRICES = { 'Student': 130, 'Early bird': 200, 'Normal': 230 };
+const f = document.getElementById('f'), err = document.getElementById('err'), go = document.getElementById('go');
+const $ = s => f.querySelector(s);
+const ERRORS = {
+  missing: 'Please fill in every required field and tick both agreements.', email: 'That email doesn\'t look right. Please check it.',
+  student: 'Student tickets need your college and student ID number.', ticket: 'Please pick a ticket.',
+  duplicate: 'This email is already registered. Check your inbox for our email, or WhatsApp +6011 1068 2544.',
+  full: 'Sorry, this session just filled up. WhatsApp +6011 1068 2544 to join the waitlist.',
+  over: 'Registration for this session has closed.', paused: 'Registration is paused right now. Please try again later.',
+  'early-bird-closed': 'Early bird has just ended. Please pick the Normal ticket.'
+};
+
+function showClosed(reason) {
+  const c = document.getElementById('closed');
+  c.textContent = reason === 'full' ? 'This session is fully booked. WhatsApp +6011 1068 2544 to join the waitlist.'
+    : reason === 'over' ? 'Registration for this session has closed. Thank you!' : 'Registration is paused right now. Please check back soon.';
+  c.hidden = false; f.hidden = true;
+}
+
+fetch(ENDPOINT).then(r => r.json()).then(s => {
+  if (s.session) document.getElementById('when').textContent = s.session;
+  if (!s.open) return showClosed(s.reason);
+  if (s.seatsLeft <= 10) document.getElementById('seats').textContent = `Only ${s.seatsLeft} seats left.`;
+  if (!s.earlyBird) { const eb = document.getElementById('ebLabel'); eb.classList.add('off'); eb.querySelector('input').disabled = true; }
+}).catch(() => {});
+
+f.addEventListener('change', e => {
+  if (e.target.name !== 'ticket') return;
+  const t = e.target.value;
+  document.getElementById('student').hidden = t !== 'Student';
+  $('[name=college]').required = $('[name=sid]').required = t === 'Student';
+  document.getElementById('amt').textContent = 'RM' + PRICES[t];
+});
+
+f.addEventListener('submit', async e => {
+  e.preventDefault(); err.hidden = true;
+  const fd = new FormData(f);
+  const data = Object.fromEntries([...fd.entries()].filter(([k]) => k !== 'tools'));
+  data.tools = fd.getAll('tools'); data.consent = $('[name=consent]').checked; data.policy = $('[name=policy]').checked;
+  const missing = !f.checkValidity() || !data.tools.length;
+  if (missing) { err.textContent = !data.tools.length && f.checkValidity() ? 'Please tick at least one AI tool (or "None yet").' : ERRORS.missing; err.hidden = false; f.reportValidity(); return; }
+  go.disabled = true; go.textContent = 'Sending…';
+  try {
+    const res = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
+    if (!res.ok) throw new Error(res.error || 'unknown');
+    f.hidden = true;
+    const d = document.getElementById('done');
+    d.innerHTML = `<h3>You're registered, ${String(data.name).split(' ')[0].replace(/[<>&]/g, '')}</h3>` +
+      (res.id ? `<p>Your registration number is <b>${res.id}</b>. We've emailed ${String(data.email).replace(/[<>&]/g, '')} with the details.</p>` : '') +
+      `<p>We match payments within 24 hours, then send your confirmation and receipt. Didn't get our email? Check your spam folder, or WhatsApp +6011 1068 2544.</p>`;
+    d.hidden = false; d.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (x) {
+    err.textContent = ERRORS[x.message] || 'Something went wrong sending your registration. Please try again, or WhatsApp +6011 1068 2544.';
+    err.hidden = false; go.disabled = false; go.textContent = 'Register and confirm payment →';
+  }
+});
+</script>
 </body></html>
