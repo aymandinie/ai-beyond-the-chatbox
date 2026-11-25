@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can I Afford This Car?</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://unpkg.com/lucide@0.441.0/dist/umd/lucide.min.js"></script>
+<style>
+/* Layout: fintech calculator with three modes. Inputs in a soft panel on the left; on the right a dark result card.
+   Mode 1 monthly cost, mode 2 compare three cars, mode 3 work backwards from your pay to a car price. */
+:root{--bg:#F3F4EF;--panel:#FFFFFF;--ink:#101511;--muted:#69736B;--line:#E4E7E0;--lime:#C6F432;--dark:#101511;--amber:#F4B740;--red:#E25B45;--sky:#7FB7FF;
+--sans:'Sora',Arial,sans-serif;--mono:'IBM Plex Mono',monospace;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans)}
+svg.lucide{width:18px;height:18px;stroke-width:2;flex:none}
+.wrap{max-width:1300px;margin:0 auto;padding:28px max(20px,env(safe-area-inset-left,0px)) 40px}
+.back{display:inline-flex;align-items:center;gap:8px;color:var(--ink);text-decoration:none;font-weight:700;background:var(--panel);padding:9px 16px;border-radius:999px;margin-bottom:18px}
+.top{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.kick{display:inline-flex;align-items:center;gap:8px;background:var(--panel);padding:8px 14px;border-radius:999px;font-weight:600;font-size:13px}
+h1{font-weight:800;font-size:clamp(40px,5vw,66px);letter-spacing:-.04em;line-height:1;margin-top:14px}
+h1 span{background:var(--lime);padding:0 10px;border-radius:14px}
+.top p{color:var(--muted);max-width:40ch}
+.modes{display:inline-flex;background:var(--panel);border-radius:999px;padding:5px;gap:4px;margin-bottom:18px;flex-wrap:wrap}
+.modes button{border:0;background:none;font:inherit;font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px;cursor:pointer;display:flex;gap:8px;align-items:center;color:var(--ink)}
+.modes button[aria-pressed="true"]{background:var(--dark);color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1.15fr;gap:18px;align-items:start}
+.panel{background:var(--panel);border-radius:28px;padding:26px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.panel h2{font-size:15px;font-family:var(--mono);font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:10px}
+.field .h{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.field label{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+.field label .ic{width:34px;height:34px;border-radius:11px;background:var(--bg);display:grid;place-items:center}
+.val{font-family:var(--mono);font-weight:500;background:var(--bg);padding:6px 10px;border-radius:10px;font-size:14px;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--ink) var(--p,50%),var(--line) var(--p,50%));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--lime);border:4px solid var(--ink);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--lime);border:4px solid var(--ink)}
+input[type=range]:focus-visible{outline:3px solid var(--lime);outline-offset:6px}
+select,input[type=number],input[type=text]{font:inherit;font-weight:600;border:0;background:var(--bg);border-radius:12px;padding:10px 12px;color:var(--ink);width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mini label{font-size:13px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px}
+details{background:var(--bg);border-radius:18px;padding:14px 16px}
+summary{cursor:pointer;font-weight:700;display:flex;justify-content:space-between;align-items:center;list-style:none}
+summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:14px}
+.result{background:var(--dark);color:#fff}
+.res-top{display:flex;justify-content:space-between;gap:20px;align-items:center}
+.lbl{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#9BA59D}
+.big{font-weight:800;font-size:clamp(46px,5.6vw,78px);letter-spacing:-.04em;line-height:1;margin-top:8px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.big small{font-size:20px;font-weight:600;color:#9BA59D;letter-spacing:0}
+.ring{width:150px;height:150px;flex:none}
+.verdict{display:flex;gap:12px;align-items:center;border-radius:18px;padding:14px 16px;font-weight:600}
+.v-ok{background:rgba(198,244,50,.14);color:var(--lime)}.v-mid{background:rgba(244,183,64,.14);color:var(--amber)}.v-no{background:rgba(226,91,69,.16);color:#FF8B76}
+.split{display:flex;height:14px;border-radius:999px;overflow:hidden;gap:3px}.split i{display:block;height:100%}
+.keys{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:#C9D0CA}.keys span{display:flex;align-items:center;gap:8px}.keys i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.costs{display:flex;flex-direction:column;gap:8px}
+.cost{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;font-size:14px}
+.cost .b{grid-column:2/4;height:6px;border-radius:999px;background:#222A24;overflow:hidden}.cost .b i{display:block;height:100%;border-radius:999px}
+.cost span.n{font-family:var(--mono)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-family:var(--mono);font-weight:500;font-size:12px;color:#9BA59D;text-align:left;padding:8px 6px;border-bottom:1px solid #2A322C;letter-spacing:.06em;text-transform:uppercase}
+td{padding:11px 6px;border-bottom:1px solid #222A24;font-variant-numeric:tabular-nums}
+td.n,th.n{text-align:right;font-family:var(--mono)}
+tr.on td{color:var(--lime)}
+.chart{width:100%;height:170px}
+.cars{display:flex;flex-direction:column;gap:12px}
+.car{background:var(--bg);border-radius:18px;padding:14px;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:10px;align-items:end}
+.car .t{display:flex;align-items:center;gap:8px;font-weight:700;grid-column:1/-1}
+.car .dot{width:12px;height:12px;border-radius:4px}
+.cmp{display:flex;flex-direction:column;gap:12px}
+.cmprow{display:grid;grid-template-columns:220px 1fr 110px;gap:12px;align-items:center}
+.cmprow .bar{height:28px;border-radius:8px;background:#222A24;overflow:hidden;position:relative}
+.cmprow .bar i{display:block;height:100%;border-radius:8px}
+.cmprow .bar em{position:absolute;top:0;bottom:0;width:2px;background:#fff;opacity:.7}
+.best{font-family:var(--mono);font-size:11px;background:var(--lime);color:var(--ink);padding:2px 6px;border-radius:6px;margin-left:6px}
+.foot{color:var(--muted);font-size:13px;margin-top:16px;line-height:1.6;max-width:100ch}
+.mode[hidden]{display:none!important}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+@media(max-width:980px){.grid{grid-template-columns:1fr}.car{grid-template-columns:1fr 1fr}.cmprow{grid-template-columns:110px 1fr 90px}}
+</style></head><body><div class="wrap">
+<a class="back" href="index.html"><i data-lucide="arrow-left"></i>All demos</a>
+<div class="top"><div><span class="kick"><i data-lucide="car"></i>Decision calculator · Malaysia</span><h1>Can I <span>afford</span> this car?</h1></div><p>Hire purchase with a flat interest rate, plus the running costs people forget, measured against a limit you set for your own pay.</p></div>
+<div class="modes" role="group" aria-label="Mode"><button data-m="one" aria-pressed="true"><i data-lucide="calculator"></i>Monthly cost</button><button data-m="cmp" aria-pressed="false"><i data-lucide="columns-3"></i>Compare 3 cars</button><button data-m="max" aria-pressed="false"><i data-lucide="target"></i>How much car can I afford?</button></div>
+
+<div class="grid">
+<section class="panel" aria-label="Your numbers">
+<h2>Your money</h2>
+<div class="field"><div class="h"><label for="pay"><span class="ic"><i data-lucide="wallet"></i></span>Take-home pay per month</label><span class="val" id="pay-v"></span></div><input type="range" id="pay" min="2000" max="15000" step="100" value="4500"></div>
+<div class="field"><div class="h"><label for="cap"><span class="ic"><i data-lucide="gauge"></i></span>Your limit for all car costs</label><span class="val" id="cap-v"></span></div><input type="range" id="cap" min="10" max="40" step="1" value="25"></div>
+<h2 class="mode" data-for="one max">The loan</h2>
+<div class="field mode" data-for="one"><div class="h"><label for="price"><span class="ic"><i data-lucide="car-front"></i></span>Car price</label><span class="val" id="price-v"></span></div><input type="range" id="price" min="40000" max="200000" step="1000" value="95000"></div>
+<div class="field"><div class="h"><label for="down"><span class="ic"><i data-lucide="hand-coins"></i></span>Down payment</label><span class="val" id="down-v"></span></div><input type="range" id="down" min="0" max="40" step="1" value="10"></div>
+<div class="field"><div class="h"><label for="rate"><span class="ic"><i data-lucide="percent"></i></span>Flat rate per year</label><span class="val" id="rate-v"></span></div><input type="range" id="rate" min="2" max="5" step="0.05" value="2.8"></div>
+<div class="field"><div class="h"><label for="years"><span class="ic"><i data-lucide="calendar-range"></i></span>Loan tenure</label><span class="val" id="years-v"></span></div><input type="range" id="years" min="5" max="9" step="1" value="9"></div>
+<details id="run"><summary>Running costs<i data-lucide="chevron-down"></i></summary>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="two"><div class="mini"><label for="cc">Engine size (cc)</label><input type="number" id="cc" value="1500" min="660" max="3500" step="100"></div><div class="mini"><label for="ncd">No-claim discount</label><select id="ncd"><option value="0">0%</option><option value="25">25%</option><option value="30">30%</option><option value="38.33">38.33%</option><option value="45">45%</option><option value="55" selected>55%</option></select></div></div>
+<div class="two"><div class="mini"><label for="km">Driving per month (km)</label><input type="number" id="km" value="1500" min="0" step="100"></div><div class="mini"><label for="lkm">Fuel use (L per 100 km)</label><input type="number" id="lkm" value="6" min="2" max="20" step="0.1"></div></div>
+<div class="two"><div class="mini"><label for="fuel">Petrol price (RM per litre)</label><input type="number" id="fuel" value="1.99" min="1" max="5" step="0.01"></div><div class="mini"><label for="park">Parking and tolls (RM per month)</label><input type="number" id="park" value="200" min="0" step="10"></div></div>
+<div class="mini"><label for="svc">Servicing and tyres (RM per month)</label><input type="number" id="svc" value="100" min="0" step="10"></div>
+</div></details>
+<div class="mode cars" data-for="cmp" id="carsIn"></div>
+</section>
+
+<section class="panel result" aria-live="polite">
+<div class="mode" data-for="one" style="display:flex;flex-direction:column;gap:20px">
+<div class="res-top"><div><p class="lbl">Real monthly cost</p><p class="big" id="m-total"></p><p style="color:#C9D0CA;margin-top:8px" id="m-share"></p></div>
+<svg class="ring" viewBox="0 0 120 120" aria-label="Ring showing car costs as a share of your limit"><circle cx="60" cy="60" r="50" fill="none" stroke="#252D27" stroke-width="12"/><circle id="arc" cx="60" cy="60" r="50" fill="none" stroke="#C6F432" stroke-width="12" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)"/><text x="60" y="58" text-anchor="middle" fill="#fff" font-family="Arial" font-weight="700" font-size="22" id="ringt"></text><text x="60" y="78" text-anchor="middle" fill="#9BA59D" font-family="Arial" font-size="10">OF YOUR LIMIT</text></svg></div>
+<div class="verdict" id="verdict"></div>
+<div><p class="lbl" style="margin-bottom:12px">Where the monthly money goes</p><div class="costs" id="costs"></div></div>
+<div><p class="lbl" style="margin-bottom:8px">Paid off over time</p><svg class="chart" id="paychart" viewBox="0 0 600 170" preserveAspectRatio="none" aria-label="Chart of loan amount still owed by year"></svg></div>
+<table><thead><tr><th>Tenure</th><th class="n">Instalment</th><th class="n">Interest</th><th class="n">All-in / month</th></tr></thead><tbody id="tbl"></tbody></table>
+</div>
+<div class="mode" data-for="cmp" style="display:flex;flex-direction:column;gap:18px" hidden>
+<div><p class="lbl">Side by side · all-in monthly cost</p><p style="color:#C9D0CA;margin-top:6px" id="c-sub"></p></div>
+<div class="cmp" id="cmpBars"></div>
+<table><thead><tr><th>Per month</th><th class="n" id="h0"></th><th class="n" id="h1"></th><th class="n" id="h2"></th></tr></thead><tbody id="cmpTbl"></tbody></table>
+<div class="verdict v-ok" id="c-verdict"></div>
+</div>
+<div class="mode" data-for="max" style="display:flex;flex-direction:column;gap:20px" hidden>
+<div><p class="lbl">You can afford a car up to</p><p class="big" id="x-price"></p><p style="color:#C9D0CA;margin-top:8px" id="x-sub"></p></div>
+<div class="costs" id="x-costs"></div>
+<div class="verdict v-ok" id="x-tip"></div>
+<table><thead><tr><th>Down payment</th><th class="n">Max car price</th><th class="n">Cash upfront</th></tr></thead><tbody id="x-tbl"></tbody></table>
+</div>
+</section></div>
+<p class="foot">Formula: instalment = (loan + loan × rate × years) ÷ (years × 12). Road tax uses the Peninsular Malaysia rates for private petrol cars. Insurance is estimated at 2.6% of the car price per year before your no-claim discount. Petrol price is editable, so set it to what you actually pay. All figures are estimates for a workshop demo, not financial advice.</p></div>
+<script>
+const $=id=>document.getElementById(id);const rm=n=>'RM '+Math.round(n).toLocaleString('en-MY');const ic=n=>`<i data-lucide="${n}"></i>`;
+let mode='one';
+const CARS=[{n:'Small hatchback',p:60000,cc:1500,l:5.2,c:'#C6F432'},{n:'Compact sedan',p:92000,cc:1500,l:5.8,c:'#7FB7FF'},{n:'Compact SUV',p:118000,cc:1500,l:7.0,c:'#F4B740'}];
+function roadTax(cc){if(cc<=1000)return 20;if(cc<=1200)return 55;if(cc<=1400)return 70;if(cc<=1600)return 90;if(cc<=1800)return 200+(cc-1600)*0.4;if(cc<=2000)return 280+(cc-1800)*0.5;if(cc<=2500)return 380+(cc-2000)*1;if(cc<=3000)return 880+(cc-2500)*2.5;return 2130+(cc-3000)*4.5}
+function inputs(){return{pay:+$('pay').value,cap:+$('cap').value,price:+$('price').value,down:+$('down').value,rate:+$('rate').value,years:+$('years').value,cc:+$('cc').value||1500,ncd:+$('ncd').value,km:+$('km').value||0,lkm:+$('lkm').value||6,fuel:+$('fuel').value||1.99,park:+$('park').value||0,svc:+$('svc').value||0}}
+function monthly(I,price,cc,lkm){const loan=price*(1-I.down/100),int=loan*I.rate/100*I.years,inst=(loan+int)/(I.years*12);const ins=price*0.026*(1-I.ncd/100)/12,tax=roadTax(cc)/12,fuel=I.km*lkm/100*I.fuel;return{loan,int,inst,ins,tax,fuel,park:I.park,svc:I.svc,total:inst+ins+tax+fuel+I.park+I.svc,dp:price*I.down/100}}
+function fill(el){el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%')}
+function costRows(m,max){const rows=[['banknote','Loan instalment',m.inst,'#C6F432'],['fuel','Petrol',m.fuel,'#F4B740'],['shield','Insurance',m.ins,'#7FB7FF'],['car','Parking and tolls',m.park,'#B79CFF'],['wrench','Servicing and tyres',m.svc,'#FF8B76'],['landmark','Road tax',m.tax,'#9BA59D']];const mx=max||Math.max(...rows.map(r=>r[2]));return rows.map(r=>`<div class="cost">${ic(r[0])}<span>${r[1]}</span><span class="n">${rm(r[2])}</span><div class="b"><i style="width:${r[2]/mx*100}%;background:${r[3]}"></i></div></div>`).join('')}
+function verdictEl(el,ratio,okTxt){if(ratio<=1){el.className='verdict v-ok';el.innerHTML=ic('circle-check')+okTxt}else if(ratio<=1.2){el.className='verdict v-mid';el.innerHTML=ic('triangle-alert')+'A bit over your limit. Try a bigger down payment, a cheaper car or driving less.'}else{el.className='verdict v-no';el.innerHTML=ic('octagon-x')+'Well over your limit. This car will squeeze your budget every month.'}}
+function one(I){const m=monthly(I,I.price,I.cc,I.lkm),limit=I.pay*I.cap/100,ratio=m.total/limit;
+ $('m-total').innerHTML=rm(m.total)+'<small> /month</small>';$('m-share').textContent=`${(m.total/I.pay*100).toFixed(1)}% of take-home · instalment alone is ${rm(m.inst)}`;
+ $('arc').setAttribute('stroke-dashoffset',314-314*Math.min(ratio,1));$('arc').setAttribute('stroke',ratio<=1?'#C6F432':ratio<=1.2?'#F4B740':'#E25B45');$('ringt').textContent=Math.round(ratio*100)+'%';
+ verdictEl($('verdict'),ratio,`Within your ${rm(limit)} limit, with ${rm(limit-m.total)} to spare each month.`);
+ $('costs').innerHTML=costRows(m);
+ const owed=Array.from({length:I.years+1},(_,y)=>(m.loan+m.int)*(1-y/I.years));const W=600,H=170,mx=owed[0];const pts=owed.map((v,i)=>[i/I.years*(W-40)+20,H-24-(v/mx)*(H-44)]);
+ $('paychart').innerHTML=`<path d="M${pts.map(p=>p.join(' ')).join(' L')} L${pts[pts.length-1][0]} ${H-24} L20 ${H-24}Z" fill="rgba(198,244,50,.15)"/><polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#C6F432" stroke-width="3" vector-effect="non-scaling-stroke"/>`+pts.map((p,i)=>`<text x="${p[0]}" y="${H-6}" fill="#9BA59D" font-size="12" font-family="IBM Plex Mono, monospace" text-anchor="middle">Y${i}</text>`).join('')+`<text x="24" y="14" fill="#9BA59D" font-size="12" font-family="IBM Plex Mono, monospace">Owed: ${rm(mx)}</text>`;
+ $('tbl').innerHTML=[5,7,9].map(t=>{const J={...I,years:t};const k=monthly(J,I.price,I.cc,I.lkm);return `<tr class="${t===I.years?'on':''}"><td>${t} years</td><td class="n">${rm(k.inst)}</td><td class="n">${rm(k.int)}</td><td class="n">${rm(k.total)}</td></tr>`}).join('')}
+function cmp(I){const ms=CARS.map(c=>monthly(I,c.p,c.cc,c.l)),limit=I.pay*I.cap/100,mx=Math.max(...ms.map(m=>m.total),limit)*1.05;const best=ms.reduce((b,m,i)=>m.total<ms[b].total?i:b,0);
+ $('c-sub').textContent=`Your limit: ${rm(limit)} a month (${I.cap}% of ${rm(I.pay)})`;
+ $('cmpBars').innerHTML=CARS.map((c,i)=>`<div class="cmprow"><span style="font-weight:600">${c.n}${i===best?'<span class="best">CHEAPEST</span>':''}</span><div class="bar"><i style="width:${ms[i].total/mx*100}%;background:${c.c}"></i><em style="left:${limit/mx*100}%"></em></div><span style="font-family:var(--mono);text-align:right">${rm(ms[i].total)}</span></div>`).join('')+`<p style="font-size:12px;color:#9BA59D;font-family:var(--mono)">White line = your limit</p>`;
+ CARS.forEach((c,i)=>$('h'+i).textContent=c.n.split(' ').slice(-1)[0]);
+ const R=[['Instalment','inst'],['Petrol','fuel'],['Insurance','ins'],['Road tax','tax'],['Parking and tolls','park'],['Servicing','svc'],['All-in','total']];
+ $('cmpTbl').innerHTML=R.map(r=>`<tr class="${r[1]==='total'?'on':''}"><td>${r[0]}</td>${ms.map(m=>`<td class="n">${rm(m[r[1]])}</td>`).join('')}</tr>`).join('')+`<tr><td>Cash upfront</td>${ms.map(m=>`<td class="n">${rm(m.dp)}</td>`).join('')}</tr>`;
+ const fits=CARS.filter((c,i)=>ms[i].total<=limit).map(c=>c.n);$('c-verdict').className='verdict '+(fits.length?'v-ok':'v-no');$('c-verdict').innerHTML=fits.length?ic('circle-check')+`Fits your limit: ${fits.join(', ')}.`:ic('octagon-x')+'None of these fit your limit yet. Try a longer tenure or a bigger down payment.'}
+function maxp(I){const limit=I.pay*I.cap/100;const run=(price)=>monthly(I,price,I.cc,I.lkm);let lo=10000,hi=400000;for(let k=0;k<40;k++){const mid=(lo+hi)/2;run(mid).total<=limit?lo=mid:hi=mid}const P=Math.floor(lo/1000)*1000,m=run(P);
+ $('x-price').textContent=rm(P);$('x-sub').textContent=`Keeps all car costs at ${rm(limit)} a month (${I.cap}% of ${rm(I.pay)}), over ${I.years} years at ${I.rate.toFixed(2)}%.`;
+ $('x-costs').innerHTML=costRows(m);$('x-tip').innerHTML=ic('lightbulb')+`You’d need ${rm(m.dp)} upfront. Running costs alone take ${rm(m.total-m.inst)} a month, so a cheaper car to run stretches the budget further.`;
+ $('x-tbl').innerHTML=[0,10,20,30].map(dw=>{const J={...I,down:dw};let a=10000,b=400000;for(let k=0;k<40;k++){const mid=(a+b)/2;monthly(J,mid,I.cc,I.lkm).total<=limit?a=mid:b=mid}const p=Math.floor(a/1000)*1000;return `<tr class="${dw===I.down?'on':''}"><td>${dw}%</td><td class="n">${rm(p)}</td><td class="n">${rm(p*dw/100)}</td></tr>`}).join('')}
+function carInputs(){$('carsIn').innerHTML='<h2>The three cars</h2>'+CARS.map((c,i)=>`<div class="car"><p class="t"><span class="dot" style="background:${c.c}"></span><input type="text" id="cn${i}" value="${c.n}" aria-label="Car ${i+1} name" style="padding:6px 10px"></p><div class="mini"><label for="cp${i}">Price (RM)</label><input type="number" id="cp${i}" value="${c.p}" step="1000"></div><div class="mini"><label for="cc${i}">Engine (cc)</label><input type="number" id="cc${i}" value="${c.cc}" step="100"></div><div class="mini"><label for="cl${i}">L per 100 km</label><input type="number" id="cl${i}" value="${c.l}" step="0.1"></div></div>`).join('');
+ CARS.forEach((c,i)=>{['cn','cp','cc','cl'].forEach(k=>$(k+i).addEventListener('input',()=>{c.n=$('cn'+i).value||('Car '+(i+1));c.p=+$('cp'+i).value||0;c.cc=+$('cc'+i).value||1500;c.l=+$('cl'+i).value||6;calc()}))})}
+function calc(){document.querySelectorAll('input[type=range]').forEach(fill);const I=inputs();
+ $('pay-v').textContent=rm(I.pay);$('cap-v').textContent=I.cap+'% of pay';$('price-v').textContent=rm(I.price);$('down-v').textContent=I.down+'%';$('rate-v').textContent=I.rate.toFixed(2)+'%';$('years-v').textContent=I.years+' years';
+ ({one,cmp,max:maxp})[mode](I);window.lucide&&lucide.createIcons()}
+function setMode(m){mode=m;document.querySelectorAll('.modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m));
+ document.querySelectorAll('.mode').forEach(el=>{const f=el.dataset.for.split(' ');el.hidden=!f.includes(m)});
+ if(m!=='one')$('run').open=$('run').open||false;calc()}
+document.querySelectorAll('.modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+document.querySelectorAll('.panel input,.panel select').forEach(i=>i.addEventListener('input',calc));
+carInputs();setMode(['one','cmp','max'].includes(location.hash.slice(1))?location.hash.slice(1):'one');
+</script></body></html>

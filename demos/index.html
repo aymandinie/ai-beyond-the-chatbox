@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beyond the Chatbox Demos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+/* Deck links use #kopi-pagi, #club, #dashboard, #trip or #car to open a demo directly. */
+(function(){var m={'kopi-pagi':'kopi-pagi.html','club':'club-app.html','dashboard':'dashboard.html','trip':'trip.html','car':'car.html'};var h=location.hash.slice(1);if(m[h])location.replace(m[h]);})();
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Courier+Prime:wght@400;700&family=Geist:wght@400;500;600&display=swap">
+<style>
+/* Layout: an annotated contact sheet. Each demo gets a big framed screenshot beside a short write-up:
+   what it is, what to try, the prompt idea, and an open button. Rows alternate sides.
+   Deliberately one look (warm paper, blue pen) to match the workshop deck. */
+:root{--paper:#F3EAD8;--sheet:#FDF8EC;--ink:#1F2433;--muted:#5C574C;--pen:#2B4ACB;--navy:#1B2140;--line:#E2D6BE;
+--serif:'Instrument Serif',Georgia,serif;--mono:'Courier Prime','Courier New',monospace;--sans:'Geist',Arial,sans-serif;color-scheme:light}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55}
+.wrap{max-width:1200px;margin:0 auto;padding-block:44px 70px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:56px}
+.eyebrow{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--pen);margin:0}
+header{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:end}
+h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(48px,7.5vw,96px);line-height:.95;margin:10px 0 0;text-wrap:balance}
+.intro{display:flex;flex-direction:column;gap:14px}
+.intro p{margin:0;color:var(--muted);max-width:52ch}
+.wave{width:220px;height:22px;display:block}
+.how{display:flex;gap:10px;flex-wrap:wrap}
+.how span{font-family:var(--mono);font-size:13px;background:var(--sheet);border-radius:999px;padding:6px 12px;color:var(--ink)}
+.demo{display:grid;grid-template-columns:1.35fr 1fr;gap:40px;align-items:center}
+.demo:nth-of-type(even){grid-template-columns:1fr 1.35fr}
+.demo:nth-of-type(even) .shot{order:2}
+.demo>*,header>*{min-width:0}
+.shot{display:block;text-decoration:none;color:inherit;background:var(--navy);border-radius:18px;padding:10px;transition:transform .25s}
+.shot:hover{transform:translateY(-4px) rotate(-.3deg)}
+.bar{display:flex;align-items:center;gap:8px;padding:2px 6px 10px}
+.bar i{width:10px;height:10px;border-radius:50%;background:#3A4366}
+.bar span{flex:1;font-family:var(--mono);font-size:12px;color:#9DB2FF;background:#262D4D;border-radius:999px;padding:4px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shot img{display:block;width:100%;max-width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:10px;background:var(--sheet)}
+.txt{display:flex;flex-direction:column;gap:14px;min-width:0}
+.num{font-family:var(--serif);font-style:italic;font-size:44px;line-height:1;color:var(--pen)}
+.txt h2{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(34px,4vw,48px);line-height:1;margin:0}
+.txt p{margin:0;color:var(--muted)}
+.try{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.try li{display:flex;gap:10px}
+.try li::before{content:"";flex:none;width:14px;height:14px;margin-top:5px;border:2px solid var(--pen);border-radius:50%}
+.prompt{font-family:var(--mono);font-size:14px;color:var(--ink);background:var(--sheet);border-radius:14px;padding:14px 16px}
+.prompt b{color:var(--pen)}
+.open{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;background:var(--pen);color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:999px}
+.open:hover{background:var(--navy)}
+a:focus-visible{outline:3px solid var(--pen);outline-offset:4px}
+footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:2px dashed var(--line);padding-top:20px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+@media (max-width:860px){header,.demo,.demo:nth-of-type(even){grid-template-columns:1fr}.demo:nth-of-type(even) .shot{order:0}}
+@media (prefers-reduced-motion:reduce){.shot{transition:none}}
+</style></head><body>
+<div class="wrap">
+<header><div><p class="eyebrow">AI Beyond the Chatbox · live examples</p><h1>Five things built from a prompt</h1></div>
+<div class="intro"><svg class="wave" viewBox="0 0 220 22" aria-hidden="true"><path d="M3 12 C 20 3, 34 20, 52 11 S 86 3, 104 11 S 138 20, 156 11 S 196 3, 217 11" fill="none" stroke="#2B4ACB" stroke-width="3.5" stroke-linecap="round"/></svg>
+<p>Each one is a single HTML file made with Claude from one detailed prompt plus a few rounds of feedback. Click any screenshot to open it, then use “All demos” to come back.</p>
+<div class="how"><span>No app to install</span><span>Works on phones</span><span>Fictional brands and figures</span></div></div></header>
+
+<section class="demo" id="kopi-pagi-card"><a class="shot" href="kopi-pagi.html" aria-label="Open the Kopi Pagi website"><div class="bar"><i></i><i></i><i></i><span>kopipagi.my · Home</span></div><img src="shots/kopi-home.png" alt="Kopi Pagi website home page with a large headline, menu ticker and buttons"></a>
+<div class="txt"><span class="num">01</span><p class="eyebrow">Brand website · 5 pages</p><h2>Kopi Pagi</h2><p>A full site for a kopitiam kiosk brand: home, menu, outlets, loyalty club and brand story.</p>
+<ul class="try"><li>Filter the menu and add items to the cart</li><li>Build a drink and see what to say at the counter</li><li>Outlets show “open now” in Malaysia time</li></ul>
+<p class="prompt"><b>Prompt idea:</b> “Website for a heritage kopitiam kiosk. Office workers grabbing breakfast. 3 sites I like attached. Bold type, kopitiam tiles and marble. Pages: home, menu, outlets, club, story.”</p>
+<a class="open" href="kopi-pagi.html">Open the website →</a></div></section>
+
+<section class="demo"><a class="shot" href="club-app.html" aria-label="Open the Kopi Pagi Club app prototype"><div class="bar"><i></i><i></i><i></i><span>Kopi Pagi Club · prototype</span></div><img src="shots/club-app.png" alt="Loyalty app prototype with a paper stamp card, points, and a feature list beside the phone"></a>
+<div class="txt"><span class="num">02</span><p class="eyebrow">Clickable app prototype</p><h2>Kopi Pagi Club</h2><p>What a client clicks through before any developer starts: a loyalty app that feels like the real paper stamp card.</p>
+<ul class="try"><li>Order the usual, then watch the live order ticket</li><li>Collect outlet stamps in the Kopi Passport</li><li>Gift a kopi to a friend with a note</li></ul>
+<p class="prompt"><b>Prompt idea:</b> “Phone prototype of our loyalty app. Stamp card, order ahead, rewards, member QR. Screenshots of 2 apps the client likes attached. Not glossy. Make it feel like the paper card.”</p>
+<a class="open" href="club-app.html">Open the prototype →</a></div></section>
+
+<section class="demo"><a class="shot" href="dashboard.html" aria-label="Open the sales dashboard"><div class="bar"><i></i><i></i><i></i><span>Kopi Pagi Ops · Overview</span></div><img src="shots/dashboard.png" alt="Light sales dashboard with KPI cards, a revenue chart, auto-written insights and a sales mix"></a>
+<div class="txt"><span class="num">03</span><p class="eyebrow">Data visualisation · 5 pages</p><h2>Outlet sales dashboard</h2><p>A spreadsheet turned into a working dashboard for an ops manager, with insights written from the numbers.</p>
+<ul class="try"><li>Filter by outlet and period</li><li>Menu engineering: stars, workhorses, puzzles, dogs</li><li>Forecast with what-if sliders for price and promos</li></ul>
+<p class="prompt"><b>Prompt idea:</b> “Here’s sales_h1.xlsx. Dashboard for the ops manager: KPIs, trend vs last year, busy hours, menu matrix, outlets and a 3-month forecast. Use only numbers in the file.”</p>
+<a class="open" href="dashboard.html">Open the dashboard →</a></div></section>
+
+<section class="demo"><a class="shot" href="trip.html" aria-label="Open the KL trip planner"><div class="bar"><i></i><i></i><i></i><span>KL family weekend · planner</span></div><img src="shots/trip.png" alt="Trip planner with a map of Kuala Lumpur showing rail lines and numbered stops, and a timed schedule"></a>
+<div class="txt"><span class="num">04</span><p class="eyebrow">Planner on a real map</p><h2>KL family weekend</h2><p>Three days in KL for five people, on a map drawn from OpenStreetMap data with the LRT, MRT, monorail and KTM lines.</p>
+<ul class="try"><li>Switch each leg between train, Grab or walking</li><li>Time and cost update for the day and the trip</li><li>Click a stop to fly to it on the map</li></ul>
+<p class="prompt"><b>Prompt idea:</b> “Plan 3 days in KL for 5 incl. a grandparent. Base at KL Sentral. For every leg give train vs Grab with time and fare. Show it on a map.”</p>
+<a class="open" href="trip.html">Open the planner →</a></div></section>
+
+<section class="demo"><a class="shot" href="car.html" aria-label="Open the car affordability calculator"><div class="bar"><i></i><i></i><i></i><span>Can I afford this car?</span></div><img src="shots/car.png" alt="Car affordability calculator with sliders, the real monthly cost and a breakdown of running costs"></a>
+<div class="txt"><span class="num">05</span><p class="eyebrow">Decision calculator</p><h2>Can I afford this car?</h2><p>Malaysian hire purchase plus the running costs people forget, measured against your own limit.</p>
+<ul class="try"><li>See the real monthly cost, not just the instalment</li><li>Compare three cars side by side</li><li>Work backwards from your pay to a car price</li></ul>
+<p class="prompt"><b>Prompt idea:</b> “I earn RM 4,500 and want a car under RM 120k. Malaysian flat-rate hire purchase. Include insurance, road tax, petrol, parking. Compare 3 cars and tell me my max price.”</p>
+<a class="open" href="car.html">Open the calculator →</a></div></section>
+
+<footer><span>Made by Ayman Dinie for the AI Beyond the Chatbox workshop</span><span>Map data © OpenStreetMap contributors</span></footer>
+</div>
+</body></html>
