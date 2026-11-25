@@ -64,6 +64,19 @@ td.n,th.n{text-align:right;font-family:var(--mono)}
 a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 @media(max-width:1100px){.g4{grid-template-columns:1fr 1fr}.g3,.g2{grid-template-columns:1fr}}
 @media(max-width:780px){.app{grid-template-columns:1fr}aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap}.side-foot{margin:0}.content{padding:16px}}
+/* phones */
+@media(max-width:780px){
+.app{grid-template-columns:minmax(0,1fr)}
+aside{padding:10px 12px;gap:8px;align-items:center;border-right:0;border-bottom:1px solid var(--line);min-width:0}
+.nav{min-width:0}.bar>div{min-width:0}.tools{width:100%}
+.brand{padding:4px 6px;flex:1;white-space:nowrap}
+.nav{display:flex;order:3;width:100%;overflow-x:auto;gap:4px;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}
+.nav a{white-space:nowrap;padding:8px 10px}
+.side-foot{flex-direction:row;align-items:center}.file{display:none}.back{padding:7px 10px}
+.bar{position:static;padding:12px 16px}
+.kpi .v{font-size:22px}.card{padding:14px}
+}
+@media(max-width:420px){.kpi .v{font-size:19px}.kpi .l{font-size:12px}}
 </style></head><body><div class="app">
 <aside><div class="brand"><b><i data-lucide="coffee"></i></b>Kopi Pagi Ops</div>
 <nav class="nav" id="nav">

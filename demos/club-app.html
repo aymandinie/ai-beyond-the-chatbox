@@ -125,6 +125,18 @@ textarea{resize:none;height:64px}
 button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--tomato);outline-offset:2px}
 @media(max-width:1200px){.page{grid-template-columns:1fr 390px}.notes{display:none}}
 @media(max-width:820px){.page{grid-template-columns:1fr}.phone{position:relative;top:0;margin:0 auto}}
+/* phones */
+@media(max-width:820px){
+.top{flex-direction:column;align-items:flex-start;gap:8px;padding-inline:14px}
+.page{padding:14px 14px 40px;gap:26px}
+.phone{order:-1;width:100%;max-width:390px;height:min(800px,calc(100svh - 24px))}
+.copy h1{font-size:40px}
+.index .new{flex:none}.index button{min-width:0}.index button>span:not(.n):not(.new){min-width:0}
+}
+@media(max-width:480px){
+.page{padding:0 0 40px}.copy{padding:0 14px}
+.phone{max-width:none;height:100svh;border-radius:0;padding:0}.screen{border-radius:0}.island{display:none}
+}
 </style></head><body>
 <div class="top"><a class="back" href="index.html"><i data-lucide="arrow-left"></i>All demos</a><span class="tag">Clickable prototype · fictional brand · no real accounts</span></div>
 <div class="page">

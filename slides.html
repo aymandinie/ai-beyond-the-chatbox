@@ -13,6 +13,8 @@ section img{object-fit:cover;object-position:50% 0}
 ul,ol{padding-left:1.2em}
 a{text-decoration:underline}
 #bar{position:fixed;left:16px;bottom:12px;color:#9DB2FF;font:14px 'Courier Prime',monospace;opacity:.7}
+#rot{display:none;position:fixed;left:0;right:0;top:14px;text-align:center;color:#9DB2FF;font:14px 'Courier Prime',monospace}
+@media (orientation:portrait) and (max-width:700px){#rot{display:block}}
 #notes{position:fixed;left:0;right:0;bottom:0;max-height:40%;overflow:auto;background:#F3EAD8;color:#1F2433;font:18px/1.5 Geist,Arial,sans-serif;padding:18px 24px;display:none;box-shadow:0 -6px 20px rgba(0,0,0,.3)}
 </style></head><body>
 <div id="stage">
@@ -686,15 +688,17 @@ a{text-decoration:underline}
 </section>
 
 </div>
+<div id="rot">Turn your phone sideways for a bigger view</div>
 <div id="bar"></div><div id="notes"></div>
 <script>
-const S=[...document.querySelectorAll('#stage>section')];let i=0;
+const S=[...document.querySelectorAll('#stage>section')];let i=0;const TOUCH=matchMedia('(pointer:coarse)').matches;let tx=null;
 const bar=document.getElementById('bar'),notes=document.getElementById('notes'),stage=document.getElementById('stage');
 function fit(){const k=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${k})`}
 function show(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,j)=>s.classList.toggle('on',j===i));
-bar.textContent=`${i+1} / ${S.length} · arrows to move · F fullscreen`;const a=S[i].querySelector('aside');notes.textContent=a?a.textContent:'';history.replaceState(null,'','#'+(i+1))}
+bar.textContent=`${i+1} / ${S.length} · `+(TOUCH?'tap or swipe to move':'arrows to move · F fullscreen');const a=S[i].querySelector('aside');notes.textContent=a?a.textContent:'';history.replaceState(null,'','#'+(i+1))}
 addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}if(['ArrowLeft','PageUp'].includes(e.key))show(i-1);
 if(e.key==='n'||e.key==='N')notes.style.display=notes.style.display==='block'?'none':'block';if(e.key==='f'||e.key==='F')document.documentElement.requestFullscreen?.().catch(()=>{})});
 addEventListener('click',e=>{if(e.target.closest('a')||e.target.closest('#notes'))return;show(i+(e.clientX<innerWidth/4?-1:1))});
+addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>50){e.preventDefault();show(i+(dx<0?1:-1))}});
 addEventListener('resize',fit);fit();show((parseInt(location.hash.slice(1))||1)-1);
 </script></body></html>

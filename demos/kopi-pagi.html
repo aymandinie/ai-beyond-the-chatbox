@@ -143,6 +143,17 @@ input[type=email]{flex:1;min-width:0;font:inherit;padding:13px 16px;border-radiu
 a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--tomato);outline-offset:3px}
 @media (max-width:960px){.links{display:none}.bento,.items{grid-template-columns:1fr 1fr}.big{grid-column:span 2}.sub,.app-band,.builder,.story-hero,footer .wrap{grid-template-columns:1fr}.sub .row{justify-content:flex-start}.badge{display:none}.quotes,.tiers,.steps,.outs,.values{grid-template-columns:1fr}.out{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.ticker div,.badge,.page{animation:none}}
+/* phones */
+@media (max-width:700px){
+.demo-back{position:static;display:flex;justify-content:center;border-radius:0;box-shadow:none;padding:8px 16px;font-size:13px}
+nav{flex-wrap:wrap;padding-block:10px;gap:10px}
+.logo{white-space:nowrap;font-size:18px}.logo b{width:34px;height:34px;border-radius:10px}
+.links{display:flex;order:3;width:100%;overflow-x:auto;scrollbar-width:none;padding:4px}.links::-webkit-scrollbar{display:none}
+.links a{padding:8px 13px;font-size:14px;white-space:nowrap}
+.cta{padding:10px 14px;font-size:14px}.cart{width:40px;height:40px}
+.hero h1{font-size:clamp(44px,14vw,64px)}
+.bento,.items{grid-template-columns:1fr}.big{grid-column:auto}
+}
 </style></head><body>
 <a class="demo-back" href="index.html"><i data-lucide="arrow-left"></i>All demos</a>
 <header id="hdr"><div class="wrap"><nav>
