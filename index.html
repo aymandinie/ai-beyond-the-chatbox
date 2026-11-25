@@ -3,272 +3,979 @@
 <title>AI Beyond the Chatbox · Register</title>
 <meta name="description" content="A 3-hour online, hands-on workshop. Build a small app you'll actually use, with AI. No coding needed.">
 <meta property="og:title" content="AI Beyond the Chatbox"><meta property="og:description" content="A 3-hour hands-on workshop. Build something you'll actually use, with AI."><meta property="og:image" content="assets/hero.jpg">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Courier+Prime:wght@700&display=swap">
+<meta name="theme-color" content="#141A36">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=Courier+Prime:wght@700&display=swap">
 <style>
-/* Registration site for cohort 1. Same palette and type as the poster: navy gradient hero with the poster's
-   3D title, then cream sections. The form posts to Ayman's Google Apps Script (see ENDPOINT below). */
-:root{--navy:#1B2140;--blue:#2B4ACB;--lb:#9DB2FF;--cream:#F3EAD8;--paper:#FDF8EC;--ink:#1F2433;--mut:#5C574C;--line:#E2D6BE;--ok:#2E7D4F;--err:#B3261E;color-scheme:light}
+/* Cohort 1 registration site. Poster DNA: navy-to-blue gradient, the tilted 3D BEYOND with a round bubble
+   as the O, cream paper sections, Geist + Instrument Serif + Courier Prime. One deliberate light look.
+   The form posts plain-text JSON to Ayman's Apps Script web app (ENDPOINT, bottom of the file). */
+:root{
+  --night:#10152C;--navy:#1B2140;--navy2:#232B52;--blue:#2B4ACB;--blue-d:#2340B5;--lb:#9DB2FF;--tint:#EEF2FD;
+  --cream:#F3EAD8;--paper:#FBF6EA;--white:#FFFDF8;--ink:#1F2433;--mut:#655F52;--soft:#8C8574;--line:#DED2BA;--line2:#CBBE9F;
+  --err:#B3261E;--err-bg:#FDF1EF;--ok:#2E7D4F;--ok-bg:#E8F3EC;
+  --ease:cubic-bezier(.2,.75,.2,1);--r:14px;color-scheme:light}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--cream);color:var(--ink);font:17px/1.55 Geist,Arial,sans-serif}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
-.mono{font-family:'Courier Prime',monospace;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:13px}
+html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%}
+body{background:var(--cream);color:var(--ink);font:17px/1.6 Geist,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--blue);text-underline-offset:3px}
+button{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.mono{font-family:'Courier Prime',ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:12.5px}
 .serif{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400}
-a{color:var(--blue)}
-.btn{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;font-weight:700;font-size:17px;padding:15px 26px;border-radius:999px;text-decoration:none;border:0;cursor:pointer;font-family:inherit}
-.btn:hover{background:#2440B8}.btn.ghost{background:transparent;border:1.5px solid rgba(243,234,216,.55);color:var(--cream)}
-.btn:disabled{opacity:.55;cursor:wait}
-/* hero */
-.hero{background:linear-gradient(180deg,#131834 0%,#1B2350 45%,#2B4ACB 120%);color:var(--cream);padding-block:28px 64px}
-nav{display:flex;justify-content:space-between;align-items:center;gap:16px}
-nav .mono{color:var(--lb)}
-.hgrid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;margin-top:28px}
-.hero img{width:100%;max-width:100%;height:auto;display:block;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
-.hero h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.promise{font-size:clamp(30px,3.6vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.08}
-.lead{color:#C9CCDA;font-size:19px;margin-top:14px}
-.lead b{color:var(--cream)}
-.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0}
-.facts div{background:rgba(255,255,255,.08);border:1px solid rgba(243,234,216,.22);border-radius:16px;padding:12px 16px}
-.facts small{display:block;color:var(--lb)}
-.facts b{display:block;font-size:17px;margin-top:2px}
-.ctas{display:flex;gap:12px;flex-wrap:wrap}
-.seats{margin-top:14px;font-size:15px;color:#C9CCDA}
-/* sections */
-section{padding-block:64px}
-h2{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(36px,4.6vw,56px);line-height:1;margin:10px 0 14px;text-wrap:balance}
-.eyebrow{color:var(--blue)}
-.sub{color:var(--mut);max-width:62ch}
-.cards{display:grid;gap:14px;margin-top:26px}
-.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.card{background:var(--paper);border-radius:20px;padding:24px}
-.card h3{font-size:21px;line-height:1.2;margin:10px 0 6px}
-.card p{color:var(--mut);font-size:16px}
-.num{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:54px;line-height:.8;color:var(--blue)}
-.ic{width:46px;height:46px;border-radius:13px;background:var(--navy);display:grid;place-items:center}
-.ic svg{width:26px;height:26px;fill:none;stroke:var(--lb);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
-.person{display:flex;gap:16px;align-items:center}
-.person img{width:72px;height:72px;border-radius:50%;object-fit:cover;flex:none}
-.person b{display:block;font-size:20px}.person span{display:block;color:var(--mut);font-size:15px}
-.badge{display:inline-block!important;margin:6px 0 4px;border:1.5px solid var(--blue);color:var(--blue);border-radius:6px;padding:3px 8px 2px;font-size:11px!important;letter-spacing:.06em;white-space:nowrap}
-.prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:26px}
-.price{background:var(--paper);border-radius:20px;padding:22px 24px}
-.price b{display:block;font-size:44px;font-weight:800;letter-spacing:-.03em;color:var(--navy);line-height:1.1;margin-top:6px}
-.price span{color:var(--mut);font-size:15px}
-.price.hi{background:var(--blue);color:var(--cream)}.price.hi b{color:var(--cream)}.price.hi span,.price.hi .mono{color:#DCE3FA}
-.price s{opacity:.8}
-.note{margin-top:16px;color:var(--mut);font-size:15px}
-.dark{background:var(--navy);color:var(--cream)}
-.dark .sub,.dark .card p,.dark .person span{color:#C9CCDA}.dark .person b{color:var(--cream)}.dark .eyebrow{color:var(--lb)}.dark .card{background:#262D4D}
-/* form */
-form{display:grid;gap:18px;margin-top:26px}
-fieldset{color:var(--ink);border:0;background:var(--paper);border-radius:22px;padding:24px;display:grid;gap:16px;min-width:0}
-legend{float:left;width:100%;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:30px;line-height:1;margin-bottom:6px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-label.f{display:grid;gap:6px;font-weight:600;font-size:15px;min-width:0}
-label.f em{font-style:normal;font-weight:400;color:var(--mut);font-size:13.5px}
-input[type=text],input[type=email],input[type=tel],textarea,select{font:inherit;font-size:16px;width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
-textarea{min-height:84px;resize:vertical}
-input:focus,textarea:focus,select:focus{outline:3px solid rgba(43,74,203,.25);border-color:var(--blue)}
-.choices{display:flex;flex-wrap:wrap;gap:8px}
-.choices label{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:9px 15px;font-size:15px;cursor:pointer}
-.choices input{accent-color:var(--blue)}
-.choices label:has(input:checked){border-color:var(--blue);background:#E7ECFB}
-.tickets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.tickets label{display:grid;gap:2px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer}
-.tickets label:has(input:checked){border-color:var(--blue);background:#E7ECFB}
-.tickets label.off{opacity:.45;cursor:not-allowed}
-.tickets input{position:absolute;opacity:0;pointer-events:none}
-.tickets b{font-size:26px;font-weight:800;color:var(--navy)}
-.tickets span{font-size:13.5px;color:var(--mut)}
-.pay{display:grid;grid-template-columns:240px 1fr;gap:22px;align-items:start}
-.pay img{width:100%;border-radius:14px;background:#fff}
-.amount{font-size:15px;color:var(--mut)}.amount b{font-size:36px;color:var(--navy);display:block;letter-spacing:-.02em}
-.agree{display:flex;gap:10px;align-items:flex-start;font-size:15px}
-.agree input{margin-top:4px;accent-color:var(--blue);width:18px;height:18px;flex:none}
-.trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.msg{border-radius:16px;padding:16px 18px;font-weight:600}
-.msg.err{background:#FBEBEB;color:var(--err)}
-.done{background:var(--navy);color:var(--cream);border-radius:22px;padding:30px}
-.done h3{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:40px;line-height:1}
-.done p{color:#C9CCDA;margin-top:10px}.done b{color:var(--cream)}
-.closed{color:var(--ink);background:var(--paper);border-radius:22px;padding:28px;font-size:18px}
-details{background:var(--paper);border-radius:16px;padding:16px 20px}
-details+details{margin-top:10px}
-summary{font-weight:700;cursor:pointer}
-details p{color:var(--mut);margin-top:8px}
-footer{background:var(--navy);color:#C9CCDA;padding-block:30px;font-size:14px}
-footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 [hidden]{display:none!important}
-@media (max-width:860px){.hgrid,.c3,.c2,.prices,.row2,.pay{grid-template-columns:1fr}.tickets{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}section{padding-block:48px}.pay img{max-width:260px}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-</style></head><body>
+:focus-visible{outline:3px solid var(--lb);outline-offset:3px;border-radius:8px}
 
-<header class="hero"><div class="wrap">
-<nav><span class="mono">A 3-hour hands-on workshop</span><a class="btn ghost" href="#register">Register</a></nav>
-<div class="hgrid">
-<div><h1>AI Beyond the Chatbox</h1><img src="assets/hero.jpg" width="1400" height="1089" alt="AI Beyond the Chatbox: the word BEYOND in 3D with a chat bubble as the O, and the line 'Most people stop at the chat.'"></div>
-<div>
+/* buttons */
+.btn{--bg:var(--blue);display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;border:0;background:var(--bg);color:#fff;font-weight:700;font-size:16.5px;text-decoration:none;cursor:pointer;
+  transition:transform .25s var(--ease),background .2s,box-shadow .25s var(--ease);box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 8px 22px -10px rgba(43,74,203,.7)}
+.btn:hover{background:var(--blue-d);transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 14px 28px -12px rgba(43,74,203,.8)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn .ar{transition:transform .25s var(--ease)}.btn:hover .ar{transform:translateX(4px)}
+.btn.line{background:transparent;color:var(--cream);box-shadow:inset 0 0 0 1.5px rgba(243,234,216,.45)}
+.btn.line:hover{background:rgba(243,234,216,.08);box-shadow:inset 0 0 0 1.5px var(--cream)}
+.btn.sm{min-height:42px;padding:0 18px;font-size:15px}
+.btn:disabled{cursor:progress;opacity:.8;transform:none}
+.spin{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* top bar */
+.top{position:fixed;inset:0 0 auto;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background .3s,box-shadow .3s,backdrop-filter .3s}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+.top.solid{background:rgba(16,21,44,.82);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);box-shadow:0 1px 0 rgba(243,234,216,.08)}
+.brand{display:flex;align-items:baseline;gap:7px;color:var(--cream);text-decoration:none;font-weight:800;letter-spacing:-.01em;font-size:17px}
+.brand i{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:21px}
+.top nav{display:flex;align-items:center;gap:6px}
+.top nav a.lk{color:#C9CCDA;text-decoration:none;font-size:15px;font-weight:500;padding:8px 12px;border-radius:999px;transition:color .2s,background .2s}
+.top nav a.lk:hover{color:var(--cream);background:rgba(243,234,216,.08)}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--cream);background:rgba(243,234,216,.08);border:1px solid rgba(243,234,216,.16);border-radius:999px;padding:6px 12px 6px 10px;margin-right:6px}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:#5FD08A;box-shadow:0 0 0 0 rgba(95,208,138,.6);animation:pulse 2.2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(95,208,138,0)}100%{box-shadow:0 0 0 0 rgba(95,208,138,0)}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;color:var(--cream);background:linear-gradient(180deg,#10152C 0%,#1B2350 46%,#2B4ACB 118%);padding-block:132px 72px;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(157,178,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(157,178,255,.07) 1px,transparent 1px);background-size:56px 56px;
+  -webkit-mask:radial-gradient(ellipse 80% 70% at 60% 40%,#000 20%,transparent 75%);mask:radial-gradient(ellipse 80% 70% at 60% 40%,#000 20%,transparent 75%)}
+.kicker{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;color:var(--lb)}
+.kicker span+span::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.6;margin-right:18px;vertical-align:middle}
+.title{font-size:clamp(66px,13.5vw,196px);margin-top:.42em;margin-bottom:.1em}
+.stack{display:flex;align-items:flex-end;gap:.08em;transform-origin:0 62%;transform:rotate(-5deg) skewX(-7deg)}
+.stack .ai{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:.39em;line-height:.9;padding-bottom:.21em;margin-right:.08em}
+.big{font-weight:900;letter-spacing:-.05em;line-height:.8;white-space:nowrap;display:flex;align-items:flex-end}
+.o{position:relative;display:inline-block;width:.8em;height:.8em;margin:0 .03em}
+.o canvas,.o svg{position:absolute;left:50%;top:50%;width:150%;height:150%;transform:translate(-50%,-50%);pointer-events:none}
+.wire{position:relative;display:inline-block}
+.wire span{display:block;white-space:nowrap}
+.wire .back{position:absolute;left:0;top:0;color:transparent;-webkit-text-stroke:.005em rgba(243,234,216,.32)}
+.wire .front{position:relative;color:transparent;-webkit-text-stroke:.0115em var(--cream);background-image:linear-gradient(rgba(243,234,216,.5) .006em,transparent .006em),linear-gradient(90deg,rgba(243,234,216,.5) .006em,transparent .006em);background-size:.068em .068em;-webkit-background-clip:text;background-clip:text}
+.tail{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:.5em;margin-left:.5em;font-size:clamp(66px,13.5vw,196px)}
+.tail .serif{font-size:.36em;line-height:.9}
+.chat{display:inline-flex;align-items:center;gap:6px;height:56px;padding:0 7px 0 22px;border-radius:999px;background:rgba(255,255,255,.09);border:1.5px solid rgba(243,234,216,.5);font:italic 400 24px/1 'Instrument Serif',Georgia,serif;white-space:nowrap;backdrop-filter:blur(4px)}
+.chat .caret{width:2.5px;height:26px;background:var(--lb);margin:0 10px 0 2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.chat .send{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--cream);flex:none;transition:transform .3s var(--ease)}
+.chat .send svg{width:20px;height:20px;fill:none;stroke:var(--navy);stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.chat.sent .send{animation:pop .5s var(--ease)}
+@keyframes pop{50%{transform:scale(1.15)}}
+.hrow{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:end;margin-top:48px}
+.promise{font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-.025em;line-height:1.04;text-wrap:balance}
+.lead{color:#C9CCDA;font-size:19px;margin-top:16px;max-width:52ch}
+.lead b{color:var(--cream);font-weight:600}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.facts{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(243,234,216,.18)}
+.facts div{padding:16px 0 14px;border-bottom:1px solid rgba(243,234,216,.18)}
+.facts div:nth-child(odd){padding-right:16px}
+.facts div:nth-child(even){padding-left:16px;border-left:1px solid rgba(243,234,216,.18)}
+.facts small{display:block;color:var(--lb)}
+.facts b{display:block;font-size:18px;font-weight:600;margin-top:4px}
+
+/* entrance + reveal */
+.js .in-a{opacity:0;transform:translateY(24px);animation:up .9s var(--ease) forwards}
+.js .d1{animation-delay:.08s}.js .d2{animation-delay:.18s}.js .d3{animation-delay:.3s}.js .d4{animation-delay:.45s}.js .d5{animation-delay:.6s}
+@keyframes up{to{opacity:1;transform:none}}
+.js .rv{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.js .rv.on{opacity:1;transform:none}
+.js .rv.s2{transition-delay:.08s}.js .rv.s3{transition-delay:.16s}.js .rv.s4{transition-delay:.24s}
+
+/* sections */
+.sec{padding-block:112px}
+.head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-items:end;margin-bottom:48px}
+.eyebrow{color:var(--blue);display:flex;gap:12px;align-items:center}
+.eyebrow::before{content:"";width:28px;height:1.5px;background:currentColor}
+h2{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(42px,5.6vw,76px);line-height:.96;letter-spacing:-.01em;margin-top:14px;text-wrap:balance}
+.head p{color:var(--mut);font-size:18px;max-width:46ch}
+.dark{background:var(--navy);color:var(--cream)}
+.dark .eyebrow{color:var(--lb)}.dark .head p{color:#C9CCDA}
+
+/* phases */
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1.5px solid var(--ink)}
+.ph{padding:28px 28px 32px 0;position:relative}
+.ph+.ph{padding-left:28px;border-left:1px solid var(--line2)}
+.ph .n{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:88px;line-height:.8;color:var(--blue);display:block;margin-bottom:22px;transition:transform .5s var(--ease)}
+.ph:hover .n{transform:translateX(6px)}
+.ph h3{font-size:26px;letter-spacing:-.015em;line-height:1.15}
+.ph p{color:var(--mut);margin-top:10px}
+.ph .out{display:flex;gap:10px;align-items:flex-start;margin-top:20px;padding-top:16px;border-top:1px dashed var(--line2);font-weight:600;font-size:15.5px}
+.ph .out small{color:var(--blue);flex:none;padding-top:2px}
+.finish{margin-top:40px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:28px;align-items:center;background:var(--navy);color:var(--cream);border-radius:24px;padding:28px 32px}
+.finish p{font-size:20px;font-weight:600;letter-spacing:-.01em}.finish p span{color:#C9CCDA;font-weight:400;font-size:16px;display:block;margin-top:4px}
+.url{display:flex;align-items:center;gap:10px;background:var(--white);color:var(--ink);border-radius:999px;padding:12px 18px 12px 14px;font:600 15px/1 Geist,sans-serif;min-width:0}
+.url svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--ok);stroke-width:2.4}
+.url span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.url b{color:var(--blue);font-weight:600}
+
+/* demos */
+.demos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.demo{display:block;color:inherit;text-decoration:none}
+.frame{position:relative;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.04),0 20px 40px -24px rgba(16,21,44,.45);transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.bar{display:flex;align-items:center;gap:6px;height:34px;padding:0 14px;background:#EFE8DA;border-bottom:1px solid var(--line)}
+.bar i{width:9px;height:9px;border-radius:50%;background:#D5CAB3}
+.bar span{margin-left:10px;font-size:12px;color:var(--soft);font-weight:500}
+.frame .shot{aspect-ratio:16/10;overflow:hidden}
+.frame img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .8s var(--ease)}
+.frame .open{position:absolute;right:14px;bottom:14px;display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:var(--cream);font-weight:600;font-size:14px;border-radius:999px;padding:9px 14px;opacity:0;transform:translateY(8px);transition:.35s var(--ease)}
+.demo:hover .frame,.demo:focus-visible .frame{transform:translateY(-6px);box-shadow:0 1px 0 rgba(0,0,0,.04),0 32px 56px -26px rgba(16,21,44,.55)}
+.demo:hover img{transform:scale(1.03)}
+.demo:hover .open,.demo:focus-visible .open{opacity:1;transform:none}
+.cap{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-top:16px}
+.cap b{font-size:19px;letter-spacing:-.01em}.cap .mono{color:var(--blue);white-space:nowrap}
+.cap+p{color:var(--mut);font-size:15.5px;margin-top:4px}
+.more{margin-top:36px;display:flex;justify-content:center}
+.btn.ink{--bg:var(--navy);box-shadow:none}.btn.ink:hover{background:#262E57}
+
+/* trainers */
+.people{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.person{display:grid;grid-template-columns:112px minmax(0,1fr);gap:24px;align-items:center;padding:28px;border-radius:24px;background:var(--navy2);border:1px solid rgba(243,234,216,.08);transition:transform .4s var(--ease),border-color .3s}
+.person:hover{transform:translateY(-4px);border-color:rgba(157,178,255,.35)}
+.person img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 4px var(--navy),0 0 0 5.5px rgba(157,178,255,.5)}
+.person h3{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:38px;line-height:1}
+.person p{color:#C9CCDA;margin-top:8px;font-size:16px}
+.cred{display:inline-flex;margin-top:12px;border:1.5px solid var(--lb);color:var(--lb);border-radius:6px;padding:4px 9px 3px;font-size:11px;letter-spacing:.08em}
+
+/* tickets */
+.tix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
+.tk{--cut:62%;position:relative;display:grid;grid-template-rows:auto 1fr auto;background:var(--white);border-radius:20px;padding:26px 26px 22px;
+  -webkit-mask:radial-gradient(circle 13px at 0 var(--cut),#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% var(--cut),#0000 97%,#000) right/51% 100% no-repeat;
+          mask:radial-gradient(circle 13px at 0 var(--cut),#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% var(--cut),#0000 97%,#000) right/51% 100% no-repeat;
+  transition:transform .4s var(--ease)}
+.tk:hover{transform:translateY(-5px) rotate(-.4deg)}
+.tk::after{content:"";position:absolute;left:22px;right:22px;top:var(--cut);border-top:2px dashed var(--line)}
+.tk .mono{color:var(--mut)}
+.tk .price{font-size:58px;font-weight:900;letter-spacing:-.045em;line-height:1;margin-top:14px;color:var(--navy)}
+.tk .price small{font-size:20px;font-weight:700;letter-spacing:0;margin-right:4px;vertical-align:.95em}
+.tk .who{margin-top:8px;color:var(--mut);font-size:15.5px}
+.tk .foot{padding-top:30px;font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.tk.hi{background:var(--blue);color:var(--cream)}
+.tk.hi .mono,.tk.hi .who{color:#DCE3FA}.tk.hi .price{color:#fff}.tk.hi::after{border-color:rgba(255,255,255,.3)}
+.tk.off{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line2)}
+.tk.off .price{color:var(--soft)}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 10px;background:#fff;color:var(--blue)}
+.tag.grey{background:var(--line);color:var(--mut)}
+.paynote{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:28px;color:var(--mut);font-size:15px}
+.paynote span{display:inline-flex;align-items:center;gap:8px}
+.paynote svg{width:18px;height:18px;fill:none;stroke:var(--blue);stroke-width:2}
+
+/* register */
+.reg{background:linear-gradient(180deg,var(--navy) 0,var(--navy) 420px,var(--cream) 420px)}
+.reg .head{color:var(--cream)}
+.reg .eyebrow{color:var(--lb)}.reg .head p{color:#C9CCDA}
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-bottom:40px;border-radius:22px;overflow:hidden;background:var(--navy2);border:1px solid rgba(243,234,216,.1)}
+.flow li{list-style:none;padding:22px 24px;color:var(--cream);position:relative}
+.flow li+li{border-left:1px solid rgba(243,234,216,.1)}
+.flow .k{display:flex;align-items:center;gap:10px;color:var(--lb)}
+.flow .k i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(157,178,255,.16);font-style:normal;font-size:13px;letter-spacing:0;color:var(--cream)}
+.flow b{display:block;font-size:18px;margin-top:10px;letter-spacing:-.01em}
+.flow p{color:#C9CCDA;font-size:14.5px;margin-top:4px}
+.flow li.last{background:rgba(43,74,203,.35)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;align-items:start}
+form{display:grid;gap:20px;min-width:0}
+.reqnote{font-size:14.5px;color:var(--mut)}
+.req{color:var(--err);font-weight:700;margin-left:2px}
+.step{background:var(--white);border-radius:24px;padding:32px;box-shadow:0 1px 0 rgba(0,0,0,.03),0 18px 40px -30px rgba(16,21,44,.35);display:grid;gap:24px;min-width:0;scroll-margin-top:96px}
+.step>header{display:flex;align-items:center;gap:14px}
+.sn{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--line2);font-weight:700;font-size:15px;flex:none;transition:.3s var(--ease)}
+.step h3{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:34px;line-height:1;flex:1}
+.st{font-size:13px;font-weight:700;color:var(--ok);display:inline-flex;align-items:center;gap:6px;opacity:0;transform:scale(.9);transition:.3s var(--ease)}
+.step.done .st{opacity:1;transform:none}
+.step.done .sn{background:var(--ok);border-color:var(--ok);color:#fff}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px 18px}
+.field{display:grid;gap:7px;min-width:0;border:0}
+.field>label,.field>legend{font-weight:600;font-size:15.5px;padding:0}
+.field>legend{margin-bottom:7px}
+.opt{font-weight:400;color:var(--soft);font-size:14px;margin-left:4px}
+.hint{font-size:14px;color:var(--mut);margin-top:-3px}
+.field legend+.hint{margin-top:-4px;margin-bottom:6px}
+.inp{position:relative;display:flex;align-items:stretch}
+input[type=text],input[type=email],input[type=tel],textarea,select{width:100%;min-height:52px;font:inherit;font-size:16.5px;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:12px 16px;transition:border-color .2s,box-shadow .2s,background .2s;-webkit-appearance:none;appearance:none}
+textarea{min-height:96px;resize:vertical;line-height:1.5}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' fill='none' stroke='%231F2433' stroke-width='2'%3E%3Cpath d='M1 1l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:44px;cursor:pointer}
+::placeholder{color:#A9A190;opacity:1}
+input:hover,textarea:hover,select:hover{border-color:var(--line2)}
+input:focus,textarea:focus,select:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 4px rgba(43,74,203,.16)}
+.pre{display:flex;align-items:center;padding:0 14px;border:1.5px solid var(--line);border-right:0;border-radius:var(--r) 0 0 var(--r);background:var(--paper);font-weight:600;color:var(--mut);font-size:16px}
+.pre+input{border-radius:0 var(--r) var(--r) 0}
+.inp .ok-ic{position:absolute;right:14px;top:50%;width:20px;height:20px;transform:translateY(-50%) scale(.5);opacity:0;transition:.3s var(--ease);pointer-events:none;fill:none;stroke:var(--ok);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.field.good .ok-ic{opacity:1;transform:translateY(-50%) scale(1)}
+.field.good input{padding-right:44px}
+.emsg{display:none;align-items:flex-start;gap:7px;color:var(--err);font-size:14.5px;font-weight:600}
+.emsg::before{content:"!";display:grid;place-items:center;flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;background:var(--err);color:#fff;font-size:12px;font-weight:800}
+.field.bad .emsg{display:flex}
+.field.bad input,.field.bad textarea,.field.bad .pre{border-color:var(--err)}
+.field.bad input{background:var(--err-bg)}
+.field.bad input:focus{box-shadow:0 0 0 4px rgba(179,38,30,.14)}
+.sugg{font-size:14.5px;color:var(--mut)}.sugg button{background:none;border:0;color:var(--blue);font-weight:600;text-decoration:underline;cursor:pointer;padding:0}
+
+/* choice pills */
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pills label{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font-size:15.5px;font-weight:500;cursor:pointer;user-select:none;transition:border-color .2s,background .2s,color .2s,transform .15s}
+.pills label:hover{border-color:var(--line2);background:var(--paper)}
+.pills label:active{transform:scale(.97)}
+.pills input{position:absolute;opacity:0;width:1px;height:1px}
+.pills .tick{width:0;overflow:hidden;transition:width .25s var(--ease);display:inline-flex}
+.pills .tick svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pills label:has(input:checked){background:var(--navy);border-color:var(--navy);color:var(--cream)}
+.pills label:has(input:checked) .tick{width:15px}
+.pills label:has(input:focus-visible){outline:3px solid var(--blue);outline-offset:2px}
+.field.bad .pills label{border-color:#E5B5B0}
+
+/* ticket choice */
+.choose{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.choose label{position:relative;display:grid;gap:2px;padding:18px 20px;border-radius:18px;background:#fff;border:1.5px solid var(--line);cursor:pointer;transition:border-color .2s,background .2s,transform .3s var(--ease),box-shadow .3s}
+.choose label:hover{transform:translateY(-2px);border-color:var(--line2);box-shadow:0 12px 24px -18px rgba(16,21,44,.4)}
+.choose input{position:absolute;opacity:0;width:1px;height:1px}
+.choose .mono{color:var(--mut)}
+.choose b{font-size:34px;font-weight:900;letter-spacing:-.04em;color:var(--navy);line-height:1.1;margin-top:4px}
+.choose span.s{font-size:14px;color:var(--mut)}
+.choose .rad{position:absolute;right:18px;top:18px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line2);background:#fff;transition:.2s}
+.choose label:has(input:checked){border-color:var(--blue);background:var(--tint);box-shadow:0 0 0 1.5px var(--blue)}
+.choose label:has(input:checked) .rad{border:7px solid var(--blue)}
+.choose label:has(input:focus-visible){outline:3px solid var(--blue);outline-offset:3px}
+.field.bad .choose label{border-color:#E5B5B0}
+
+/* student reveal */
+.reveal{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease),opacity .3s;opacity:0}
+.reveal>div{overflow:hidden;min-height:0}
+.reveal.open{grid-template-rows:1fr;opacity:1}
+.reveal .inner{display:grid;gap:20px;padding:22px;border-radius:18px;background:var(--paper);border:1px dashed var(--line2);margin-top:4px}
+.reveal .inner>p{font-size:14.5px;color:var(--mut)}
+
+/* dropzone */
+.drop{position:relative;display:flex;align-items:center;gap:16px;padding:20px;border-radius:16px;border:1.5px dashed var(--line2);background:#fff;cursor:pointer;transition:border-color .2s,background .2s}
+.drop:hover,.drop.over{border-color:var(--blue);background:var(--tint)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop .ic{display:grid;place-items:center;width:48px;height:48px;border-radius:12px;background:var(--tint);flex:none}
+.drop .ic svg{width:24px;height:24px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.drop b{display:block;font-size:15.5px}.drop b u{color:var(--blue);text-underline-offset:3px}
+.drop small{display:block;color:var(--mut);font-size:13.5px}
+.drop:has(input:focus-visible){outline:3px solid var(--blue);outline-offset:2px}
+.file{display:flex;align-items:center;gap:14px;padding:12px;border-radius:16px;background:#fff;border:1.5px solid var(--ok)}
+.file .thumb{width:64px;height:44px;border-radius:8px;object-fit:cover;background:var(--paper);flex:none;display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--mut)}
+.file div{flex:1;min-width:0}.file b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file small{color:var(--ok);font-weight:600;font-size:13.5px}
+.file button{background:none;border:0;color:var(--mut);font-weight:600;font-size:14px;cursor:pointer;padding:8px;border-radius:8px}.file button:hover{color:var(--err);background:var(--err-bg)}
+.field.bad .drop{border-color:var(--err)}
+
+/* payment */
+.pay{display:grid;grid-template-columns:220px minmax(0,1fr);gap:28px;align-items:start}
+.qr{border-radius:18px;overflow:hidden;box-shadow:0 18px 36px -24px rgba(16,21,44,.5)}
+.amt{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-radius:16px;background:var(--navy);color:var(--cream)}
+.amt small{display:block;color:var(--lb)}
+.amt b{display:block;font-size:34px;font-weight:900;letter-spacing:-.03em;line-height:1.1}
+.amt b.wait{font-size:18px;font-weight:600;color:#C9CCDA;letter-spacing:0;padding:6px 0}
+.copy{display:inline-flex;align-items:center;gap:6px;background:rgba(243,234,216,.1);border:1px solid rgba(243,234,216,.22);color:var(--cream);font-weight:600;font-size:14px;border-radius:999px;padding:8px 14px;cursor:pointer;transition:background .2s}
+.copy:hover{background:rgba(243,234,216,.18)}
+.howpay{display:grid;gap:10px;counter-reset:h;margin:4px 0 0}
+.howpay li{list-style:none;display:flex;gap:12px;font-size:15.5px;color:var(--ink)}
+.howpay li::before{counter-increment:h;content:counter(h);display:grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;background:var(--tint);color:var(--blue);font-weight:700;font-size:13px;margin-top:1px}
+.paylink{display:inline-flex;align-items:center;gap:8px;font-weight:600}
+
+/* agreements */
+.agree{position:relative;display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:16px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-size:15.5px;transition:border-color .2s,background .2s}
+.agree:hover{border-color:var(--line2)}
+.agree input{position:absolute;opacity:0;width:1px;height:1px}
+.box{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line2);flex:none;display:grid;place-items:center;margin-top:1px;transition:.2s;background:#fff}
+.box svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;transform:scale(0);transition:transform .25s var(--ease)}
+.agree:has(input:checked){border-color:var(--blue);background:var(--tint)}
+.agree:has(input:checked) .box{background:var(--blue);border-color:var(--blue)}
+.agree:has(input:checked) .box svg{transform:none}
+.agree:has(input:focus-visible){outline:3px solid var(--blue);outline-offset:2px}
+.field.bad .agree{border-color:var(--err);background:var(--err-bg)}
+.rules{margin:10px 0 0 18px;color:var(--mut);font-size:14.5px;display:grid;gap:3px}
+.trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+/* error summary + submit */
+.summary{border-radius:20px;padding:22px 24px;background:var(--err-bg);border:2px solid var(--err);color:var(--ink);scroll-margin-top:96px}
+.summary:focus{outline:0;box-shadow:0 0 0 4px rgba(179,38,30,.18)}
+.summary b{display:block;font-size:18px;color:var(--err)}
+.summary ul{margin:8px 0 0 20px;display:grid;gap:4px}
+.summary a{color:var(--err);font-weight:600}
+.submit{display:grid;gap:14px;padding:28px 32px;border-radius:24px;background:var(--paper);border:1px solid var(--line)}
+.submit .btn{justify-self:start;min-height:58px;padding:0 32px;font-size:17.5px}
+.submit p{color:var(--mut);font-size:14.5px;display:flex;gap:10px;align-items:flex-start}
+.submit p svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--blue);stroke-width:2;margin-top:2px}
+.saved{font-size:13.5px;color:var(--soft)}
+
+/* aside */
+aside{position:sticky;top:92px;display:grid;gap:16px}
+.card{border-radius:24px;padding:26px;background:var(--navy);color:var(--cream)}
+.card h4{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:30px;line-height:1}
+.rows{margin-top:18px;display:grid;gap:0;border-top:1px solid rgba(243,234,216,.14)}
+.rows div{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid rgba(243,234,216,.14);font-size:15.5px}
+.rows span{color:#C9CCDA}.rows b{font-weight:600;text-align:right}
+.rows .tot b{font-size:24px;font-weight:900;letter-spacing:-.02em}
+.prog{list-style:none;margin-top:18px;display:grid;gap:10px}
+.prog li{display:flex;align-items:center;gap:12px;font-size:15px;color:#C9CCDA}
+.prog a{color:inherit;text-decoration:none}.prog a:hover{color:var(--cream)}
+.prog i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(243,234,216,.3);flex:none;transition:.3s var(--ease)}
+.prog i svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;transform:scale(0);transition:.3s var(--ease)}
+.prog li.ok{color:var(--cream)}.prog li.ok i{background:#3E9B66;border-color:#3E9B66}.prog li.ok i svg{transform:none}
+.bar2{height:6px;border-radius:99px;background:rgba(243,234,216,.14);margin-top:18px;overflow:hidden}
+.bar2 span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lb),#fff);border-radius:inherit;transition:width .5s var(--ease)}
+.card.light{background:var(--white);color:var(--ink);border:1px solid var(--line)}
+.card.light h4{font-size:24px}
+.card.light p{font-size:14.5px;color:var(--mut);margin-top:8px}
+.card.light a{font-weight:600}
+
+/* done */
+.done{display:grid;gap:20px;max-width:760px;margin:0 auto;text-align:left;background:var(--white);border-radius:28px;padding:44px;box-shadow:0 24px 60px -36px rgba(16,21,44,.5)}
+.done .check{width:64px;height:64px;border-radius:50%;background:var(--ok);display:grid;place-items:center;animation:pop .6s var(--ease)}
+.done .check svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:draw .6s .25s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.done h3{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:48px;line-height:1}
+.done p{color:var(--mut)}.done p b{color:var(--ink)}
+.status{display:inline-flex;align-items:center;gap:8px;justify-self:start;background:#FFF3D6;color:#7A5300;font-weight:700;font-size:14px;border-radius:999px;padding:6px 14px}
+.status i{width:8px;height:8px;border-radius:50%;background:#E0A21B}
+.tl{list-style:none;display:grid;gap:0;border-left:2px solid var(--line);margin-left:11px;padding-left:24px}
+.tl li{position:relative;padding:4px 0 18px}
+.tl li::before{content:"";position:absolute;left:-33px;top:6px;width:16px;height:16px;border-radius:50%;background:var(--white);border:2px solid var(--line2)}
+.tl li.ok::before{background:var(--ok);border-color:var(--ok)}
+.tl li.now::before{border-color:#E0A21B;background:#FFF3D6}
+.tl b{display:block}.tl span{color:var(--mut);font-size:15px}
+.closed{max-width:760px;margin:0 auto;background:var(--white);border-radius:28px;padding:40px;font-size:19px}
+.closed h3{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:40px;line-height:1;margin-bottom:10px}
+
+/* faq */
+.faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 28px;align-items:start}
+details{border-bottom:1px solid var(--line2)}
+summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;font-weight:600;font-size:18px;cursor:pointer;transition:color .2s}
+summary::-webkit-details-marker{display:none}
+summary:hover{color:var(--blue)}
+summary .pm{position:relative;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line2);flex:none;transition:transform .35s var(--ease),background .2s,border-color .2s}
+summary .pm::before,summary .pm::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:1.8px;background:currentColor;transform:translate(-50%,-50%)}
+summary .pm::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .35s var(--ease)}
+details[open] summary .pm{background:var(--navy);border-color:var(--navy);color:var(--cream)}
+details[open] summary .pm::after{transform:translate(-50%,-50%) rotate(0)}
+details p{color:var(--mut);padding:0 40px 22px 0;animation:fade .4s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(-6px)}}
+
+/* footer */
+footer{background:var(--night);color:#AEB3C7;padding-block:56px 40px;font-size:15px}
+.fgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:32px}
+footer .brand{font-size:22px}footer .brand i{font-size:27px}
+footer h5{color:var(--lb);margin-bottom:10px}
+footer p+p{margin-top:4px}
+footer .sel{user-select:all;color:var(--cream)}
+.legal{margin-top:40px;padding-top:20px;border-top:1px solid rgba(243,234,216,.1);font-size:13.5px;color:#7F859C}
+
+@media (max-width:1000px){
+  .grid{grid-template-columns:1fr}
+  aside{position:static;order:-1}
+  aside .card.light{display:none}
+  .hrow{grid-template-columns:1fr;gap:36px}
+}
+@media (max-width:820px){
+  .sec{padding-block:80px}
+  .head{grid-template-columns:1fr;margin-bottom:36px}
+  .phases{grid-template-columns:1fr;border-top:0}
+  .ph,.ph+.ph{padding:26px 0;border-left:0;border-top:1.5px solid var(--ink)}
+  .ph .n{font-size:64px;margin-bottom:14px}
+  .finish{grid-template-columns:1fr;gap:16px;padding:24px}
+  .demos,.people,.tix,.faq{grid-template-columns:1fr}
+  .tix{gap:16px}
+  .flow{grid-template-columns:1fr}
+  .flow li+li{border-left:0;border-top:1px solid rgba(243,234,216,.1)}
+  .reg{background:linear-gradient(180deg,var(--navy) 0,var(--navy) 640px,var(--cream) 640px)}
+  .step{padding:24px 20px;border-radius:20px}
+  .two,.choose,.pay{grid-template-columns:1fr}
+  .qr{max-width:240px}
+  .submit{padding:22px 20px}
+  .submit .btn{justify-self:stretch}
+  .top nav a.lk,.pill{display:none}
+  .person{grid-template-columns:84px minmax(0,1fr);gap:18px;padding:22px}
+  .person img{width:84px;height:84px}
+  .person h3{font-size:32px}
+  .fgrid{grid-template-columns:1fr}
+  .done{padding:28px 22px}
+}
+@media (max-width:560px){
+  .hero{padding-block:108px 56px}
+  .tail{margin-left:0}
+  .chat{height:48px;font-size:20px;padding-left:18px}
+  .chat .send{width:34px;height:34px}
+  .lead{font-size:17.5px}
+  .ctas .btn{flex:1 1 100%}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .js .rv,.js .in-a{opacity:1;transform:none}
+}
+</style>
+<style>
+/* ---- Apple-style layer: big sans headlines with a serif accent, scroll-linked scenes ---- */
+h2{font-family:Geist,system-ui,sans-serif;font-style:normal;font-weight:800;font-size:clamp(40px,5.4vw,74px);line-height:1;letter-spacing:-.04em}
+h2 em{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.01em;color:var(--blue)}
+.dark h2 em,.reg h2 em{color:var(--lb)}
+.hero{min-height:100svh;display:flex;align-items:center}
+.hero>.wrap{width:100%}
+.sticky{position:sticky;top:0;height:100svh;display:flex;align-items:center;overflow:hidden}
+.sticky>.wrap{width:100%}
+
+/* statement: words light up with scroll */
+.statement{height:220vh;background:var(--night);color:var(--cream)}
+.say{font-weight:800;font-size:clamp(34px,5.6vw,80px);line-height:1.06;letter-spacing:-.04em;max-width:17ch;text-wrap:balance}
+.say .w{opacity:.16;transition:opacity .35s linear}
+.say .w.lit{opacity:1}
+.say .w.acc{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.01em;color:var(--lb)}
+
+/* laptop reveal */
+.lap{--p:0;height:240vh;background:var(--cream)}
+.lap .sticky{background:var(--cream);padding-top:68px}
+.lapwrap{display:grid;justify-items:center;gap:28px;text-align:center}
+.lap-h{display:grid;gap:12px;opacity:calc(1 - var(--p) * 1.6);transform:translateY(calc(var(--p) * -40px))}
+.lap-h .mono{color:var(--blue)}
+.lap-h b{font-size:clamp(32px,4.6vw,60px);font-weight:800;letter-spacing:-.04em;line-height:1.02}
+.lap-h em{font-family:'Instrument Serif',Georgia,serif;font-weight:400;letter-spacing:-.01em;color:var(--blue)}
+.laptop{width:min(920px,86vw,calc((100svh - 400px) * 1.5));transform:perspective(1800px) rotateX(calc((1 - min(1, var(--p) * 1.7)) * 28deg)) scale(calc(.74 + min(1, var(--p) * 1.7) * .26));transform-origin:50% 100%;margin-top:calc(var(--p) * -120px);will-change:transform}
+.lid{position:relative;background:#0E1122;border-radius:22px 22px 10px 10px;padding:2.2% 2.2% 2.6%;box-shadow:0 0 0 1.5px #2A3050 inset,0 40px 80px -30px rgba(16,21,44,.6)}
+.cam{position:absolute;left:50%;top:.9%;width:6px;height:6px;border-radius:50%;background:#2A3050;transform:translateX(-50%)}
+.screen{border-radius:6px;overflow:hidden;aspect-ratio:16/10;background:#fff}
+.screen img{width:100%;height:100%;object-fit:cover;object-position:top}
+.base{position:relative;height:clamp(12px,1.8vw,20px);margin:0 -6%;background:linear-gradient(180deg,#C9CCD8,#9A9EAF);border-radius:2px 2px 16px 16px/2px 2px 100% 100%}
+.base i{position:absolute;left:50%;top:0;width:16%;height:40%;background:#8A8EA0;border-radius:0 0 10px 10px;transform:translateX(-50%)}
+.lap-c{color:var(--mut);font-size:16px;max-width:52ch;opacity:calc((var(--p) - .55) * 3)}
+.lap-c a{font-weight:600}
+
+/* story: sticky stage, visuals swap per part */
+.story{background:var(--white)}
+.sgrid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:64px}
+.sstep{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .5s var(--ease)}
+.sstep.on{opacity:1}
+.sstep .k{color:var(--blue)}
+.sstep h3{font-size:clamp(32px,3.6vw,48px);font-weight:800;letter-spacing:-.035em;line-height:1.02;margin-top:14px}
+.sstep>p{color:var(--mut);font-size:18.5px;margin-top:14px;max-width:40ch}
+.sstep .out{display:flex;gap:12px;align-items:baseline;margin-top:22px;padding-top:18px;border-top:1px solid var(--line);font-weight:600;font-size:17px;color:var(--ink)}
+.sstep .out .mono{color:var(--blue);flex:none}
+.stage{position:sticky;top:12vh;height:76vh;align-self:start}
+.layer{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateY(24px) scale(.98);transition:opacity .6s var(--ease),transform .7s var(--ease);pointer-events:none}
+.layer.on{opacity:1;transform:none}
+.lt{color:var(--mut);margin-bottom:12px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tiles div{position:relative;background:var(--cream);border-radius:16px;padding:16px 18px}
+.tiles b{display:block;font-size:17px;letter-spacing:-.01em}
+.tiles span{display:block;color:var(--mut);font-size:14px;margin-top:2px;line-height:1.4}
+.tiles .me{background:var(--blue);color:#fff}.tiles .me span{color:#DCE3FA}
+.tiles .me em{position:absolute;right:12px;top:12px;font-style:normal;font-size:10.5px;background:#fff;color:var(--blue);border-radius:999px;padding:3px 8px}
+.bub{align-self:flex-start;background:#E9E3D6;color:var(--mut);border-radius:20px 20px 20px 6px;padding:14px 20px;font-size:18px}
+.brief{background:var(--navy);color:var(--cream);border-radius:22px;padding:24px}
+.brief p{font-size:18px;line-height:1.75}
+.brief mark{color:var(--cream);border-radius:6px;padding:2px 4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.brief .h1{background:rgba(43,74,203,.85)}.brief .h2{background:rgba(46,125,79,.75)}.brief .h3{background:rgba(201,140,30,.7)}
+.keys{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-size:13.5px;color:#C9CCDA}
+.keys span{display:inline-flex;align-items:center;gap:7px}.keys i{width:10px;height:10px;border-radius:3px}
+.k1{background:#2B4ACB}.k2{background:#2E7D4F}.k3{background:#C98C1E}
+.layer .frame{box-shadow:0 30px 60px -30px rgba(16,21,44,.5)}
+.u{font-size:12.5px;color:var(--mut)!important;background:#fff;border-radius:999px;padding:3px 12px;margin-left:12px!important}
+.u b{color:var(--blue);font-weight:600}
+.lights{display:flex;flex-wrap:wrap;gap:8px}
+.lights span{display:inline-flex;align-items:center;gap:8px;background:var(--cream);border-radius:999px;padding:8px 14px;font-size:14.5px;font-weight:600}
+.lights i{width:10px;height:10px;border-radius:50%}
+.lights .g i{background:#2E9D5B}.lights .y i{background:#E0A21B}.lights .r i{background:#D2402F}
+.vis-m{display:none}
+
+/* stats */
+.stats{background:var(--white);padding-block:24px 112px}
+.st4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1.5px solid var(--ink)}
+.st4>div{padding:28px 24px 0 0}
+.st4>div+div{padding-left:24px;border-left:1px solid var(--line)}
+.st4 b{display:block;font-size:clamp(56px,7vw,104px);font-weight:900;letter-spacing:-.06em;line-height:.95;color:var(--navy)}
+.st4>div>span{display:block;color:var(--mut);font-size:16px;margin-top:10px;max-width:20ch}
+
+/* gallery rail */
+.gallery{overflow:hidden}
+.arrows{display:flex;gap:10px;margin-top:20px}
+.arw{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;border:1.5px solid var(--line2);background:var(--white);cursor:pointer;transition:background .2s,border-color .2s,transform .2s,opacity .2s}
+.arw:hover{background:var(--navy);border-color:var(--navy);color:var(--cream)}
+.arw:active{transform:scale(.94)}
+.arw:disabled{opacity:.35;pointer-events:none}
+.arw svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:min(80vw,560px);gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;
+  padding:8px max(20px,calc((100vw - 1180px) / 2 + 20px)) 28px;scroll-padding-inline:max(20px,calc((100vw - 1180px) / 2 + 20px));scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.slide{scroll-snap-align:start}
+.slide p{color:var(--mut);font-size:15.5px;margin-top:4px}
+.gallery .more{margin-top:20px}
+
+@media (max-width:900px){
+  .sgrid{grid-template-columns:1fr;gap:0}
+  .stage{display:none}
+  .sstep{min-height:0;opacity:1;padding:36px 0;border-top:1px solid var(--line)}
+  .vis-m{display:block;margin-top:24px}
+  .vis-m .layer{position:static;opacity:1;transform:none}
+  .st4{grid-template-columns:1fr 1fr}
+  .st4>div:nth-child(3){padding-left:0;border-left:0}
+  .st4>div:nth-child(n+3){border-top:1px solid var(--line);margin-top:24px}
+  .statement{height:170vh}
+  .lap{height:190vh}
+}
+@media (max-width:560px){.tiles span{display:none}.tiles .me em{position:static;display:inline-block;margin-top:6px}.brief p{font-size:16px}}
+@media (prefers-reduced-motion:reduce){.statement,.lap{height:auto}.sticky{position:static;height:auto;padding-block:96px}.lap{--p:1!important}.say .w{opacity:1}.sstep{opacity:1}}
+</style>
+</head><body>
+<script>document.documentElement.classList.add('js')</script>
+
+<header class="top" id="top"><div class="wrap">
+<a class="brand" href="#"><i>AI</i> Beyond the Chatbox</a>
+<nav aria-label="Main"><a class="lk" href="#session">The session</a><a class="lk" href="#demos">Examples</a><a class="lk" href="#price">Price</a><a class="lk" href="#faq">FAQ</a>
+<span class="pill" id="seatPill" hidden><i class="dot"></i><span id="seatTxt"></span></span>
+<a class="btn sm" href="#register">Register <span class="ar">→</span></a></nav>
+</div></header>
+
+<main>
+<section class="hero" aria-labelledby="h1"><div class="wrap">
+<p class="kicker mono in-a"><span>A 3-hour hands-on workshop</span><span>Online</span><span>No coding needed</span></p>
+<h1 id="h1" class="title in-a d1" aria-label="AI Beyond the Chatbox">
+<span class="stack" aria-hidden="true"><span class="ai">AI</span><span class="big"><span id="bey">BEY</span><span class="o" id="o"><svg viewBox="0 0 100 100" id="oFallback"><path d="M50 18a32 32 0 1 1-24 53l-10 9 4-17A32 32 0 0 1 50 18z" fill="#2B4ACB"/><circle cx="37" cy="50" r="4.5" fill="#F3EAD8"/><circle cx="50" cy="50" r="4.5" fill="#F3EAD8"/><circle cx="63" cy="50" r="4.5" fill="#F3EAD8"/></svg></span><span class="wire" id="wire"><span class="front">ND</span></span></span></span>
+</h1>
+<div class="tail in-a d2" aria-hidden="true"><span class="serif">the Chatbox</span>
+<span class="chat" id="chat"><span id="typed">Most people stop at the chat.</span><i class="caret"></i><b class="send"><svg viewBox="0 0 24 24"><path d="M12 19V6M6 11.5 12 5.5l6 6"/></svg></b></span></div>
+
+<div class="hrow">
+<div class="in-a d3">
 <p class="promise">Build something you'll actually use.</p>
-<p class="lead">A small app that takes one everyday task off your plate. Leave with 12 everyday uses for AI, a clear idea of what HTML is, and a working app you built yourself. <b>No coding needed.</b></p>
-<div class="facts">
-<div><small class="mono">When</small><b id="when">Date to be announced</b></div>
-<div><small class="mono">Where</small><b>Online, Google Meet</b></div>
-<div><small class="mono">Length</small><b>3 hours, one break</b></div>
-<div><small class="mono">From</small><b>RM130</b></div></div>
-<div class="ctas"><a class="btn" href="#register">Register now →</a><a class="btn ghost" href="demos/">See what you'll build</a></div>
-<p class="seats" id="seats"></p>
-</div></div></div></header>
-
-<section><div class="wrap">
-<p class="mono eyebrow">What you'll build</p><h2>One small app, three short steps</h2>
-<p class="sub">Every participant picks one everyday task and builds a small app for it during the session, on a free Claude account.</p>
-<div class="cards c3">
-<div class="card"><span class="num">1</span><h3>See what it can do</h3><p>Eight things AI can make, 12 everyday uses at work and at home, and how it actually works. Then you pick your app.</p></div>
-<div class="card"><span class="num">2</span><h3>Brief it well</h3><p>Three habits that turn a vague request into a useful result, shown in a live before-and-after demo. Then you write your app's brief.</p></div>
-<div class="card"><span class="num">3</span><h3>Build and share</h3><p>What HTML is and can't do, what's safe to paste, and how to put your app online for free. Then you build it.</p></div>
+<p class="lead">In one afternoon you build a small app that takes an everyday task off your plate, for your work, your business or your home. You leave with 12 everyday uses for AI, a clear idea of what HTML is, and your own working app. <b>No coding needed.</b></p>
+<div class="ctas"><a class="btn" href="#register">Save your seat <span class="ar">→</span></a><a class="btn line" href="#demos">See what people build</a></div>
 </div>
-<div class="cards c3">
-<div class="card"><div class="ic"><svg viewBox="0 0 96 96"><path d="M10 38 L 86 37 L 86 80 L 10 81 Z M34 37 L 34 26 C 34 22, 36 20, 40 20 L 56 20 C 60 20, 62 22, 62 26 L 62 37 M10 54 L 86 53"/></svg></div><h3>For your work</h3><p>A quote calculator, a checklist, a tracker you'd open every week.</p></div>
-<div class="card"><div class="ic"><svg viewBox="0 0 96 96"><path d="M10 34 L 18 14 L 78 14 L 86 34 Z M14 34 L 14 84 L 82 84 L 82 34 M38 84 L 38 58 L 58 58 L 58 84"/></svg></div><h3>For your business</h3><p>A price list, an order form, a simple page for customers.</p></div>
-<div class="card"><div class="ic"><svg viewBox="0 0 96 96"><path d="M10 48 L 48 14 L 86 48 M22 40 L 22 84 L 74 84 L 74 40 M40 84 L 40 60 L 56 60 L 56 84"/></svg></div><h3>For your home</h3><p>A budget, a meal planner, a weekend trip plan for the family.</p></div>
+<dl class="facts in-a d4">
+<div><dt><small class="mono">When</small></dt><dd><b id="when">Date to be announced</b></dd></div>
+<div><dt><small class="mono">Where</small></dt><dd><b>Online, Google Meet</b></dd></div>
+<div><dt><small class="mono">Length</small></dt><dd><b>3 hours, one break</b></dd></div>
+<div><dt><small class="mono">From</small></dt><dd><b>RM130</b></dd></div>
+</dl>
 </div></div></section>
 
-<section class="dark"><div class="wrap">
-<p class="mono eyebrow">Your trainers</p><h2>Taught by people who build with AI daily</h2>
-<div class="cards c2">
-<div class="card person"><img src="assets/ayman.jpg" alt="Ayman Dinie"><div><b>Ayman Dinie</b><span>Front-end developer and AI-driven systems consultant</span></div></div>
-<div class="card person"><img src="assets/adam.jpg" alt="Adam Fauzi"><div><b>Adam Fauzi</b><span class="badge mono" style="color:var(--lb);border-color:var(--lb)">HRD Corp Accredited Trainer · ID 25432</span><span>Founder, Adam Fauzi Solutions</span></div></div>
+<section class="statement" data-scroll aria-label="Why this workshop"><div class="sticky"><div class="wrap">
+<p class="say" id="say">Most people use AI to chat. Here you use it to build. A calculator for your quotes. A planner for your family. A page for your shop. In one afternoon, without typing a line of code.</p>
 </div></div></section>
 
-<section><div class="wrap">
-<p class="mono eyebrow">Pricing</p><h2>One ticket, one app</h2>
-<div class="prices">
-<div class="price"><span class="mono">Students</span><b>RM130</b><span>Valid student ID, aged 25 and under</span></div>
-<div class="price hi"><span class="mono">Early bird</span><b>RM200</b><span id="ebPriceNote">Normal price <s>RM230</s></span></div>
-<div class="price"><span class="mono">Normal</span><b>RM230</b><span>After early bird ends</span></div>
+<section class="lap" data-scroll aria-label="Example app"><div class="sticky"><div class="wrap lapwrap">
+<p class="lap-h"><span class="mono">A real example</span><b>This is a real website.<br><em>Nobody typed its code.</em></b></p>
+<div class="laptop"><div class="lid"><i class="cam"></i><div class="screen"><img src="assets/shots/kopi-home-lg.jpg" alt="Kopi Pagi café website, built with AI" width="1600" height="1000" loading="lazy"></div></div><div class="base"><i></i></div></div>
+<p class="lap-c">Kopi Pagi café site. Built with AI from a plain-English brief, then put online for free. <a href="demos/kopi-pagi.html">Try it ↗</a></p>
+</div></div></section>
+
+<section class="sec story" id="session"><div class="wrap">
+<div class="head"><div class="rv"><p class="mono eyebrow">The session</p><h2>Three parts. <em>One app, built by you.</em></h2></div>
+<p class="rv s2">You don't watch a demo and go home. Each part ends with you doing the next step on your own app, on a free Claude account.</p></div>
+<div class="sgrid">
+<div class="steps">
+<article class="sstep" data-i="0"><span class="mono k">Part 1 of 3</span><h3>See what it can do</h3><p>Eight things AI can make, six uses at work, six at home, and how it actually works under the hood.</p><p class="out"><span class="mono">Your step</span>Pick the app you'll build.</p><div class="vis-m"></div></article>
+<article class="sstep" data-i="1"><span class="mono k">Part 2 of 3</span><h3>Brief it well</h3><p>The three things every good request has, shown live as a before and after. Most people skip all three.</p><p class="out"><span class="mono">Your step</span>Write your app's brief and agree a plan.</p><div class="vis-m"></div></article>
+<article class="sstep" data-i="2"><span class="mono k">Part 3 of 3</span><h3>Build and share</h3><p>What HTML is and can't do, what's safe to paste into AI, and how to put your app online for free.</p><p class="out"><span class="mono">Your step</span>Build it, test it, send the link.</p><div class="vis-m"></div></article>
 </div>
-<p class="note">Pay by DuitNow QR with any banking app or e-wallet. SPayLater, Atome and GrabPayLater work too. Full refund up to 7 days before the session.</p>
+<div class="stage" aria-hidden="true">
+<div class="layer on" data-i="0"><p class="mono lt">Eight things AI can do for you</p><div class="tiles">
+<div><b>Write</b><span>Emails, reports, scripts, translations</span></div><div><b>Make slides</b><span>Full decks, in HTML or PowerPoint</span></div>
+<div class="me"><b>Prototypes</b><span>Web pages, app mock-ups, calculators</span><em class="mono">You build this</em></div><div><b>Data visualisation</b><span>Upload a spreadsheet, get a live dashboard</span></div>
+<div><b>Image generation</b><span>Illustrations, mock-ups, diagrams</span></div><div><b>Voice</b><span>Voice chats, meeting transcripts</span></div>
+<div><b>Research</b><span>Web search with sources you can check</span></div><div><b>Agents</b><span>Click through tasks in your browser and apps</span></div></div></div>
+<div class="layer" data-i="1"><p class="mono lt">Most people type</p><p class="bub">make me a budget app</p>
+<p class="mono lt" style="margin-top:22px">A good brief</p><div class="brief">
+<p><mark class="h1">Build a one-page monthly budget for my family of four in Malaysia, in RM. Show what's left each month.</mark> <mark class="h2">Here are last month's numbers: pay RM5,200, rent RM1,400, car RM900, groceries RM1,100.</mark> <mark class="h3">Before you build, ask me 3 questions and show me a plan.</mark></p>
+<div class="keys"><span><i class="k1"></i>What it's for, and who</span><span><i class="k2"></i>An example</span><span><i class="k3"></i>Talk it through first</span></div></div></div>
+<div class="layer" data-i="2"><div class="frame"><div class="bar"><i></i><i></i><i></i><span class="u">yourname.github.io/<b>kl-weekend</b></span></div><div class="shot"><img src="assets/shots/trip.jpg" alt="" loading="lazy" width="960" height="600"></div></div>
+<p class="mono lt" style="margin-top:22px">Safe to paste? The traffic light</p><div class="lights"><span class="g"><i></i>Public info</span><span class="y"><i></i>Internal documents</span><span class="r"><i></i>Passwords, IC numbers</span></div></div>
+</div>
+</div>
 </div></section>
 
-<section id="register" class="dark"><div class="wrap">
-<p class="mono eyebrow">Register</p><h2>Save your seat</h2>
-<p class="sub">About 3 minutes. Pay in step 4, then you'll get an email right away. Your seat is confirmed once we match your payment, within 24 hours.</p>
+<section class="stats" aria-label="At a glance"><div class="wrap"><div class="st4">
+<div class="rv"><b><span data-count="3">3</span></b><span>hours, live and hands-on</span></div>
+<div class="rv s2"><b><span data-count="12">12</span></b><span>everyday uses to try tomorrow</span></div>
+<div class="rv s3"><b><span data-count="1">1</span></b><span>working app, built by you</span></div>
+<div class="rv s4"><b>RM<span data-count="0">0</span></b><span>to put it online</span></div>
+</div></div></section>
+
+<section class="sec gallery" id="demos"><div class="wrap">
+<div class="head"><div class="rv"><p class="mono eyebrow">What people build</p><h2>Small apps that <em>do one job well.</em></h2></div>
+<div class="rv s2"><p>All of these were built with AI from a plain-English brief, the same way you will. Open any of them and try it.</p>
+<div class="arrows"><button type="button" class="arw" id="prev" aria-label="Previous examples"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="arw" id="next" aria-label="More examples"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div></div></div></div>
+<div class="rail" id="rail">
+<a class="demo slide" href="demos/car.html"><div class="frame"><div class="bar"><i></i><i></i><i></i><span>Car calculator</span></div><div class="shot"><img src="assets/shots/car.jpg" alt="Can I afford this car calculator" loading="lazy" width="960" height="600"></div><span class="open">Open demo ↗</span></div><div class="cap"><b>Can I afford this car?</b><span class="mono">For home</span></div><p>The real monthly cost of a car loan, measured against your pay.</p></a>
+<a class="demo slide" href="demos/dashboard.html"><div class="frame"><div class="bar"><i></i><i></i><i></i><span>Sales dashboard</span></div><div class="shot"><img src="assets/shots/dashboard.jpg" alt="Kopi Pagi sales dashboard" loading="lazy" width="960" height="600"></div><span class="open">Open demo ↗</span></div><div class="cap"><b>Kopi Pagi sales dashboard</b><span class="mono">For work</span></div><p>Turns a sales sheet into charts the team can read at a glance.</p></a>
+<a class="demo slide" href="demos/trip.html"><div class="frame"><div class="bar"><i></i><i></i><i></i><span>Trip planner</span></div><div class="shot"><img src="assets/shots/trip.jpg" alt="KL family weekend planner" loading="lazy" width="960" height="600"></div><span class="open">Open demo ↗</span></div><div class="cap"><b>KL family weekend</b><span class="mono">For home</span></div><p>A two-day plan for the family, with places, times and costs.</p></a>
+<a class="demo slide" href="demos/club-app.html"><div class="frame"><div class="bar"><i></i><i></i><i></i><span>Loyalty app</span></div><div class="shot"><img src="assets/shots/club-app.jpg" alt="Kopi Pagi Club loyalty app" loading="lazy" width="960" height="587"></div><span class="open">Open demo ↗</span></div><div class="cap"><b>Kopi Pagi Club</b><span class="mono">For business</span></div><p>A simple loyalty app for regulars: stamps, rewards, offers.</p></a>
+<a class="demo slide" href="demos/kopi-pagi.html"><div class="frame"><div class="bar"><i></i><i></i><i></i><span>Café website</span></div><div class="shot"><img src="assets/shots/kopi-home.jpg" alt="Kopi Pagi café website" loading="lazy" width="960" height="600"></div><span class="open">Open demo ↗</span></div><div class="cap"><b>Kopi Pagi café site</b><span class="mono">For business</span></div><p>A menu, outlets and an order-ahead page for a small café.</p></a>
+</div>
+<div class="wrap"><div class="more rv"><a class="btn ink" href="demos/">See all examples <span class="ar">→</span></a></div></div>
+</section>
+
+<section class="sec dark"><div class="wrap">
+<div class="head"><div class="rv"><p class="mono eyebrow">Your trainers</p><h2>Taught by people who <em>build with AI every day.</em></h2></div>
+<p class="rv s2">Two trainers in the room: one teaching, one in the chat making sure nobody gets left behind.</p></div>
+<div class="people">
+<article class="person rv"><img src="assets/ayman.jpg" alt="Portrait of Ayman Dinie" width="112" height="112"><div><h3>Ayman Dinie</h3><p>Front-end developer and AI-driven systems consultant. Leads the session and the live build.</p></div></article>
+<article class="person rv s2"><img src="assets/adam.jpg" alt="Portrait of Adam Fauzi" width="112" height="112"><div><h3>Adam Fauzi</h3><p>Founder, Adam Fauzi Solutions. Co-host, helping anyone who gets stuck.</p><span class="cred mono">HRD Corp Accredited Trainer · ID 25432</span></div></article>
+</div></div></section>
+
+<section class="sec" id="price"><div class="wrap">
+<div class="head"><div class="rv"><p class="mono eyebrow">Price</p><h2>One ticket. <em>Your own app.</em></h2></div>
+<p class="rv s2">Early bird is the only adult ticket until it ends. After that, the Normal price applies.</p></div>
+<div class="tix">
+<article class="tk rv"><div><span class="mono">Student</span><p class="price"><small>RM</small>130</p><p class="who">Valid student ID, aged 25 and under. Upload your card when you register.</p></div><span></span><p class="foot"><span class="tag">On sale now</span></p></article>
+<article class="tk hi rv s2" id="tkEb"><div><span class="mono">Early bird</span><p class="price"><small>RM</small>200</p><p class="who">Save RM30 on the Normal price.</p></div><span></span><p class="foot" id="ebFoot"><span class="tag">On sale now</span><span id="ebEnds"></span></p></article>
+<article class="tk off rv s3" id="tkN"><div><span class="mono">Normal</span><p class="price"><small>RM</small>230</p><p class="who">For everyone after early bird ends.</p></div><span></span><p class="foot"><span class="tag grey" id="nTag">Opens after early bird</span></p></article>
+</div>
+<div class="paynote rv">
+<span><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>DuitNow QR, any bank or e-wallet</span>
+<span><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>SPayLater, Atome and GrabPayLater work too</span>
+<span><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Full refund up to 7 days before</span>
+</div>
+</div></section>
+
+<section class="sec reg" id="register"><div class="wrap">
+<div class="head"><div class="rv"><p class="mono eyebrow">Register</p><h2>Save your <em>seat.</em></h2></div>
+<p class="rv s2">About 3 minutes. You pay inside the form, and your seat is confirmed once we've matched your payment.</p></div>
+<ol class="flow rv" aria-label="How your seat is confirmed">
+<li><span class="k mono"><i>1</i>You, now</span><b>Register and pay here</b><p>We email you straight away. Your seat is held, not yet confirmed.</p></li>
+<li><span class="k mono"><i>2</i>Us, within 24 hours</span><b>We match your payment</b><p>We check your reference against our statement. Unpaid seats are released after 72 hours.</p></li>
+<li class="last"><span class="k mono"><i>3</i>Confirmed</span><b>Your seat is yours</b><p>Receipt, calendar invite and the class WhatsApp group, by email.</p></li>
+</ol>
+
 <div id="closed" class="closed" hidden></div>
+<div class="grid" id="regGrid">
 <form id="f" novalidate>
-<fieldset><legend>1 · Your details</legend>
-<label class="f">Full name <em>As it should appear on your certificate</em><input type="text" name="name" autocomplete="name" required></label>
-<div class="row2"><label class="f">Email<input type="email" name="email" autocomplete="email" required></label>
-<label class="f">WhatsApp number <em>For the class group</em><input type="tel" name="wa" autocomplete="tel" placeholder="+6012 345 6789" required></label></div>
-</fieldset>
+<p class="reqnote">Fields marked <span class="req">*</span> are required.</p>
+<div id="summary" class="summary" tabindex="-1" role="alert" hidden><b id="sumTitle"></b><ul id="sumList"></ul></div>
 
-<fieldset><legend>2 · Your ticket</legend>
-<div class="tickets" id="tickets">
-<label><input type="radio" name="ticket" value="Student" required><span class="mono">Student</span><b>RM130</b><span>Valid student ID, 25 and under</span></label>
-<label id="ebLabel"><input type="radio" name="ticket" value="Early bird"><span class="mono">Early bird</span><b>RM200</b><span id="ebNote">Normal price RM230</span></label>
-<label id="nLabel" hidden><input type="radio" name="ticket" value="Normal"><span class="mono">Normal</span><b>RM230</b><span>Early bird has ended</span></label>
-</div>
-<div class="row2" id="student" hidden>
-<label class="f">College or university<input type="text" name="college"></label>
-<label class="f">Student ID number<input type="text" name="sid"></label>
-<label class="f" style="grid-column:1/-1">Photo of your student card <em>JPG, PNG or PDF. Kept private and deleted after the session</em><input type="file" name="cardFile" accept="image/*,application/pdf"></label></div>
-</fieldset>
-
-<fieldset><legend>3 · About you</legend>
-<label class="f">What do you do? <em>Job or field of study (optional)</em><input type="text" name="job"></label>
-<div class="f"><span style="font-weight:600;font-size:15px">How often do you use AI now?</span><div class="choices">
-<label><input type="radio" name="freq" value="Never" required>Never</label><label><input type="radio" name="freq" value="Sometimes">Sometimes</label><label><input type="radio" name="freq" value="Weekly">Weekly</label><label><input type="radio" name="freq" value="Daily">Daily</label></div></div>
-<div class="f"><span style="font-weight:600;font-size:15px">Which AI tools have you used?</span><div class="choices">
-<label><input type="checkbox" name="tools" value="Claude">Claude</label><label><input type="checkbox" name="tools" value="ChatGPT">ChatGPT</label><label><input type="checkbox" name="tools" value="Gemini">Gemini</label><label><input type="checkbox" name="tools" value="Copilot">Copilot</label><label><input type="checkbox" name="tools" value="None yet">None yet</label></div></div>
-<label class="f">One everyday task you'd like an app for <em>Optional: a budget tracker, a quote calculator, a trip planner</em><textarea name="idea"></textarea></label>
-<div class="f"><span style="font-weight:600;font-size:15px">Will you join on a laptop with Chrome? <em style="font-weight:400;color:var(--mut)">A phone is not enough to build</em></span><div class="choices">
-<label><input type="radio" name="laptop" value="Yes" required>Yes</label><label><input type="radio" name="laptop" value="No, I need advice">No, I need advice</label></div></div>
-</fieldset>
-
-<fieldset><legend>4 · Payment</legend>
-<div class="pay"><img src="assets/duitnow-qr.png" alt="DuitNow QR for AYMAN DINIE BIN ZAHARI">
-<div style="display:grid;gap:14px">
-<p class="amount">Amount to pay<b id="amt">Pick a ticket first</b></p>
-<p style="font-size:15px;color:var(--mut)">Scan the QR with any banking app or e-wallet. On your phone? <a id="payLink" href="https://payment.tngdigital.com.my/sc/bDLom4JD3M" target="_blank" rel="noopener">Pay with this link</a> instead. Then copy the reference number from your receipt below.</p>
-<div class="f"><span style="font-weight:600;font-size:15px">How did you pay?</span><div class="choices">
-<label><input type="radio" name="paidWith" value="Banking app" required>Banking app</label><label><input type="radio" name="paidWith" value="Touch 'n Go eWallet">TNG eWallet</label><label><input type="radio" name="paidWith" value="Other e-wallet">Other e-wallet</label><label><input type="radio" name="paidWith" value="SPayLater">SPayLater</label><label><input type="radio" name="paidWith" value="Atome">Atome</label><label><input type="radio" name="paidWith" value="GrabPayLater">GrabPayLater</label></div></div>
-<div class="row2"><label class="f">Payment reference number<input type="text" name="ref" required></label>
-<label class="f">Name on the paying account <em>If someone paid for you</em><input type="text" name="payName" required></label></div>
-</div></div>
-</fieldset>
-
-<fieldset><legend>5 · Agreements</legend>
-<label class="agree"><input type="checkbox" name="consent" required><span>I agree to my details being used only to run this workshop: confirmation, receipt, reminders and certificate. They are never sold or shared. Student card photos are deleted after the session.</span></label>
-<label class="agree"><input type="checkbox" name="policy" required><span>I agree to the <a href="#faq-refund">refund policy</a> and house rules: join 5 minutes early (entry closes 45 minutes in), stay muted, never paste private or company data into AI, no recording, one seat per person.</span></label>
-<label class="f">How did you hear about this? <em>Optional</em><select name="heard"><option value="">Choose one</option><option>WhatsApp</option><option>Instagram</option><option>LinkedIn</option><option>Adam Fauzi</option><option>A friend</option><option>Other</option></select></label>
-<label class="trap" aria-hidden="true">Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-</fieldset>
-
-<div id="err" class="msg err" hidden role="alert"></div>
-<button class="btn" id="go" type="submit" style="justify-self:start">Register and confirm payment →</button>
-</form>
-<div id="done" class="done" hidden role="status"></div>
+<section class="step" id="step1" aria-labelledby="t1"><header><span class="sn">1</span><h3 id="t1">Your details</h3><span class="st">✓ Done</span></header>
+<div class="field" data-for="name"><label for="name">Full name<span class="req" aria-hidden="true">*</span></label><p class="hint" id="name-h">Exactly as it should appear on your certificate.</p>
+<div class="inp"><input id="name" name="name" type="text" autocomplete="name" placeholder="e.g. Nur Aisyah binti Ahmad" required aria-describedby="name-h name-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="emsg" id="name-e" aria-live="polite"></p></div>
+<div class="two">
+<div class="field" data-for="email"><label for="email">Email<span class="req" aria-hidden="true">*</span></label><p class="hint" id="email-h">Your confirmation and receipt go here.</p>
+<div class="inp"><input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="e.g. aisyah@gmail.com" required aria-describedby="email-h email-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="sugg" id="sugg" hidden></p><p class="emsg" id="email-e" aria-live="polite"></p></div>
+<div class="field" data-for="wa"><label for="wa">WhatsApp number<span class="req" aria-hidden="true">*</span></label><p class="hint" id="wa-h">For the class group. Malaysian mobile number.</p>
+<div class="inp"><span class="pre">+60</span><input id="wa" name="wa" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="12 345 6789" required aria-describedby="wa-h wa-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="emsg" id="wa-e" aria-live="polite"></p></div>
 </div></section>
 
-<section><div class="wrap">
-<p class="mono eyebrow">Questions</p><h2>Good to know</h2>
-<div style="margin-top:22px">
-<details><summary>Do I need to know how to code?</summary><p>No. You describe what you want in plain words and the AI writes the code. You'll learn just enough to know what you're looking at.</p></details>
-<details><summary>What do I need to bring?</summary><p>A laptop with Chrome, steady internet and a free Claude account. Nothing to study beforehand. We send a short checklist a week before.</p></details>
-<details><summary>Is it recorded?</summary><p>No. It's live and hands-on. You get the slides, a one-page summary and a hosting guide afterwards.</p></details>
-<details><summary>Do I get a certificate?</summary><p>Yes, the day after, if you check in at the start, stay to the end and send the short feedback form.</p></details>
-<details id="faq-refund"><summary>What's the refund policy?</summary><p>Full refund 7 or more days before the session. After that, no refund, but you can give your seat to someone else or move to the next date for free. Bank and e-wallet payments are refunded by bank transfer within 7 working days; pay-later payments are refunded by Touch 'n Go in 14 to 30 days.</p></details>
-<details><summary>Is it HRDC-claimable?</summary><p>No. This workshop is not HRDC-claimable.</p></details>
-<details><summary>Who do I ask if I'm stuck?</summary><p>WhatsApp +6011 1068 2544 or email jslaymandinie@gmail.com.</p></details>
-</div></div></section>
+<section class="step" id="step2" aria-labelledby="t2"><header><span class="sn">2</span><h3 id="t2">Your ticket</h3><span class="st">✓ Done</span></header>
+<fieldset class="field" data-for="ticket"><legend>Choose a ticket<span class="req" aria-hidden="true">*</span></legend>
+<div class="choose">
+<label><input type="radio" name="ticket" value="Student" required><span class="mono">Student</span><b>RM130</b><span class="s">Valid student ID, aged 25 and under</span><i class="rad"></i></label>
+<label id="ebOpt"><input type="radio" name="ticket" value="Early bird"><span class="mono">Early bird</span><b>RM200</b><span class="s" id="ebOptNote">Save RM30 on the Normal price</span><i class="rad"></i></label>
+<label id="nOpt" hidden><input type="radio" name="ticket" value="Normal"><span class="mono">Normal</span><b>RM230</b><span class="s">Early bird has ended</span><i class="rad"></i></label>
+</div><p class="emsg" id="ticket-e" aria-live="polite"></p></fieldset>
+<div class="reveal" id="student"><div><div class="inner">
+<p>Students only. We check your card before confirming your seat.</p>
+<div class="two">
+<div class="field" data-for="college"><label for="college">College or university<span class="req" aria-hidden="true">*</span></label>
+<div class="inp"><input id="college" name="college" type="text" autocomplete="organization" placeholder="e.g. Universiti Malaya" aria-describedby="college-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="emsg" id="college-e" aria-live="polite"></p></div>
+<div class="field" data-for="sid"><label for="sid">Student ID number<span class="req" aria-hidden="true">*</span></label>
+<div class="inp"><input id="sid" name="sid" type="text" placeholder="e.g. 22004517" aria-describedby="sid-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="emsg" id="sid-e" aria-live="polite"></p></div>
+</div>
+<div class="field" data-for="card"><span class="lbl" style="font-weight:600;font-size:15.5px" id="card-l">Photo of your student card<span class="req" aria-hidden="true">*</span></span><p class="hint" id="card-h">JPG, PNG or PDF, up to 5 MB. Kept private and deleted after the session.</p>
+<label class="drop" id="drop"><input id="cardFile" type="file" accept="image/*,application/pdf" aria-labelledby="card-l" aria-describedby="card-h card-e"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></span><span><b>Drop your card here, or <u>choose a file</u></b><small>On your phone? You can take a photo now.</small></span></label>
+<div class="file" id="fileBox" hidden><span class="thumb" id="thumbWrap"></span><div><b id="fileName"></b><small id="fileInfo">Ready to send</small></div><button type="button" id="fileRm">Remove</button></div>
+<p class="emsg" id="card-e" aria-live="polite"></p></div>
+</div></div></div>
+</section>
 
-<footer><div class="wrap"><span>Ayman Dinie · AYMAN DINIE BIN ZAHARI (SSM 202603268059)</span><span>WhatsApp +6011 1068 2544 · jslaymandinie@gmail.com</span></div></footer>
+<section class="step" id="step3" aria-labelledby="t3"><header><span class="sn">3</span><h3 id="t3">About you</h3><span class="st">✓ Done</span></header>
+<p class="hint" style="margin-top:-14px">This helps us pitch the session at the right level.</p>
+<div class="field" data-for="job"><label for="job">What do you do?<span class="opt">Optional</span></label>
+<input id="job" name="job" type="text" autocomplete="organization-title" placeholder="e.g. Admin executive, runs a home bakery, final-year student"></div>
+<fieldset class="field" data-for="freq"><legend>How often do you use AI now?<span class="req" aria-hidden="true">*</span></legend>
+<div class="pills"><label><input type="radio" name="freq" value="Never" required><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Never</label><label><input type="radio" name="freq" value="Sometimes"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Sometimes</label><label><input type="radio" name="freq" value="Weekly"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Weekly</label><label><input type="radio" name="freq" value="Daily"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Daily</label></div><p class="emsg" id="freq-e" aria-live="polite"></p></fieldset>
+<fieldset class="field" data-for="tools"><legend>Which AI tools have you used?<span class="req" aria-hidden="true">*</span></legend><p class="hint">Tick all that apply.</p>
+<div class="pills"><label><input type="checkbox" name="tools" value="ChatGPT"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>ChatGPT</label><label><input type="checkbox" name="tools" value="Claude"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Claude</label><label><input type="checkbox" name="tools" value="Gemini"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Gemini</label><label><input type="checkbox" name="tools" value="Copilot"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Copilot</label><label><input type="checkbox" name="tools" value="None yet"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>None yet</label></div><p class="emsg" id="tools-e" aria-live="polite"></p></fieldset>
+<div class="field" data-for="idea"><label for="idea">One everyday task you'd like an app for<span class="opt">Optional</span></label><p class="hint" id="idea-h">Rough is fine. You can change your mind on the day.</p>
+<textarea id="idea" name="idea" maxlength="400" placeholder="e.g. tracking my monthly budget, quoting prices for customers, planning family trips" aria-describedby="idea-h"></textarea></div>
+<fieldset class="field" data-for="laptop"><legend>Will you join on a laptop with Chrome?<span class="req" aria-hidden="true">*</span></legend><p class="hint">A phone is not enough to build. If you're not sure, we'll help you check.</p>
+<div class="pills"><label><input type="radio" name="laptop" value="Yes" required><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Yes</label><label><input type="radio" name="laptop" value="No, I need advice"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>No, I need advice</label></div><p class="emsg" id="laptop-e" aria-live="polite"></p></fieldset>
+</section>
 
+<section class="step" id="step4" aria-labelledby="t4"><header><span class="sn">4</span><h3 id="t4">Payment</h3><span class="st">✓ Done</span></header>
+<div class="pay">
+<img class="qr" src="assets/duitnow-qr.png" alt="DuitNow QR code for AYMAN DINIE BIN ZAHARI" width="220" height="312">
+<div style="display:grid;gap:18px;min-width:0">
+<div class="amt"><div><small class="mono">Amount to pay</small><b id="amt" class="wait">Choose a ticket in step 2</b></div><button type="button" class="copy" id="copyAmt" hidden>Copy</button></div>
+<ol class="howpay"><li>Scan the QR with any banking app or e-wallet.</li><li id="payStep2">Pay the exact amount above.</li><li>Copy the reference number from your receipt into the box below.</li></ol>
+<p style="font-size:15px;color:var(--mut)">On your phone? <a class="paylink" id="payLink" href="https://payment.tngdigital.com.my/sc/bDLom4JD3M" target="_blank" rel="noopener">Pay with this link instead ↗</a></p>
+</div></div>
+<fieldset class="field" data-for="paidWith"><legend>How did you pay?<span class="req" aria-hidden="true">*</span></legend>
+<div class="pills"><label><input type="radio" name="paidWith" value="Banking app" required><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Banking app</label><label><input type="radio" name="paidWith" value="Touch 'n Go eWallet"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>TNG eWallet</label><label><input type="radio" name="paidWith" value="Other e-wallet"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Other e-wallet</label><label><input type="radio" name="paidWith" value="SPayLater"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>SPayLater</label><label><input type="radio" name="paidWith" value="Atome"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Atome</label><label><input type="radio" name="paidWith" value="GrabPayLater"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>GrabPayLater</label></div><p class="emsg" id="paidWith-e" aria-live="polite"></p></fieldset>
+<div class="two">
+<div class="field" data-for="ref"><label for="ref">Payment reference number<span class="req" aria-hidden="true">*</span></label><p class="hint" id="ref-h">On your receipt as "Reference No." or "Transaction ID".</p>
+<div class="inp"><input id="ref" name="ref" type="text" autocomplete="off" spellcheck="false" placeholder="e.g. 20261125MBBEMYKL0001234" required aria-describedby="ref-h ref-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="emsg" id="ref-e" aria-live="polite"></p></div>
+<div class="field" data-for="payName"><label for="payName">Name on the paying account<span class="req" aria-hidden="true">*</span></label><p class="hint" id="payName-h">Change it if someone else paid for you.</p>
+<div class="inp"><input id="payName" name="payName" type="text" placeholder="e.g. Nur Aisyah binti Ahmad" required aria-describedby="payName-h payName-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="emsg" id="payName-e" aria-live="polite"></p></div>
+</div></section>
+
+<section class="step" id="step5" aria-labelledby="t5"><header><span class="sn">5</span><h3 id="t5">Agreements</h3><span class="st">✓ Done</span></header>
+<div class="field" data-for="consent"><label class="agree"><input type="checkbox" name="consent" id="consent" aria-describedby="consent-e"><span class="box"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>I agree to my details being used only to run this workshop: confirmation, receipt, reminders and certificate. They are never sold or shared, and student card photos are deleted after the session.<span class="req" aria-hidden="true">*</span></span></label><p class="emsg" id="consent-e" aria-live="polite"></p></div>
+<div class="field" data-for="policy"><label class="agree"><input type="checkbox" name="policy" id="policy" aria-describedby="policy-e"><span class="box"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>I agree to the <a href="#faq-refund">refund policy</a> and the house rules:<span class="req" aria-hidden="true">*</span>
+<ul class="rules"><li>Join 5 minutes early. Entry closes 45 minutes in.</li><li>Stay muted unless speaking; questions go in the chat.</li><li>Never paste private or company data into AI.</li><li>No recording. One seat per person.</li></ul></span></label><p class="emsg" id="policy-e" aria-live="polite"></p></div>
+<div class="field" data-for="heard"><label for="heard">How did you hear about this?<span class="opt">Optional</span></label>
+<select id="heard" name="heard"><option value="">Choose one</option><option>WhatsApp</option><option>Instagram</option><option>LinkedIn</option><option>Adam Fauzi</option><option>A friend</option><option>Other</option></select></div>
+<label class="trap" aria-hidden="true">Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+</section>
+
+<div class="submit">
+<button class="btn" id="go" type="submit"><span id="goTxt">Register</span> <span class="ar">→</span></button>
+<p><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg><span>Your seat is <b>held</b> when you send this, and <b>confirmed</b> once we match your payment, usually within 24 hours. If we can't find it, we email you to resend the reference.</span></p>
+<p class="saved" id="saved" hidden>Your answers are saved on this device until you send them.</p>
+<div id="err" class="summary" role="alert" hidden></div>
+</div>
+</form>
+
+<aside aria-label="Your registration">
+<div class="card"><h4>Your registration</h4>
+<div class="rows"><div><span>Ticket</span><b id="sTicket">Not chosen</b></div><div class="tot"><span>To pay</span><b id="sAmt">–</b></div></div>
+<div class="bar2"><span id="pbar"></span></div>
+<ol class="prog" id="prog">
+<li data-s="1"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><a href="#step1">Your details</a></li>
+<li data-s="2"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><a href="#step2">Your ticket</a></li>
+<li data-s="3"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><a href="#step3">About you</a></li>
+<li data-s="4"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><a href="#step4">Payment</a></li>
+<li data-s="5"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><a href="#step5">Agreements</a></li>
+</ol></div>
+<div class="card light"><h4>Stuck on something?</h4><p>WhatsApp <b class="sel">+6011 1068 2544</b> or email <b class="sel">jslaymandinie@gmail.com</b>. We usually reply the same day.</p></div>
+</aside>
+</div>
+<div id="done" hidden></div>
+</div></section>
+
+<section class="sec" id="faq"><div class="wrap">
+<div class="head"><div class="rv"><p class="mono eyebrow">Questions</p><h2>Good to <em>know.</em></h2></div>
+<p class="rv s2">Something else? WhatsApp <span class="sel" style="user-select:all;color:var(--ink);font-weight:600">+6011 1068 2544</span>.</p></div>
+<div class="faq rv">
+<div>
+<details><summary>Do I need to know how to code?<span class="pm" aria-hidden="true"></span></summary><p>No. You describe what you want in plain words and the AI writes the code. You'll learn just enough to know what you're looking at.</p></details>
+<details><summary>What do I need?<span class="pm" aria-hidden="true"></span></summary><p>A laptop with Chrome, steady internet and a free Claude account. Nothing to study beforehand. We send a short checklist a week before.</p></details>
+<details><summary>When is my seat confirmed?<span class="pm" aria-hidden="true"></span></summary><p>Once we match your payment reference against our statement, usually within 24 hours. Until then your seat is held for you. If a payment can't be found, we email you to resend the reference. Unpaid seats are released after 72 hours.</p></details>
+<details><summary>Is it recorded?<span class="pm" aria-hidden="true"></span></summary><p>No. It's live and hands-on. You get the slides, a one-page summary and a hosting guide afterwards.</p></details>
+</div><div>
+<details><summary>Do I get a certificate?<span class="pm" aria-hidden="true"></span></summary><p>Yes, the day after, if you check in at the start, stay to the end and send the short feedback form. A finished app isn't required.</p></details>
+<details id="faq-refund"><summary>What's the refund policy?<span class="pm" aria-hidden="true"></span></summary><p>Full refund 7 or more days before the session. After that, no refund, but you can give your seat to someone else or move to the next date for free. Bank and e-wallet payments are refunded by bank transfer within 7 working days; pay-later payments are refunded by Touch 'n Go in 14 to 30 days.</p></details>
+<details><summary>Is it HRDC-claimable?<span class="pm" aria-hidden="true"></span></summary><p>No. This workshop is not HRDC-claimable.</p></details>
+<details><summary>Can my company pay?<span class="pm" aria-hidden="true"></span></summary><p>Yes. Register with your own details, put the company's account name in "Name on the paying account", and we'll issue the receipt to you.</p></details>
+</div></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+<div class="fgrid">
+<div><a class="brand" href="#"><i>AI</i> Beyond the Chatbox</a><p style="margin-top:12px;max-width:36ch">A 3-hour online, hands-on workshop. Build something you'll actually use.</p></div>
+<div><h5 class="mono">Contact</h5><p>WhatsApp <span class="sel">+6011 1068 2544</span></p><p><span class="sel">jslaymandinie@gmail.com</span></p></div>
+<div><h5 class="mono">Organiser</h5><p>AYMAN DINIE BIN ZAHARI</p><p>SSM 202603268059 (003898378-D)</p></div>
+</div>
+<p class="legal">Registration data is used only to run this workshop, under Malaysia's PDPA 2010.</p>
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxad2ugFPJ1kPqEXEMzr0Gth8CPIjaBw0CP8rvPbPUV2PFCR-669Ep9YYf99qpA9nBh/exec';
 const PRICES = { 'Student': 130, 'Early bird': 200, 'Normal': 230 };
-const f = document.getElementById('f'), err = document.getElementById('err'), go = document.getElementById('go');
-const $ = s => f.querySelector(s);
-const ERRORS = {
-  missing: 'Please fill in every required field and tick both agreements.', email: 'That email doesn\'t look right. Please check it.',
-  student: 'Student tickets need your college, student ID number and a photo of your student card.', ticket: 'Please pick a ticket.',
-  duplicate: 'This email is already registered. Check your inbox for our email, or WhatsApp +6011 1068 2544.',
-  full: 'Sorry, this session just filled up. WhatsApp +6011 1068 2544 to join the waitlist.',
-  over: 'Registration for this session has closed.', paused: 'Registration is paused right now. Please try again later.',
-  'early-bird-closed': 'Early bird has just ended. Please reload the page for the Normal ticket.',
-  'normal-not-yet': 'Early bird is still on, so please pick the Early bird ticket.',
-  card: 'Your student card must be a JPG, PNG or PDF under 5 MB.'
-};
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-function showClosed(reason) {
-  const c = document.getElementById('closed');
-  c.textContent = reason === 'full' ? 'This session is fully booked. WhatsApp +6011 1068 2544 to join the waitlist.'
-    : reason === 'over' ? 'Registration for this session has closed. Thank you!' : 'Registration is paused right now. Please check back soon.';
-  c.hidden = false; f.hidden = true;
-}
+/* ---------- top bar + reveal ---------- */
+const topBar = $('#top');
+const onScroll = () => topBar.classList.toggle('solid', scrollY > 40);
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+$$('.rv').forEach(el => io.observe(el));
 
-fetch(ENDPOINT).then(r => r.json()).then(s => {
-  if (s.session) document.getElementById('when').textContent = s.session;
-  if (!s.open) return showClosed(s.reason);
-  if (s.seatsLeft <= 10) document.getElementById('seats').textContent = `Only ${s.seatsLeft} seats left.`;
-  if (s.earlyBird) {
-    if (s.earlyBirdEnds) { document.getElementById('ebNote').textContent = `Until ${s.earlyBirdEnds}, then RM230`; document.getElementById('ebPriceNote').innerHTML = `Until ${s.earlyBirdEnds}, then <s>RM230</s>`; }
-  } else {
-    document.getElementById('ebLabel').hidden = true; document.getElementById('nLabel').hidden = false;
+/* ---------- hero title: extrusion, wireframe, bubble ---------- */
+(() => {
+  const DEPTH = 18, step = .0055, mix = (a, b, t) => '#' + a.map((v, i) => Math.round(v + (b[i] - v) * t).toString(16).padStart(2, '0')).join('');
+  $('#bey').style.textShadow = Array.from({ length: DEPTH }, (_, k) => `${((k + 1) * step).toFixed(4)}em ${((k + 1) * step).toFixed(4)}em 0 ${mix([0x9D, 0xB2, 0xFF], [0x3A, 0x56, 0xD8], k / (DEPTH - 1))}`).join(',');
+  const wire = $('#wire');
+  for (let k = DEPTH; k >= 2; k -= 2) wire.insertAdjacentHTML('afterbegin', `<span class="back" style="transform:translate(${(k * step).toFixed(4)}em,${(k * step).toFixed(4)}em)">ND</span>`);
+
+  if (!window.THREE) return;
+  const host = $('#o'), cv = document.createElement('canvas');
+  let r; try { r = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: true }); } catch (e) { return; }
+  host.appendChild(cv); $('#oFallback').remove();
+  const scene = new THREE.Scene(), cam = new THREE.OrthographicCamera(-1, 1, 1, -1, -100, 100); cam.position.z = 10;
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8090c0, .78));
+  const d1 = new THREE.DirectionalLight(0xffffff, .75); d1.position.set(-5, 8, 9); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0xffffff, .22); d2.position.set(7, -2, 5); scene.add(d2);
+  const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: .58, metalness: .02 });
+  const rad = .56, s = new THREE.Shape(), a0 = Math.PI * 1.18, a1 = Math.PI * 1.36;
+  s.absarc(0, 0, rad, a1, a0 + Math.PI * 2, false); s.lineTo(-rad * 1.02, -rad * 1.08); s.lineTo(Math.cos(a1) * rad, Math.sin(a1) * rad);
+  const g = new THREE.ExtrudeGeometry(s, { depth: rad * .5, bevelEnabled: true, bevelThickness: rad * .09, bevelSize: rad * .09, bevelSegments: 8, curveSegments: 32 }); g.center();
+  const bubble = new THREE.Group(); bubble.add(new THREE.Mesh(g, mat(0x2B4ACB)));
+  [-1, 0, 1].forEach(i => { const d = new THREE.Mesh(new THREE.SphereGeometry(rad * .13, 32, 24), mat(0xF3EAD8)); d.position.set(i * rad * .42 + rad * .02, rad * .06, rad * .25 + rad * .09); bubble.add(d); });
+  scene.add(bubble);
+  const size = () => { const w = cv.clientWidth, h = cv.clientHeight; r.setPixelRatio(Math.min(devicePixelRatio, 2)); r.setSize(w, h, false); const k = h / w; cam.left = -1; cam.right = 1; cam.top = k; cam.bottom = -k; cam.updateProjectionMatrix(); };
+  size(); addEventListener('resize', size);
+  let mx = 0, my = 0, t0 = performance.now(), visible = true;
+  addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) loop(); }).observe(host);
+  function loop() {
+    if (!visible) return;
+    const t = (performance.now() - t0) / 1000, grow = reduce ? 1 : Math.min(1, t / .9), e = 1 - Math.pow(1 - grow, 3);
+    const k = reduce ? 1 : e * (1 + .12 * Math.sin(grow * Math.PI));
+    bubble.scale.setScalar(Math.max(k, .001));
+    bubble.rotation.set(-.1 + my * .35, -.34 + mx * .6 + (reduce ? 0 : Math.sin(t * .8) * .08), .02);
+    bubble.position.y = reduce ? 0 : Math.sin(t * 1.4) * .025;
+    r.render(scene, cam);
+    if (!reduce) requestAnimationFrame(loop);
   }
+  loop();
+})();
+
+/* chat box types itself once */
+(() => {
+  const el = $('#typed'), full = el.textContent, chat = $('#chat');
+  if (reduce) return;
+  el.textContent = ''; let i = 0;
+  setTimeout(function type() { el.textContent = full.slice(0, ++i); if (i < full.length) setTimeout(type, 38 + Math.random() * 40); else setTimeout(() => chat.classList.add('sent'), 500); }, 900);
+})();
+
+/* ---------- status from the Sheet ---------- */
+const form = $('#f');
+let earlyBird = true;
+fetch(ENDPOINT).then(r => r.json()).then(s => {
+  if (s.session) $('#when').textContent = s.session;
+  if (typeof s.seatsLeft === 'number' && s.open) { $('#seatTxt').textContent = `${s.seatsLeft} seat${s.seatsLeft === 1 ? '' : 's'} left`; $('#seatPill').hidden = false; }
+  earlyBird = !!s.earlyBird;
+  if (earlyBird) {
+    if (s.earlyBirdEnds) { $('#ebEnds').textContent = `Ends ${s.earlyBirdEnds}`; $('#ebOptNote').textContent = `Until ${s.earlyBirdEnds}`; $('#nTag').textContent = `Opens after ${s.earlyBirdEnds}`; }
+  } else {
+    $('#tkEb').classList.replace('hi', 'off'); $('#tkEb').querySelector('.tag').textContent = 'Ended'; $('#tkEb').querySelector('.tag').classList.add('grey'); $('#ebEnds').textContent = '';
+    $('#tkN').classList.replace('off', 'hi'); $('#nTag').textContent = 'On sale now'; $('#nTag').classList.remove('grey');
+    $('#ebOpt').hidden = true; $('#nOpt').hidden = false;
+    const eb = $('input[value="Early bird"]'); if (eb.checked) { eb.checked = false; onTicket(); }
+  }
+  if (!s.open) showClosed(s.reason);
 }).catch(() => {});
 
-f.addEventListener('change', e => {
-  if (e.target.name !== 'ticket') return;
-  const t = e.target.value;
-  document.getElementById('student').hidden = t !== 'Student';
-  $('[name=college]').required = $('[name=sid]').required = $('[name=cardFile]').required = t === 'Student';
-  document.getElementById('amt').textContent = 'RM' + PRICES[t];
+function showClosed(reason) {
+  const c = $('#closed');
+  const msg = reason === 'full' ? ['Fully booked', 'All 30 seats are taken. WhatsApp +6011 1068 2544 to join the waitlist for the next date.']
+    : reason === 'over' ? ['Registration has closed', 'Thank you for your interest. Follow us for the next date.'] : ['Registration is paused', 'Please check back soon, or WhatsApp +6011 1068 2544.'];
+  c.innerHTML = `<h3>${msg[0]}</h3><p>${msg[1]}</p>`; c.hidden = false; $('#regGrid').hidden = true;
+}
+
+/* ---------- validation ---------- */
+const STEPS = { 1: ['name', 'email', 'wa'], 2: ['ticket', 'college', 'sid', 'card'], 3: ['freq', 'tools', 'laptop'], 4: ['paidWith', 'ref', 'payName'], 5: ['consent', 'policy'] };
+const LABELS = { name: 'Full name', email: 'Email', wa: 'WhatsApp number', ticket: 'Ticket', college: 'College or university', sid: 'Student ID number', card: 'Photo of your student card', freq: 'How often you use AI', tools: 'AI tools used', laptop: 'Laptop with Chrome', paidWith: 'How you paid', ref: 'Payment reference number', payName: 'Name on the paying account', consent: 'Personal data agreement', policy: 'Refund policy and house rules' };
+const v = n => (form.elements[n] && form.elements[n].value || '').trim();
+const checked = n => $$(`[name="${n}"]:checked`, form).length > 0;
+const ticket = () => ($(`[name=ticket]:checked`, form) || {}).value || '';
+const waDigits = () => { let d = v('wa').replace(/\D/g, ''); if (d.startsWith('60')) d = d.slice(2); if (d.startsWith('0')) d = d.slice(1); return d; };
+let card = null, cardBusy = null;
+
+function check(n) {
+  switch (n) {
+    case 'name': return v('name').length < 3 ? 'Enter your full name, as it should appear on your certificate.' : '';
+    case 'email': return !v('email') ? 'Enter your email address.' : !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(v('email')) ? 'Enter an email address like name@gmail.com.' : '';
+    case 'wa': { const d = waDigits(); return !d ? 'Enter your WhatsApp number.' : !/^1\d{8,9}$/.test(d) ? 'Enter a Malaysian mobile number, like 12 345 6789.' : ''; }
+    case 'ticket': return ticket() ? '' : 'Choose a ticket.';
+    case 'college': return ticket() === 'Student' && v('college').length < 2 ? 'Enter your college or university.' : '';
+    case 'sid': return ticket() === 'Student' && v('sid').length < 3 ? 'Enter your student ID number.' : '';
+    case 'card': return ticket() === 'Student' && !card ? 'Add a photo of your student card.' : '';
+    case 'freq': case 'laptop': case 'paidWith': return checked(n) ? '' : 'Choose one.';
+    case 'tools': return checked('tools') ? '' : 'Tick at least one, or "None yet".';
+    case 'ref': return v('ref').replace(/\s/g, '').length < 4 ? 'Enter the reference number from your payment receipt.' : '';
+    case 'payName': return v('payName').length < 3 ? 'Enter the name on the account that paid.' : '';
+    case 'consent': return form.elements.consent.checked ? '' : 'Tick this box to let us use your details for the workshop.';
+    case 'policy': return form.elements.policy.checked ? '' : 'Tick this box to agree to the refund policy and house rules.';
+  }
+  return '';
+}
+const touched = new Set();
+function paint(n, force) {
+  const wrap = $(`[data-for="${n}"]`, form); if (!wrap) return '';
+  const msg = check(n), show = force || touched.has(n);
+  wrap.classList.toggle('bad', !!msg && show);
+  wrap.classList.toggle('good', !msg && show && !!wrap.querySelector('.ok-ic'));
+  const e = $('.emsg', wrap); if (e) e.textContent = show ? msg : '';
+  $$('input,textarea,select', wrap).forEach(i => i.setAttribute('aria-invalid', !!msg && show));
+  return msg;
+}
+const fieldOf = el => el.closest('[data-for]') && el.closest('[data-for]').dataset.for;
+form.addEventListener('focusout', e => { const n = fieldOf(e.target); if (!n || ['ticket', 'freq', 'tools', 'laptop', 'paidWith', 'card'].includes(n)) return; if (e.target.value || touched.has(n)) { touched.add(n); paint(n); } });
+form.addEventListener('input', e => { const n = fieldOf(e.target); if (n) { if (touched.has(n) || $(`[data-for="${n}"]`, form).classList.contains('bad')) paint(n); } progress(); save(); });
+form.addEventListener('change', e => {
+  const n = fieldOf(e.target); if (!n) return;
+  if (e.target.name === 'tools') exclusiveNone(e.target);
+  if (e.target.name === 'ticket') onTicket();
+  if (n !== 'card') { touched.add(n); paint(n); }
+  progress(); save();
+});
+function exclusiveNone(el) {
+  const none = $('[name=tools][value="None yet"]', form);
+  if (el === none && none.checked) $$('[name=tools]', form).forEach(c => { if (c !== none) c.checked = false; });
+  else if (el !== none && el.checked) none.checked = false;
+}
+
+/* email typo help */
+const DOMAINS = { 'gmial.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gamil.com': 'gmail.com', 'gmail.co': 'gmail.com', 'gmail.con': 'gmail.com', 'yahooo.com': 'yahoo.com', 'yaho.com': 'yahoo.com', 'hotmial.com': 'hotmail.com', 'hotmail.co': 'hotmail.com', 'outlok.com': 'outlook.com', 'icloud.co': 'icloud.com' };
+$('#email').addEventListener('blur', () => {
+  const [u, d] = v('email').toLowerCase().split('@'), fix = d && DOMAINS[d], s = $('#sugg');
+  if (!fix) { s.hidden = true; return; }
+  s.innerHTML = `Did you mean <button type="button">${u}@${fix}</button>?`; s.hidden = false;
+  s.querySelector('button').onclick = () => { $('#email').value = `${u}@${fix}`; s.hidden = true; touched.add('email'); paint('email'); save(); };
+});
+/* name carries over to the paying account */
+$('#name').addEventListener('blur', () => { if (!v('payName') && v('name')) { $('#payName').value = v('name'); progress(); } });
+
+/* ticket */
+function onTicket() {
+  const t = ticket(), stu = t === 'Student';
+  $('#student').classList.toggle('open', stu);
+  $$('#student input').forEach(i => { i.tabIndex = stu ? 0 : -1; });
+  ['college', 'sid'].forEach(n => { form.elements[n].required = stu; });
+  ['college', 'sid', 'card'].forEach(n => { touched.delete(n); const w = $(`[data-for="${n}"]`, form); w.classList.remove('good', 'bad'); const m = $('.emsg', w); if (m) m.textContent = ''; });
+  $('#sTicket').textContent = t || 'Not chosen';
+  const a = PRICES[t];
+  $('#amt').textContent = a ? 'RM' + a : 'Choose a ticket in step 2'; $('#amt').classList.toggle('wait', !a);
+  $('#sAmt').textContent = a ? 'RM' + a : '–';
+  $('#copyAmt').hidden = !a;
+  $('#payStep2').textContent = a ? `Pay exactly RM${a}.` : 'Pay the exact amount above.';
+  $('#goTxt').textContent = a ? `Register · RM${a}` : 'Register';
+}
+$$('#student input').forEach(i => { i.tabIndex = -1; });
+$('#copyAmt').addEventListener('click', async e => {
+  const b = e.currentTarget, a = String(PRICES[ticket()] || '');
+  try { await navigator.clipboard.writeText(a); b.textContent = 'Copied'; } catch (x) { b.textContent = 'RM' + a; }
+  setTimeout(() => { b.textContent = 'Copy'; }, 1600);
 });
 
+/* student card upload */
+const drop = $('#drop'), cardIn = $('#cardFile');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, () => drop.classList.remove('over')));
+drop.addEventListener('drop', e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) takeCard(f); });
+cardIn.addEventListener('change', () => { if (cardIn.files[0]) takeCard(cardIn.files[0]); });
+$('#fileRm').addEventListener('click', () => { card = null; cardIn.value = ''; $('#fileBox').hidden = true; drop.hidden = false; touched.add('card'); paint('card'); progress(); cardIn.focus(); });
+function takeCard(file) {
+  touched.add('card');
+  cardBusy = readCard(file).then(c => {
+    card = c;
+    const box = $('#thumbWrap'); box.innerHTML = '';
+    if (file.type.startsWith('image/')) { const im = document.createElement('img'); im.className = 'thumb'; im.alt = ''; im.src = URL.createObjectURL(file); box.replaceWith(im); im.id = 'thumbWrap'; }
+    else box.textContent = 'PDF';
+    $('#fileName').textContent = file.name; $('#fileInfo').textContent = `${(c.data.length * .75 / 1024).toFixed(0)} KB · ready to send`;
+    $('#fileBox').hidden = false; drop.hidden = true; paint('card'); progress();
+  }).catch(() => { card = null; const w = $('[data-for="card"]'); w.classList.add('bad'); $('#card-e').textContent = 'That file didn\'t work. Use a JPG, PNG or PDF under 5 MB.'; progress(); });
+}
 /** Shrinks photos to 1600 px JPEG before sending; PDFs go as they are (up to 5 MB). */
 async function readCard(file) {
-  if (!file) throw new Error('student');
   const toB64 = blob => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = no; r.readAsDataURL(blob); });
   if (file.type === 'application/pdf') { if (file.size > 5e6) throw new Error('card'); return { type: file.type, data: await toB64(file) }; }
   if (!file.type.startsWith('image/')) throw new Error('card');
@@ -280,29 +987,151 @@ async function readCard(file) {
   return { type: 'image/jpeg', data: await toB64(blob) };
 }
 
-f.addEventListener('submit', async e => {
-  e.preventDefault(); err.hidden = true;
-  const fd = new FormData(f);
-  const data = Object.fromEntries([...fd.entries()].filter(([k]) => k !== 'tools'));
-  delete data.cardFile;
-  data.tools = fd.getAll('tools'); data.consent = $('[name=consent]').checked; data.policy = $('[name=policy]').checked;
-  const missing = !f.checkValidity() || !data.tools.length;
-  if (missing) { err.textContent = !data.tools.length && f.checkValidity() ? 'Please tick at least one AI tool (or "None yet").' : ERRORS.missing; err.hidden = false; f.reportValidity(); return; }
-  go.disabled = true; go.textContent = 'Sending…';
+/* progress */
+function progress() {
+  let n = 0;
+  for (const s in STEPS) {
+    const ok = STEPS[s].every(f => !check(f)); n += ok;
+    $('#step' + s).classList.toggle('done', ok);
+    $(`#prog li[data-s="${s}"]`).classList.toggle('ok', ok);
+  }
+  $('#pbar').style.width = n * 20 + '%';
+}
+
+/* draft kept on this device */
+const KEY = 'abtc-draft-1';
+function save() {
   try {
-    if (data.ticket === 'Student') data.card = await readCard($('[name=cardFile]').files[0]);
+    const d = {}; [...new FormData(form)].forEach(([k, val]) => { if (k === 'website' || val instanceof File) return; d[k] = d[k] ? [].concat(d[k], val) : val; });
+    localStorage.setItem(KEY, JSON.stringify(d)); $('#saved').hidden = false;
+  } catch (e) {}
+}
+function restore() {
+  let d; try { d = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return; }
+  if (!d) return;
+  Object.entries(d).forEach(([k, val]) => {
+    const els = $$(`[name="${k}"]`, form); if (!els.length) return;
+    if (els[0].type === 'radio' || els[0].type === 'checkbox') els.forEach(el => { el.checked = [].concat(val).includes(el.value) || (val === 'on' && els.length === 1); });
+    else els[0].value = val;
+  });
+  onTicket(); progress(); $('#saved').hidden = false;
+}
+restore();
+
+/* submit */
+const go = $('#go'), err = $('#err'), sum = $('#summary');
+form.addEventListener('submit', async e => {
+  e.preventDefault(); err.hidden = true;
+  if (cardBusy) await cardBusy.catch(() => {});
+  const all = Object.values(STEPS).flat(), bad = all.filter(n => paint(n, true));
+  all.forEach(n => touched.add(n));
+  if (bad.length) {
+    $('#sumTitle').textContent = bad.length === 1 ? 'Please fix 1 thing before you register' : `Please fix ${bad.length} things before you register`;
+    $('#sumList').innerHTML = bad.map(n => `<li><a href="#" data-go="${n}">${LABELS[n]}: ${check(n)}</a></li>`).join('');
+    sum.hidden = false; sum.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); sum.focus({ preventScroll: true });
+    return;
+  }
+  sum.hidden = true;
+  const fd = new FormData(form), data = {};
+  [...fd].forEach(([k, val]) => { if (k !== 'tools' && !(val instanceof File)) data[k] = String(val).trim(); });
+  data.tools = fd.getAll('tools'); data.consent = form.elements.consent.checked; data.policy = form.elements.policy.checked;
+  data.wa = '+60' + waDigits();
+  if (data.ticket === 'Student') data.card = card; else { delete data.college; delete data.sid; }
+  go.disabled = true; go.innerHTML = '<span class="spin" aria-hidden="true"></span> Sending your registration…';
+  try {
     const res = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
     if (!res.ok) throw new Error(res.error || 'unknown');
-    f.hidden = true;
-    const d = document.getElementById('done');
-    d.innerHTML = `<h3>You're registered, ${String(data.name).split(' ')[0].replace(/[<>&]/g, '')}</h3>` +
-      (res.id ? `<p>Your registration number is <b>${res.id}</b>. We've emailed ${String(data.email).replace(/[<>&]/g, '')} with the details.</p>` : '') +
-      `<p>We match payments within 24 hours, then send your confirmation and receipt. Didn't get our email? Check your spam folder, or WhatsApp +6011 1068 2544.</p>`;
-    d.hidden = false; d.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    try { localStorage.removeItem(KEY); } catch (x) {}
+    done(data, res);
   } catch (x) {
-    err.textContent = ERRORS[x.message] || 'Something went wrong sending your registration. Please try again, or WhatsApp +6011 1068 2544.';
-    err.hidden = false; go.disabled = false; go.textContent = 'Register and confirm payment →';
+    err.innerHTML = `<b>${ERRORS[x.message] || 'We couldn\'t send your registration.'}</b>${ERRORS[x.message] ? '' : '<p style="margin-top:6px">Check your connection and try again. Your answers are still here. If it keeps happening, WhatsApp +6011 1068 2544.</p>'}`;
+    err.hidden = false; go.disabled = false; go.innerHTML = `<span id="goTxt">Register · RM${PRICES[data.ticket]}</span> <span class="ar">→</span>`;
+    if (x.message === 'early-bird-closed') { $('#ebOpt').hidden = true; $('#nOpt').hidden = false; }
   }
 });
+sum.addEventListener('click', e => {
+  const a = e.target.closest('[data-go]'); if (!a) return; e.preventDefault();
+  const w = $(`[data-for="${a.dataset.go}"]`, form), el = w.querySelector('input:not([type=hidden]),textarea,select');
+  w.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); setTimeout(() => el && el.focus({ preventScroll: true }), reduce ? 0 : 400);
+});
+const ERRORS = {
+  missing: 'Some required answers are missing. Please check the form.', email: 'That email address doesn\'t look right.',
+  student: 'Student tickets need your college, student ID number and a photo of your card.', ticket: 'Please choose a ticket.',
+  duplicate: 'This email is already registered. Check your inbox (and spam) for our email, or WhatsApp +6011 1068 2544.',
+  full: 'Sorry, the last seat was just taken. WhatsApp +6011 1068 2544 to join the waitlist.',
+  over: 'Registration for this session has closed.', paused: 'Registration is paused right now. Please try again later.',
+  'early-bird-closed': 'Early bird has just ended. Please choose the Normal ticket and pay RM230.',
+  'normal-not-yet': 'Early bird is still on, so please choose the Early bird ticket.',
+  card: 'Your student card must be a JPG, PNG or PDF under 5 MB.'
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function done(data, res) {
+  $('#regGrid').hidden = true;
+  const d = $('#done');
+  d.innerHTML = `<div class="done" role="status" tabindex="-1">
+    <span class="check"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+    <h3>Seat held, ${esc(data.name.split(' ')[0])}.</h3>
+    <span class="status"><i></i>Waiting for payment check</span>
+    <p>${res.id ? `Your registration number is <b>${esc(res.id)}</b>. ` : ''}We've emailed <b>${esc(data.email)}</b>. If it isn't in your inbox in a few minutes, check spam.</p>
+    <ol class="tl">
+      <li class="ok"><b>Registered and paid</b><span>RM${PRICES[data.ticket]} · reference ${esc(data.ref)}</span></li>
+      <li class="now"><b>We match your payment</b><span>Usually within 24 hours. If we can't find it, we'll email you to resend the reference.</span></li>
+      <li><b>Seat confirmed</b><span>Receipt, calendar invite and the class WhatsApp group, by email.</span></li>
+    </ol>
+    <p>Questions? WhatsApp <b>+6011 1068 2544</b>.</p></div>`;
+  d.hidden = false; const box = d.firstElementChild; box.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); box.focus({ preventScroll: true });
+}
+progress();
+</script>
+<script>
+/* ---- scroll scenes ---- */
+(() => {
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* statement: split into words, accent the "build" phrases */
+  const say = document.getElementById('say');
+  const ACC = new Set(['build.', 'build']);
+  say.innerHTML = say.textContent.trim().split(/\s+/).map(w => `<span class="w${ACC.has(w) ? ' acc' : ''}">${w}</span> `).join('');
+  const words = [...say.querySelectorAll('.w')];
+  const scenes = [...document.querySelectorAll('[data-scroll]')];
+  let ticking = false;
+  function frame() {
+    ticking = false;
+    const vh = innerHeight;
+    scenes.forEach(sc => {
+      const r = sc.getBoundingClientRect(), span = r.height - vh;
+      if (r.bottom < -vh || r.top > vh * 2) return;
+      const p = Math.min(1, Math.max(0, -r.top / (span || 1)));
+      sc.style.setProperty('--p', p.toFixed(4));
+      if (sc.classList.contains('statement')) { const n = Math.round(p * 1.25 * words.length); words.forEach((w, i) => w.classList.toggle('lit', i < n)); }
+    });
+  }
+  if (RM) { words.forEach(w => w.classList.add('lit')); }
+  else { addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }, { passive: true }); addEventListener('resize', frame); frame(); }
+
+  /* story: copy each visual under its step for phones, swap the sticky stage on desktop */
+  const steps = [...document.querySelectorAll('.sstep')], layers = [...document.querySelectorAll('.stage .layer')];
+  steps.forEach((s, i) => { const c = layers[i].cloneNode(true); c.classList.add('on'); c.removeAttribute('aria-hidden'); s.querySelector('.vis-m').appendChild(c); });
+  const set = i => { steps.forEach((s, k) => s.classList.toggle('on', k === i)); layers.forEach((l, k) => l.classList.toggle('on', k === i)); };
+  set(0);
+  const storyIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) set(+e.target.dataset.i); }), { rootMargin: '-45% 0px -45% 0px' });
+  steps.forEach(s => storyIO.observe(s));
+
+  /* count-up */
+  const cio = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; cio.unobserve(e.target);
+    const el = e.target, to = +el.dataset.count; if (RM || to < 2) return;
+    const t0 = performance.now(), dur = 1100;
+    (function tick(t) { const k = Math.min(1, (t - t0) / dur), eased = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(to * eased); if (k < 1) requestAnimationFrame(tick); })(t0);
+  }), { threshold: .6 });
+  document.querySelectorAll('[data-count]').forEach(el => { if (!RM && +el.dataset.count > 1) el.textContent = '0'; cio.observe(el); });
+
+  /* gallery arrows */
+  const rail = document.getElementById('rail'), prev = document.getElementById('prev'), next = document.getElementById('next');
+  const stepW = () => rail.querySelector('.slide').getBoundingClientRect().width + 24;
+  prev.onclick = () => rail.scrollBy({ left: -stepW(), behavior: RM ? 'auto' : 'smooth' });
+  next.onclick = () => rail.scrollBy({ left: stepW(), behavior: RM ? 'auto' : 'smooth' });
+  const arrows = () => { prev.disabled = rail.scrollLeft < 8; next.disabled = rail.scrollLeft > rail.scrollWidth - rail.clientWidth - 8; };
+  rail.addEventListener('scroll', arrows, { passive: true }); addEventListener('resize', arrows); arrows();
+})();
 </script>
 </body></html>
