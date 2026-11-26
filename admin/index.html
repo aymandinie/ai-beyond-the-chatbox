@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Admin · AI Beyond the Chatbox</title><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="../assets/icon-32.png"><link rel="icon" type="image/svg+xml" href="../assets/icon.svg"><link rel="apple-touch-icon" href="../assets/icon-180.png"><meta name="robots" content="noindex, nofollow">
+<title>Admin · AI Beyond the Chatbox</title><link rel="icon" href="../favicon.ico?v=3" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="../assets/icon-32.png?v=3"><link rel="icon" type="image/svg+xml" href="../assets/icon.svg?v=3"><link rel="apple-touch-icon" href="../assets/icon-180.png?v=3"><meta name="robots" content="noindex, nofollow">
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=Courier+Prime:wght@700&display=swap">
 <link rel="stylesheet" href="../assets/app.css">
@@ -288,7 +288,7 @@ function overview() {
   <p class="mono sec-title">Needs your attention</p>
   <div class="grid two">
     <div class="panel"><h2>${ico('inbox')}Payments to check <span class="pill p-pending">${attn.length}</span></h2>
-      <div class="attn">${attn.length ? attn.slice(0, 12).map(a => `<div class="row"><div><b>${esc(a.r.Name)} · ${rm(a.r['Amount (RM)'])}</b><small>Ref <b style="display:inline">${esc(a.r['Payment ref'])}</b> · ${esc(a.r['Paid with'])} · ${when(a.r.Submitted)} · ${esc(a.why)}</small></div>
+      <div class="attn">${attn.length ? attn.slice(0, 12).map(a => `<div class="row"><div><b>${esc(a.r.Name)} · ${rm(a.r['Amount (RM)'])}</b><small>Ref <b style="display:inline">${esc(a.r['Payment ref'])}</b>${a.r['Payment proof'] ? ` · <a href="${esc(a.r['Payment proof'])}" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600">Receipt</a>` : ''} · ${esc(a.r['Paid with'])} · ${when(a.r.Submitted)} · ${esc(a.why)}</small></div>
         <div class="acts"><button class="btn ghost sm" data-open="${esc(a.r.ID)}">${ico('eye')}View</button>${a.acts.map(st => `<button class="btn sm ${st === 'Paid' ? 'green' : st === 'Released' ? 'dark' : 'ghost'}" data-status="${st}" data-id="${esc(a.r.ID)}">${st === 'Paid' ? ico('circle-check') + 'Mark paid' : st === 'Released' ? ico('rotate-ccw') + 'Release' : ico('circle-alert') + 'Not found'}</button>`).join('')}</div></div>`).join('')
         : `<p class="empty">${ico('circle-check')}All caught up. Nothing to check.</p>`}</div></div>
     <div class="grid" style="align-content:start">
@@ -329,7 +329,7 @@ function openRow(id) {
     <header><div style="flex:1"><span class="mono" style="color:var(--blue)">${esc(r.ID)} · ${when(r.Submitted)}</span><h2>${esc(r.Name)}</h2><div style="margin-top:8px">${pill(r.Status)}${/TEST/.test(r.Notes) ? ' <span class="pill p-test">TEST</span>' : ''}</div></div><button class="x" data-close aria-label="Close">${ico('x')}</button></header>
     ${nexts.length ? `<div class="actions">${nexts.map(st => `<button class="btn ${label[st][1]}" data-status="${st}" data-id="${esc(r.ID)}">${label[st][0]}</button>`).join('')}</div><p class="hint">Each button emails them straight away, except Mark refunded.</p>` : ''}
     <dl class="kv">${F('Email', `<a href="mailto:${esc(r.Email)}">${esc(r.Email)}</a>`)}${F('WhatsApp', `<a href="https://wa.me/${String(r.WhatsApp).replace(/\D/g, '')}" target="_blank" rel="noopener">${esc(r.WhatsApp)}</a>`)}${F('Ticket', esc(r.Ticket) + ' · ' + rm(r['Amount (RM)']))}
-      ${F('Paid with', esc(r['Paid with']))}${F('Payment ref', `<b>${esc(r['Payment ref'])}</b>`)}${F('Paying name', esc(r['Paying name']))}${F('Receipt', esc(r['Receipt no']))}
+      ${F('Paid with', esc(r['Paid with']))}${F('Payment ref', `<b>${esc(r['Payment ref'])}</b>`)}${F('Receipt upload', r['Payment proof'] ? `<a href="${esc(r['Payment proof'])}" target="_blank" rel="noopener">Open their receipt (private Drive)</a>` : '')}${F('Paying name', esc(r['Paying name']))}${F('Receipt', esc(r['Receipt no']))}
       ${F('College', esc(r.College))}${F('Student ID', esc(r['Student ID']))}${F('Student card', r['Student card'] ? `<a href="${esc(r['Student card'])}" target="_blank" rel="noopener">Open card (private Drive)</a>` : '')}
       ${F('Occupation', esc(r.Occupation))}${F('AI use', esc(r['AI use']))}${F('AI tools', esc(r['AI tools']))}${F('App idea', esc(r['App idea']))}${F('Laptop', esc(r.Laptop))}${F('Heard from', esc(r['Heard from']))}
       ${F('Checked in', esc(r['Checked in']))}${F('Feedback', esc(r.Feedback))}${F('Certificate', esc(r['Certificate no']))}</dl>
@@ -427,6 +427,7 @@ function designs() {
       ${link('file-text', 'Google Sheet (the database)', L.sheet, 'Registrations, Cohorts, Settings, Email log')}
       ${link('inbox', 'Receipts and certificates folder', L.files)}
       ${link('lock', 'Student cards (private)', L.cards, L.cards ? 'Delete after the session: Cohorts tab' : '')}
+      ${link('banknote', 'Payment receipts people uploaded', L.proofs, L.proofs ? 'Private Drive folder' : 'Made with the first upload')}
       ${link('star', 'Certificate template (Slides)', L.certTemplate, L.certTemplate ? '' : 'Made by "Use the new design" in Cohorts')}
       ${link('mail', 'Email designs gallery', L.gallery)}
       ${link('smartphone', 'Demo apps', site + 'demos/')}

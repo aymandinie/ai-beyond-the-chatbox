@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AI Beyond the Chatbox · Register</title><link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png"><link rel="icon" type="image/svg+xml" href="assets/icon.svg"><link rel="apple-touch-icon" href="assets/icon-180.png">
+<title>AI Beyond the Chatbox · Register</title><link rel="icon" href="favicon.ico?v=3" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png?v=3"><link rel="icon" type="image/svg+xml" href="assets/icon.svg?v=3"><link rel="apple-touch-icon" href="assets/icon-180.png?v=3">
 <meta name="description" content="A 3-hour online, hands-on workshop. Build a small app you'll actually use, with AI. No coding needed.">
 <meta property="og:title" content="AI Beyond the Chatbox"><meta property="og:description" content="A 3-hour hands-on workshop. Build something you'll actually use, with AI."><meta property="og:image" content="assets/hero.jpg">
 <meta name="theme-color" content="#131834">
@@ -834,17 +834,22 @@ footer .sel{color:var(--cream)}
 <div class="qrbox"><img class="qr" src="assets/duitnow-qr.png" alt="DuitNow QR code for AYMAN DINIE BIN ZAHARI" width="220" height="312"><a class="dl" href="assets/duitnow-qr.png" download="AI-Beyond-the-Chatbox-DuitNow-QR.png"><svg class="ico"><use href="#i-download"/></svg>Download QR</a></div>
 <div style="display:grid;gap:18px;min-width:0">
 <div class="amt"><div><small class="mono">Amount to pay</small><b id="amt" class="wait">Choose a ticket in step 2</b></div><button type="button" class="copy" id="copyAmt" hidden>Copy</button></div>
-<ol class="howpay"><li>Scan the QR with any banking app or e-wallet.</li><li id="payStep2">Pay the exact amount above.</li><li>Copy the reference number from your receipt into the box below.</li></ol>
+<ol class="howpay"><li>Scan the QR with any banking app or e-wallet.</li><li id="payStep2">Pay the exact amount above.</li><li>Copy the reference number from your receipt into the box below, or upload a screenshot of the receipt.</li></ol>
 <p style="font-size:15px;color:var(--mut)">On your phone? <a class="paylink" id="payLink" href="https://payment.tngdigital.com.my/sc/bDLom4JD3M" target="_blank" rel="noopener">Pay in the Touch 'n Go app <svg class="ico" style="width:16px;height:16px"><use href="#i-ext"/></svg></a></p>
 </div></div>
 <fieldset class="field" data-for="paidWith"><legend>How did you pay?<span class="req" aria-hidden="true">*</span></legend>
 <div class="pills"><label><input type="radio" name="paidWith" value="Banking app" required><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Banking app</label><label><input type="radio" name="paidWith" value="Touch 'n Go eWallet"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>TNG eWallet</label><label><input type="radio" name="paidWith" value="Other e-wallet"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Other e-wallet</label><label><input type="radio" name="paidWith" value="SPayLater"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>SPayLater</label><label><input type="radio" name="paidWith" value="Atome Card"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Atome Card (scan QR)</label><label><input type="radio" name="paidWith" value="GrabPayLater"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>GrabPayLater</label></div><p class="emsg" id="paidWith-e" aria-live="polite"></p></fieldset>
 <div class="two">
-<div class="field" data-for="ref"><label for="ref">Payment reference number<span class="req" aria-hidden="true">*</span></label><p class="hint" id="ref-h">On your receipt as "Reference No." or "Transaction ID".</p>
-<div class="inp"><input id="ref" name="ref" type="text" autocomplete="off" spellcheck="false" placeholder="e.g. 20261125MBBEMYKL0001234" required aria-describedby="ref-h ref-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="emsg" id="ref-e" aria-live="polite"></p></div>
+<div class="field" data-for="ref"><label for="ref">Payment reference number<span class="req" aria-hidden="true">*</span></label><p class="hint" id="ref-h">On your receipt as "Reference No." or "Transaction ID". Or upload the receipt below instead.</p>
+<div class="inp"><input id="ref" name="ref" type="text" autocomplete="off" spellcheck="false" placeholder="e.g. 20261125MBBEMYKL0001234" aria-describedby="ref-h ref-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="emsg" id="ref-e" aria-live="polite"></p></div>
 <div class="field" data-for="payName"><label for="payName">Name on the paying account<span class="req" aria-hidden="true">*</span></label><p class="hint" id="payName-h">Change it if someone else paid for you.</p>
 <div class="inp"><input id="payName" name="payName" type="text" placeholder="e.g. Nur Aisyah binti Ahmad" required aria-describedby="payName-h payName-e"><svg class="ok-ic" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><p class="emsg" id="payName-e" aria-live="polite"></p></div>
-</div></section>
+</div>
+<div class="field" data-for="proof"><span class="lbl" style="font-weight:600;font-size:15.5px" id="proof-l">Upload your payment receipt<span class="opt">Optional</span></span><p class="hint" id="proof-h">A screenshot or PDF of the receipt helps us confirm your seat faster. JPG, PNG or PDF, up to 5 MB. Kept private.</p>
+<label class="drop" id="dropP"><input id="proofFile" type="file" accept="image/*,application/pdf" aria-labelledby="proof-l" aria-describedby="proof-h proof-e"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></span><span><b>Drop the receipt here, or <u>choose a file</u></b><small>Screenshot from your banking app or e-wallet.</small></span></label>
+<div class="file" id="proofBox" hidden><span class="thumb" id="proofThumb"></span><div><b id="proofName"></b><small id="proofInfo">Ready to send</small></div><button type="button" id="proofRm">Remove</button></div>
+<p class="emsg" id="proof-e" aria-live="polite"></p></div>
+</section>
 
 <section class="step rv" id="step5" aria-labelledby="t5"><header><span class="sn">5</span><h3 id="t5">Agreements</h3><span class="st">✓ Done</span></header>
 <div class="field" data-for="consent"><label class="agree"><input type="checkbox" name="consent" id="consent" aria-describedby="consent-e"><span class="box"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>I agree to my details being used only to run this workshop: confirmation, receipt, reminders and certificate. They are never sold or shared, and student card photos are deleted after the session.<span class="req" aria-hidden="true">*</span></span></label><p class="emsg" id="consent-e" aria-live="polite"></p></div>
@@ -1121,7 +1126,7 @@ const v = n => (form.elements[n] && form.elements[n].value || '').trim();
 const checked = n => $$(`[name="${n}"]:checked`, form).length > 0;
 const ticket = () => ($(`[name=ticket]:checked`, form) || {}).value || '';
 const waDigits = () => { let d = v('wa').replace(/\D/g, ''); if (d.startsWith('60')) d = d.slice(2); if (d.startsWith('0')) d = d.slice(1); return d; };
-let card = null, cardBusy = null;
+let card = null, cardBusy = null, proof = null, proofBusy = null;
 
 function check(n) {
   switch (n) {
@@ -1134,7 +1139,7 @@ function check(n) {
     case 'card': return ticket() === 'Student' && !card ? 'Add a photo of your student card.' : '';
     case 'freq': case 'laptop': case 'paidWith': return checked(n) ? '' : 'Choose one.';
     case 'tools': return checked('tools') ? '' : 'Tick at least one, or "None yet".';
-    case 'ref': return v('ref').replace(/\s/g, '').length < 4 ? 'Enter the reference number from your payment receipt.' : '';
+    case 'ref': return !proof && v('ref').replace(/\s/g, '').length < 4 ? 'Enter the reference number from your receipt, or upload the receipt below.' : '';
     case 'payName': return v('payName').length < 3 ? 'Enter the name on the account that paid.' : '';
     case 'consent': return form.elements.consent.checked ? '' : 'Tick this box to let us use your details for the workshop.';
     case 'policy': return form.elements.policy.checked ? '' : 'Tick this box to agree to the refund policy and house rules.';
@@ -1152,13 +1157,13 @@ function paint(n, force) {
   return msg;
 }
 const fieldOf = el => el.closest('[data-for]') && el.closest('[data-for]').dataset.for;
-form.addEventListener('focusout', e => { const n = fieldOf(e.target); if (!n || ['ticket', 'freq', 'tools', 'laptop', 'paidWith', 'card'].includes(n)) return; if (e.target.value || touched.has(n)) { touched.add(n); paint(n); } });
+form.addEventListener('focusout', e => { const n = fieldOf(e.target); if (!n || ['ticket', 'freq', 'tools', 'laptop', 'paidWith', 'card', 'proof'].includes(n)) return; if (e.target.value || touched.has(n)) { touched.add(n); paint(n); } });
 form.addEventListener('input', e => { const n = fieldOf(e.target); if (n) { if (touched.has(n) || $(`[data-for="${n}"]`, form).classList.contains('bad')) paint(n); } progress(); save(); });
 form.addEventListener('change', e => {
   const n = fieldOf(e.target); if (!n) return;
   if (e.target.name === 'tools') exclusiveNone(e.target);
   if (e.target.name === 'ticket') onTicket();
-  if (n !== 'card') { touched.add(n); paint(n); }
+  if (n !== 'card' && n !== 'proof') { touched.add(n); paint(n); }
   progress(); save();
 });
 function exclusiveNone(el) {
@@ -1219,6 +1224,24 @@ function takeCard(file) {
     $('#fileBox').hidden = false; drop.hidden = true; paint('card'); progress();
   }).catch(() => { card = null; const w = $('[data-for="card"]'); w.classList.add('bad'); $('#card-e').textContent = 'That file didn\'t work. Use a JPG, PNG or PDF under 5 MB.'; progress(); });
 }
+/* payment receipt upload (optional; stands in for the reference number) */
+const dropP = $('#dropP'), proofIn = $('#proofFile');
+['dragenter', 'dragover'].forEach(t => dropP.addEventListener(t, e => { e.preventDefault(); dropP.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => dropP.addEventListener(t, () => dropP.classList.remove('over')));
+dropP.addEventListener('drop', e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) takeProof(f); });
+proofIn.addEventListener('change', () => { if (proofIn.files[0]) takeProof(proofIn.files[0]); });
+$('#proofRm').addEventListener('click', () => { proof = null; proofIn.value = ''; $('#proofBox').hidden = true; dropP.hidden = false; $('[data-for="proof"]').classList.remove('good'); if (touched.has('ref')) paint('ref'); progress(); proofIn.focus(); });
+function takeProof(file) {
+  const w = $('[data-for="proof"]'); w.classList.remove('bad'); $('#proof-e').textContent = '';
+  proofBusy = readCard(file).then(c => {
+    proof = c;
+    const box = $('#proofThumb'); box.innerHTML = '';
+    if (file.type.startsWith('image/')) { const im = document.createElement('img'); im.className = 'thumb'; im.alt = ''; im.src = URL.createObjectURL(file); box.replaceWith(im); im.id = 'proofThumb'; }
+    else box.textContent = 'PDF';
+    $('#proofName').textContent = file.name; $('#proofInfo').textContent = `${(c.data.length * .75 / 1024).toFixed(0)} KB · ready to send`;
+    $('#proofBox').hidden = false; dropP.hidden = true; w.classList.add('good'); touched.add('ref'); paint('ref'); progress();
+  }).catch(() => { proof = null; w.classList.add('bad'); $('#proof-e').textContent = 'That file didn\'t work. Use a JPG, PNG or PDF under 5 MB.'; progress(); });
+}
 /** Shrinks photos to 1600 px JPEG before sending; PDFs go as they are (up to 5 MB). */
 async function readCard(file) {
   const toB64 = blob => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = no; r.readAsDataURL(blob); });
@@ -1267,6 +1290,7 @@ const go = $('#go'), err = $('#err'), sum = $('#summary');
 form.addEventListener('submit', async e => {
   e.preventDefault(); err.hidden = true;
   if (cardBusy) await cardBusy.catch(() => {});
+  if (proofBusy) await proofBusy.catch(() => {});
   const all = Object.values(STEPS).flat(), bad = all.filter(n => paint(n, true));
   all.forEach(n => touched.add(n));
   if (bad.length) {
@@ -1281,6 +1305,7 @@ form.addEventListener('submit', async e => {
   data.tools = fd.getAll('tools'); data.consent = form.elements.consent.checked; data.policy = form.elements.policy.checked;
   data.wa = '+60' + waDigits();
   if (data.ticket === 'Student') data.card = card; else { delete data.college; delete data.sid; }
+  if (proof) data.proof = proof;
   go.disabled = true; go.innerHTML = '<span class="spin" aria-hidden="true"></span> Sending your registration…';
   try {
     const res = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
@@ -1306,7 +1331,8 @@ const ERRORS = {
   over: 'Registration for this session has closed.', paused: 'Registration is paused right now. Please try again later.',
   'early-bird-closed': 'Early bird has just ended. Please choose the Normal ticket and pay RM230.',
   'normal-not-yet': 'Early bird is still on, so please choose the Early bird ticket.',
-  card: 'Your student card must be a JPG, PNG or PDF under 5 MB.'
+  card: 'Your student card must be a JPG, PNG or PDF under 5 MB.',
+  proof: 'Your payment receipt must be a JPG, PNG or PDF under 5 MB.'
 };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function done(data, res) {
