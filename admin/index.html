@@ -116,6 +116,22 @@ iframe{width:100%;height:calc(100vh - 40px);min-height:520px;border:0;border-rad
 .statusmap{display:grid;gap:8px}
 .statusmap div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;align-items:center}
 .mobilenav{display:none}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.dcard{background:var(--white);border:1.5px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.dcard .thumb{display:block;aspect-ratio:4/3;background:var(--tint);overflow:hidden}
+.dcard .thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .35s}
+.dcard .thumb:hover img{transform:scale(1.03)}
+.dcard .thumb.fit{background:#E9E3D3}.dcard .thumb.fit img{object-fit:contain;padding:14px}.dcard .thumb.dark{background:linear-gradient(170deg,#131834,#1B2350 55%,#2B4ACB 130%)}.dcard .thumb.dark img{object-fit:contain;padding:22px}
+.dcard .body{padding:14px 16px 16px;display:grid;gap:6px;flex:1;align-content:start}
+.dcard .body b{font-size:16px}.dcard .body small{color:var(--mut);font-size:13px;line-height:1.45}
+.dcard .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.lgroups{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.lrow{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px}
+.lrow:hover{background:var(--tint)}.lrow>.ico{color:var(--blue);flex:none}
+.lrow div{flex:1;min-width:0}.lrow b{display:block;font-size:14.5px}.lrow small{display:block;color:var(--mut);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrow .x{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;border:1.5px solid var(--line);background:var(--white);color:var(--navy);cursor:pointer;flex:none;text-decoration:none}
+.lrow .x:hover{border-color:var(--blue);color:var(--blue)}
+.lrow.off{opacity:.55}.paths code{font-family:'Courier Prime',monospace;font-size:12.5px;background:var(--tint);padding:2px 6px;border-radius:6px;word-break:break-all}
 .cohortsel{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:4px 6px 4px 14px;font-weight:600;font-size:13.5px}
 .cohortsel select{border:0;min-height:30px;padding:0 26px 0 6px;font-weight:700;background:transparent;width:auto;box-shadow:none;font-size:14px}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
@@ -163,6 +179,7 @@ iframe{width:100%;height:calc(100vh - 40px);min-height:520px;border:0;border-rad
 <button data-v="people"><svg class="ico"><use href="#i-users"/></svg>Registrations<span class="count" id="navCount">0</span></button>
 <button data-v="cohorts"><svg class="ico"><use href="#i-calendar"/></svg>Cohorts</button>
 <button data-v="emails"><svg class="ico"><use href="#i-mail"/></svg>Emails</button>
+<button data-v="designs"><svg class="ico"><use href="#i-sparkles"/></svg>Designs &amp; links</button>
 <button data-v="settings"><svg class="ico"><use href="#i-settings"/></svg>Settings</button>
 <button data-v="activity"><svg class="ico"><use href="#i-activity"/></svg>Activity</button>
 <button data-v="guide"><svg class="ico"><use href="#i-book-open"/></svg>Guide</button>
@@ -175,6 +192,7 @@ iframe{width:100%;height:calc(100vh - 40px);min-height:520px;border:0;border-rad
 <button data-v="people"><svg class="ico"><use href="#i-users"/></svg>People</button>
 <button data-v="cohorts"><svg class="ico"><use href="#i-calendar"/></svg>Cohorts</button>
 <button data-v="emails"><svg class="ico"><use href="#i-mail"/></svg>Emails</button>
+<button data-v="designs"><svg class="ico"><use href="#i-sparkles"/></svg>Designs &amp; links</button>
 <button data-v="settings"><svg class="ico"><use href="#i-settings"/></svg>Settings</button>
 <button data-v="activity"><svg class="ico"><use href="#i-activity"/></svg>Activity</button>
 <button data-v="guide"><svg class="ico"><use href="#i-book-open"/></svg>Guide</button>
@@ -234,10 +252,10 @@ $$('#nav button, #mnav button').forEach(b => b.addEventListener('click', () => g
 
 function render() {
   if (!D) return;
-  const T = { overview: 'Overview', people: 'Registrations', cohorts: 'Cohorts', emails: 'Emails', settings: 'Settings', activity: 'Activity', guide: 'Guide' };
+  const T = { overview: 'Overview', people: 'Registrations', cohorts: 'Cohorts', emails: 'Emails', designs: 'Designs & links', settings: 'Settings', activity: 'Activity', guide: 'Guide' };
   $('#title').textContent = T[VIEW];
   const v = $('#view'); v.className = 'view'; void v.offsetWidth;
-  v.innerHTML = ({ overview, people, cohorts, emails, settings, activity, guide })[VIEW]();
+  v.innerHTML = ({ overview, people, cohorts, emails, designs, settings, activity, guide })[VIEW]();
   wire();
 }
 
@@ -368,6 +386,61 @@ function cohortForm(c) {
   });
 }
 
+/* ---------- designs & links ---------- */
+const BRAND_GUIDE = 'https://claude.ai/artifact/5k6cxUk8u7m5rvjFmWxbpo';
+const REPO = 'https://github.com/aymandinie/ai-beyond-the-chatbox';
+function designs() {
+  const L = D.links, site = L.site, A = site + 'assets/brand/';
+  const c = D.cohorts.find(x => x.Code === COHORT) || {};
+  const set = k => (D.settings.find(x => x.key === k) || {}).value || '';
+  const open = (href, label = 'Open') => href ? `<a class="btn ghost sm" href="${esc(href)}" target="_blank" rel="noopener">${ico('external-link')}${label}</a>` : '';
+  const card = (img, title, text, acts, dark) => `<div class="dcard"><a class="thumb ${dark === 'fit' ? 'fit' : dark ? 'dark' : ''}" href="${esc(img)}" target="_blank" rel="noopener"><img src="${esc(img)}" alt="${esc(title)}" loading="lazy"></a><div class="body"><b>${title}</b><small>${text}</small><div class="acts">${acts}</div></div></div>`;
+  const link = (icon, title, url, note) => url
+    ? `<div class="lrow">${ico(icon)}<div><b>${title}</b><small>${esc(note || url.replace(/^https?:\/\//, ''))}</small></div><button class="x" data-copy="${esc(url)}" title="Copy link" aria-label="Copy ${esc(title)} link">${ico('copy')}</button><a class="x" href="${esc(url)}" target="_blank" rel="noopener" title="Open" aria-label="Open ${esc(title)}">${ico('arrow-up-right')}</a></div>`
+    : `<div class="lrow off">${ico(icon)}<div><b>${title}</b><small>${esc(note || 'Not set yet')}</small></div></div>`;
+  return `<p class="mono sec-title">Designs</p>
+  <div class="dgrid">
+    ${card(A + 'poster.jpg', 'Poster', 'The launch poster (Option 8 Final). Full-size PNGs are in the Posters folder on your Mac.', open(A + 'poster.jpg', 'Full image'))}
+    ${card(A + 'certificate-sample.jpg', 'Certificate', 'Sent after the session. Name, date and certificate ID are filled in for each person.', `<button class="btn ghost sm" data-certprev>${ico('eye')}Preview PDF</button>${open(L.certTemplate, 'Template')}`, 'fit')}
+    ${card(A + 'receipt-sample.jpg', 'Receipt', 'PDF made automatically when you mark someone Paid, attached to their confirmation email.', open(A + 'receipt-sample.jpg', 'Full image'))}
+    ${card(A + 'emails-sample.jpg', 'Emails (11)', 'Every email the system sends, with sample details and when each one goes out.', `${open(L.gallery, 'Gallery')}<button class="btn ghost sm" data-go="emails">${ico('mail')}Emails tab</button>`)}
+    ${card(A + 'logo-wordmark-small.png', 'Wordmark · stacked', 'For posters, square posts, the certificate and slide covers. Use on navy or blue only.', open(A + 'logo-wordmark.png', 'Full PNG'), true)}
+    ${card(A + 'logo-wide-small.png', 'Wordmark · one line', 'For website and email headers, banners and anything wide.', open(A + 'logo-wide.png', 'Full PNG'), true)}
+  </div>
+  <div class="panel" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">${ico('book-open')}<div style="flex:1;min-width:220px"><b>Brand guide</b><p class="hint">How to use the wordmark, colours, fonts, tone of voice and icons. Private until you share it from its Share menu.</p></div>${open(BRAND_GUIDE, 'Open brand guide')}</div>
+  <p class="mono sec-title">Links</p>
+  <div class="lgroups">
+    <div class="panel"><h2>${ico('users')}For participants</h2>
+      ${link('globe', 'Registration page', site)}
+      ${link('user-check', 'Check-in page', L.checkin, 'Post in the meeting chat at the start')}
+      ${link('star', 'Feedback page', L.feedback, 'Post at the end')}
+      ${link('circle-check', 'Certificate verify page', L.verify)}
+      ${link('calendar', 'Meeting link · ' + esc(COHORT), c['Meeting link'], c['Meeting link'] ? '' : 'Set it in Cohorts')}
+      ${link('message-square', 'WhatsApp group · ' + esc(COHORT), c['WhatsApp group link'], c['WhatsApp group link'] ? '' : 'Set it in Cohorts')}
+      ${link('credit-card', 'Payment link', set('Payment link'), set('Payment link') ? '' : 'Set it in Settings')}
+      ${link('qr-code', 'DuitNow QR image', site + 'assets/duitnow-qr.png')}
+    </div>
+    <div class="panel"><h2>${ico('lock')}For you</h2>
+      ${link('layout-dashboard', 'This admin page', site + 'admin/')}
+      ${link('file-text', 'Google Sheet (the database)', L.sheet, 'Registrations, Cohorts, Settings, Email log')}
+      ${link('inbox', 'Receipts and certificates folder', L.files)}
+      ${link('lock', 'Student cards (private)', L.cards, L.cards ? 'Delete after the session: Cohorts tab' : '')}
+      ${link('star', 'Certificate template (Slides)', L.certTemplate, L.certTemplate ? '' : 'Made by "Use the new design" in Cohorts')}
+      ${link('mail', 'Email designs gallery', L.gallery)}
+      ${link('smartphone', 'Demo apps', site + 'demos/')}
+      ${link('book-open', 'Brand guide', BRAND_GUIDE, 'Private until shared')}
+      ${link('globe', 'Website code (GitHub)', REPO)}
+    </div>
+  </div>
+  <div class="panel paths"><h2>${ico('download')}Files on your Mac</h2><p class="hint" style="margin-bottom:10px">Inside the "AI Beyond the Chatbox" folder:</p><ul>
+    <li>Posters (full size): <code>5 Deliverables/PERSONAL AI Beyond the Chatbox Posters/</code></li>
+    <li>Proposal for Adam: <code>5 Deliverables/PERSONAL AI Beyond the Chatbox Proposal v5.pdf</code></li>
+    <li>Slides: <code>5 Deliverables/PERSONAL AI Beyond the Chatbox Deck v1.html</code></li>
+    <li>Script to paste into Apps Script: <code>4 Working/Registration/apps-script/All in one.gs</code></li>
+    <li>Wordmark and certificate artwork: <code>5 Deliverables/GitHub Site/assets/brand/</code></li>
+  </ul></div>`;
+}
+
 /* ---------- emails ---------- */
 function emails() {
   const how = h => h.startsWith('Auto') ? 'p-paid' : h.startsWith('Status') ? 'p-refunded' : 'p-pending';
@@ -467,6 +540,11 @@ function wire(root = document) {
     busy(b, true, 'Sending…'); try { const res = await api('previewAll'); toast(res.ok ? res.message : 'Could not send.', !res.ok); } catch (x) {} busy(b, false);
   }));
   $$('[data-go]', root).forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+  $$('[data-copy]', root).forEach(b => b.addEventListener('click', async () => {
+    const v = b.dataset.copy;
+    try { await navigator.clipboard.writeText(v); toast('Link copied.'); }
+    catch (x) { const t = document.createElement('textarea'); t.value = v; document.body.append(t); t.select(); try { document.execCommand('copy'); toast('Link copied.'); } catch (y) { toast(v); } t.remove(); }
+  }));
   $$('[data-newcohort]', root).forEach(b => b.addEventListener('click', () => cohortForm(null)));
   $$('[data-editcohort]', root).forEach(b => b.addEventListener('click', () => cohortForm(D.cohorts.find(c => c.Code === b.dataset.editcohort))));
   $$('[data-viewcohort]', root).forEach(b => b.addEventListener('click', () => { COHORT = b.dataset.viewcohort; load(); }));
