@@ -58,7 +58,7 @@ async function check() {
       document.getElementById('formView').hidden = true; document.getElementById('okView').hidden = false;
       try { history.replaceState(null, '', '?id=' + id); } catch (x) {}
     } else {
-      err.textContent = r.error === 'notfound' ? 'No certificate has this ID. Check each character, or message us and we\'ll look into it.' : 'Certificate IDs look like ABTC-C0042.';
+      err.textContent = r.error === 'revoked' ? 'This certificate is no longer valid. It was withdrawn after the registration was refunded.' : r.error === 'notfound' ? 'No certificate has this ID. Check each character, or message us and we\'ll look into it.' : 'Certificate IDs look like ABTC-C0042.';
       err.hidden = false;
     }
   } catch (x) { err.textContent = 'Couldn\'t connect. Check your internet and try again.'; err.hidden = false; }

@@ -762,7 +762,7 @@ footer .sel{color:var(--cream)}
 <p class="rv s2">Two trainers in the room: one teaching, one in the chat making sure nobody gets left behind.</p></div>
 <div class="people">
 <article class="person rv"><img src="assets/ayman.jpg" alt="Portrait of Ayman Dinie" width="112" height="112"><div><h3>Ayman Dinie</h3><p>Front-end developer and AI-driven systems consultant.</p><span class="role"><svg class="ico"><use href="#i-code"/></svg>Leads the session and the live build</span><br><a class="pf" href="https://aymandinie.github.io/portfolio/" target="_blank" rel="noopener">See my portfolio <svg class="ico"><use href="#i-ext"/></svg></a></div></article>
-<article class="person rv s2"><img src="assets/adam.jpg?v=3" alt="Portrait of Adam Fauzi" width="112" height="112"><div><h3>Adam Fauzi</h3><p>Founder, Adam Fauzi Solutions.</p><span class="cred mono">HRD Corp Accredited Trainer · ID 25432</span><br><span class="role"><svg class="ico"><use href="#i-chatbubble"/></svg>Co-host, helps anyone who gets stuck</span></div></article>
+<article class="person rv s2"><img src="assets/adam.jpg?v=4" alt="Portrait of Adam Fauzi" width="112" height="112"><div><h3>Adam Fauzi</h3><p>Founder, Adam Fauzi Solutions.</p><span class="cred mono">HRD Corp Accredited Trainer · ID 25432</span><br><span class="role"><svg class="ico"><use href="#i-chatbubble"/></svg>Co-host, helps anyone who gets stuck</span></div></article>
 </div></div></section>
 
 <section class="sec" id="price"><div class="wrap">
@@ -1134,7 +1134,7 @@ function showClosed(reason) {
   const c = $('#closed');
   if (reason === 'full') return showWaitlist();
   const msg = reason === 'full' ? ['Fully booked', '']
-    : reason === 'over' ? ['Registration has closed', 'Thank you for your interest. Follow us for the next date.'] : ['Registration is paused', 'Please check back soon, or WhatsApp +6011 1068 2544.'];
+    : reason === 'over' || reason === 'closed' ? ['Registration has closed', 'Thank you for your interest. Follow us for the next date.'] : reason === 'cancelled' ? ['This session is cancelled', 'Sorry about that. Follow us for the next date, or WhatsApp +6011 1068 2544.'] : ['Registration is paused', 'Please check back soon, or WhatsApp +6011 1068 2544.'];
   c.innerHTML = `<h3>${msg[0]}</h3><p>${msg[1]}</p>`; c.hidden = false; $('#regGrid').hidden = true;
 }
 
@@ -1162,7 +1162,7 @@ function showWaitlist() {
       const res = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(Object.assign({ action: 'waitlist' }, d)) }).then(r => r.json());
       ov.remove();
       if (res.ok) { f.outerHTML = `<div class="done">You're number ${res.position} on the waitlist. We've emailed you the details; if a seat frees up, you'll hear from us first in line order.</div>`; return; }
-      err.textContent = { duplicate: 'This email is already on the list or already has a seat. Check your inbox.', open: 'Good news: seats just opened up. Reload the page to register.', email: 'That email doesn\'t look right.', missing: 'Please fill in your name, email and WhatsApp number.' }[res.error] || 'We couldn\'t add you. Please try again or WhatsApp +6011 1068 2544.';
+      err.textContent = { duplicate: 'This email is already on the list or already has a seat. Check your inbox.', open: 'Good news: seats just opened up. Reload the page to register.', busy: 'We\'re getting a lot of sign-ups at once. Please try again in 10 minutes.', email: 'That email doesn\'t look right.', missing: 'Please fill in your name, email and WhatsApp number.' }[res.error] || 'We couldn\'t add you. Please try again or WhatsApp +6011 1068 2544.';
       err.hidden = false;
     } catch (x) { ov.remove(); err.textContent = 'Couldn\'t connect. Check your internet and try again.'; err.hidden = false; }
   });
@@ -1384,7 +1384,9 @@ const ERRORS = {
   missing: 'Some required answers are missing. Please check the form.', email: 'That email address doesn\'t look right.',
   student: 'Student tickets need your college, student ID number and a photo of your card.', ticket: 'Please choose a ticket.',
   duplicate: 'This email is already registered. Check your inbox (and spam) for our email, or WhatsApp +6011 1068 2544.',
-  full: 'Sorry, the last seat was just taken. WhatsApp +6011 1068 2544 to join the waitlist.',
+  full: 'Sorry, the last seat was just taken. Reload the page to join the waitlist.',
+  busy: 'We\'re getting a lot of registrations at once. Please wait 10 minutes and press Register again. Your answers are still here.',
+  closed: 'Registration for this session isn\'t open right now.', cancelled: 'This session has been cancelled. Follow us for the next date.',
   over: 'Registration for this session has closed.', paused: 'Registration is paused right now. Please try again later.',
   'early-bird-closed': 'Early bird has just ended. Please choose the Normal ticket and pay RM230.',
   'normal-not-yet': 'Early bird is still on, so please choose the Early bird ticket.',
