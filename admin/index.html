@@ -288,8 +288,8 @@ function overview() {
   <p class="mono sec-title">Needs your attention</p>
   <div class="grid two">
     <div class="panel"><h2>${ico('inbox')}Payments to check <span class="pill p-pending">${attn.length}</span></h2>
-      <div class="attn">${attn.length ? attn.slice(0, 12).map(a => `<div class="row"><div><b>${esc(a.r.Name)} · ${rm(a.r['Amount (RM)'])}</b><small>Ref <b style="display:inline">${esc(a.r['Payment ref'])}</b>${a.r['Payment proof'] ? ` · <a href="${esc(a.r['Payment proof'])}" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600">Receipt</a>` : ''} · ${esc(a.r['Paid with'])} · ${when(a.r.Submitted)} · ${esc(a.why)}</small></div>
-        <div class="acts"><button class="btn ghost sm" data-open="${esc(a.r.ID)}">${ico('eye')}View</button>${a.acts.map(st => `<button class="btn sm ${st === 'Paid' ? 'green' : st === 'Released' ? 'dark' : 'ghost'}" data-status="${st}" data-id="${esc(a.r.ID)}">${st === 'Paid' ? ico('circle-check') + 'Mark paid' : st === 'Released' ? ico('rotate-ccw') + 'Release' : ico('circle-alert') + 'Not found'}</button>`).join('')}</div></div>`).join('')
+      <div class="attn">${attn.length ? attn.slice(0, 12).map(a => `<div class="row"><div><b>${esc(a.r.Name)} · ${rm(a.r['Amount (RM)'])}</b><small>Ref <b style="display:inline">${esc(a.r['Payment ref'])}</b>${a.r['Payment proof'] ? ' · <b style="display:inline;color:var(--ok)">Receipt uploaded</b>' : ''}${a.r['Student card'] && /drive/.test(a.r['Student card']) ? ' · <b style="display:inline;color:var(--blue)">Student card</b>' : ''} · ${esc(a.r['Paid with'])} · ${when(a.r.Submitted)} · ${esc(a.why)}</small></div>
+        <div class="acts">${a.r['Payment proof'] ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(a.r['Payment proof'])}" data-title="${esc('Receipt · ' + a.r.Name)}">${ico('banknote')}Receipt</button>` : ''}${a.r['Student card'] && /drive/.test(a.r['Student card']) ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(a.r['Student card'])}" data-title="${esc('Student card · ' + a.r.Name)}">${ico('graduation-cap')}Card</button>` : ''}<button class="btn ghost sm" data-open="${esc(a.r.ID)}">${ico('eye')}View</button>${a.acts.map(st => `<button class="btn sm ${st === 'Paid' ? 'green' : st === 'Released' ? 'dark' : 'ghost'}" data-status="${st}" data-id="${esc(a.r.ID)}">${st === 'Paid' ? ico('circle-check') + 'Mark paid' : st === 'Released' ? ico('rotate-ccw') + 'Release' : ico('circle-alert') + 'Not found'}</button>`).join('')}</div></div>`).join('')
         : `<p class="empty">${ico('circle-check')}All caught up. Nothing to check.</p>`}</div></div>
     <div class="grid" style="align-content:start">
       <div class="panel"><h2>${ico('send')}Send to everyone</h2><div class="bulk">${D.bulk.map(b => `<div class="row"><span class="n">${b.count}</span><div><b>${esc(b.label)}${b.due && b.count ? ' <span class="pill p-pending">Due</span>' : ''}</b><small>${b.guard ? esc(b.guard) : esc(b.hint || (b.count ? 'Ready to send' : 'Nobody waiting for this'))}</small></div><button class="btn sm ${b.count && !b.guard ? '' : 'ghost'}" data-bulk="${b.key}" ${b.count && !b.guard ? '' : 'disabled'}>Review</button></div>`).join('')}</div></div>
@@ -329,8 +329,8 @@ function openRow(id) {
     <header><div style="flex:1"><span class="mono" style="color:var(--blue)">${esc(r.ID)} · ${when(r.Submitted)}</span><h2>${esc(r.Name)}</h2><div style="margin-top:8px">${pill(r.Status)}${/TEST/.test(r.Notes) ? ' <span class="pill p-test">TEST</span>' : ''}</div></div><button class="x" data-close aria-label="Close">${ico('x')}</button></header>
     ${nexts.length ? `<div class="actions">${nexts.map(st => `<button class="btn ${label[st][1]}" data-status="${st}" data-id="${esc(r.ID)}">${label[st][0]}</button>`).join('')}</div><p class="hint">Each button emails them straight away, except Mark refunded.</p>` : ''}
     <dl class="kv">${F('Email', `<a href="mailto:${esc(r.Email)}">${esc(r.Email)}</a>`)}${F('WhatsApp', `<a href="https://wa.me/${String(r.WhatsApp).replace(/\D/g, '')}" target="_blank" rel="noopener">${esc(r.WhatsApp)}</a>`)}${F('Ticket', esc(r.Ticket) + ' · ' + rm(r['Amount (RM)']))}
-      ${F('Paid with', esc(r['Paid with']))}${F('Payment ref', `<b>${esc(r['Payment ref'])}</b>`)}${F('Receipt upload', r['Payment proof'] ? `<a href="${esc(r['Payment proof'])}" target="_blank" rel="noopener">Open their receipt (private Drive)</a>` : '')}${F('Paying name', esc(r['Paying name']))}${F('Receipt', esc(r['Receipt no']))}
-      ${F('College', esc(r.College))}${F('Student ID', esc(r['Student ID']))}${F('Student card', r['Student card'] ? `<a href="${esc(r['Student card'])}" target="_blank" rel="noopener">Open card (private Drive)</a>` : '')}
+      ${F('Paid with', esc(r['Paid with']))}${F('Payment ref', `<b>${esc(r['Payment ref'])}</b>`)}${F('Receipt upload', r['Payment proof'] ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(r['Payment proof'])}" data-title="${esc('Receipt · ' + r.Name)}">${ico('banknote')}View their receipt</button>` : '<span class="hint">None uploaded</span>')}${F('Paying name', esc(r['Paying name']))}${F('Receipt', esc(r['Receipt no']))}
+      ${F('College', esc(r.College))}${F('Student ID', esc(r['Student ID']))}${F('Student card', /drive/.test(r['Student card'] || '') ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(r['Student card'])}" data-title="${esc('Student card · ' + r.Name)}">${ico('graduation-cap')}View student card</button>` : esc(r['Student card'] || ''))}
       ${F('Occupation', esc(r.Occupation))}${F('AI use', esc(r['AI use']))}${F('AI tools', esc(r['AI tools']))}${F('App idea', esc(r['App idea']))}${F('Laptop', esc(r.Laptop))}${F('Heard from', esc(r['Heard from']))}
       ${F('Checked in', esc(r['Checked in']))}${F('Feedback', esc(r.Feedback))}${F('Certificate', esc(r['Certificate no']))}</dl>
     <div class="field"><label for="note">Notes</label><textarea id="note">${esc(r.Notes)}</textarea><div><button class="btn ghost sm" data-note="${esc(r.ID)}">${ico('square-pen')}Save note</button></div></div>
@@ -354,13 +354,11 @@ function cohorts() {
     <div class="meta"><span>${ico('calendar')} ${nice(c['Session date (YYYY-MM-DD)'])}${c['Start time (HH:MM, 24 h)'] ? ' · ' + esc(c['Start time (HH:MM, 24 h)']) : ''}</span><span>${ico('armchair')} ${c.held} of ${esc(c['Seat cap'] || 30)} seats taken · ${c.paid} paid</span><span>${ico('sunrise')} Early bird until ${esc(c['Early bird cutoff (YYYY-MM-DD)'] || 'not set')}</span></div>
     <div class="acts"><button class="btn ghost sm" data-editcohort="${esc(c.Code)}">${ico('square-pen')}Edit</button>${c.Status !== 'Open' ? `<button class="btn green sm" data-opencohort="${esc(c.Code)}">${ico('circle-check')}Open on the website</button>` : ''}${c.Code !== COHORT ? `<button class="btn ghost sm" data-viewcohort="${esc(c.Code)}">${ico('eye')}View</button>` : ''}</div></div>`).join('')}</div>
   <p class="mono sec-title">This cohort: ${esc(COHORT)}</p>
-  <div class="grid two">
+  <div class="grid">
     <div class="panel"><h2>${ico('trash-2')}Clean up</h2><div class="bulk">
       <div class="row"><div><b>Delete test registrations</b><small>${/^y/i.test((D.cohorts.find(c => c.Code === COHORT) || {})['Test cohort']) ? 'Test cohort: deletes every registration in it' : 'Deletes rows marked TEST: made with the test payment code, or with an email containing +test'}</small></div><button class="btn ghost sm" data-cleartest>Delete</button></div>
       <div class="row"><div><b>Delete student cards</b><small>After the session. Moves this cohort's card photos to the Drive bin (privacy promise).</small></div><button class="btn ghost sm" data-delcards>Delete</button></div>
     </div></div>
-    <div class="panel"><h2>${ico('star')}Certificate</h2><p class="hint" style="margin-bottom:12px">Poster-style design with the name, date and a verify link. Certificates are sent from Overview → Send to everyone.</p><div class="actions">
-      <button class="btn dark sm" data-certnew>${ico('sparkles')}Use the new design</button><button class="btn ghost sm" data-certprev>${ico('eye')}Make a preview PDF</button>${D.links.certTemplate ? `<a class="btn ghost sm" href="${D.links.certTemplate}" target="_blank" rel="noopener">${ico('external-link')}Edit template</a>` : ''}</div></div>
   </div>`;
 }
 function cohortForm(c) {
@@ -403,7 +401,7 @@ function designs() {
   return `<div class="dwrap"><p class="mono sec-title">Designs</p>
   <div class="dgrid">
     ${card(A + 'poster.jpg', 'Poster', 'The launch poster (Option 8 Final). Full-size PNGs are in the Posters folder on your Mac.', open(A + 'poster.jpg', 'Full image'))}
-    ${card(A + 'certificate-sample.jpg', 'Certificate', 'Sent after the session. Name, date and certificate ID are filled in for each person.', `<button class="btn ghost sm" data-certprev>${ico('eye')}Preview PDF</button>${open(L.certTemplate, 'Template')}`, 'fit')}
+    ${card(A + 'certificate-sample.jpg', 'Certificate', 'Sent after the session. Name, date and certificate ID are filled in for each person.', `<button class="btn ghost sm" data-certprev>${ico('eye')}Preview PDF</button>${open(L.certTemplate, 'Template')}<button class="btn ghost sm" data-certnew title="Only needed if the artwork changes">${ico('rotate-ccw')}Rebuild</button>`, 'fit')}
     ${card(A + 'receipt-sample.jpg', 'Receipt', 'PDF made automatically when you mark someone Paid, attached to their confirmation email.', open(A + 'receipt-sample.jpg', 'Full image'))}
     ${card(A + 'emails-sample.jpg', 'Emails (11)', 'Every email the system sends, with sample details and when each one goes out.', `${open(L.gallery, 'Gallery')}<button class="btn ghost sm" data-go="emails">${ico('mail')}Emails tab</button>`)}
     ${card(A + 'logo-wordmark-small.png', 'Wordmark · stacked', 'For posters, square posts, the certificate and slide covers. Use on navy or blue only.', open(A + 'logo-wordmark.png', 'Full PNG'), true)}
@@ -491,6 +489,24 @@ function guide() {
 }
 
 /* ---------- actions ---------- */
+/* in-page viewer for uploaded receipts and student cards (fetched through the key-protected script) */
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-viewfile]'); if (!b) return;
+  e.preventDefault(); e.stopPropagation(); busy(b, true, 'Opening…');
+  try {
+    const res = await api('viewFile', { url: b.dataset.viewfile });
+    if (!res.ok) { toast(res.error === 'big' ? 'File is large; opening it in Drive.' : 'Could not open this file.', res.error !== 'big'); if (res.url) window.open(res.url, '_blank', 'noopener'); busy(b, false); return; }
+    const bytes = Uint8Array.from(atob(res.data), c => c.charCodeAt(0)), url = URL.createObjectURL(new Blob([bytes], { type: res.type }));
+    const m = document.createElement('div'); m.className = 'drawer'; m.style.zIndex = 80;
+    m.innerHTML = `<div class="sheetx" style="width:min(820px,100%)"><header><div style="flex:1"><span class="mono" style="color:var(--blue)">Private file</span><h2>${esc(b.dataset.title || res.name)}</h2></div><button class="x" data-close aria-label="Close">${ico('x')}</button></header>
+      ${/^image\//.test(res.type) ? `<img src="${url}" alt="" style="width:100%;max-height:70vh;object-fit:contain;border-radius:14px;background:#fff;border:1px solid var(--line)">` : `<iframe src="${url}" title="File" style="width:100%;height:70vh;border:1px solid var(--line);border-radius:14px;background:#fff"></iframe>`}
+      <div class="actions" style="justify-content:flex-end"><a class="btn ghost sm" href="${esc(res.url)}" target="_blank" rel="noopener">${ico('external-link')}Open in Drive</a><button class="btn sm" data-close>Done</button></div></div>`;
+    document.body.append(m);
+    m.addEventListener('click', ev => { if (ev.target === m || ev.target.closest('[data-close]')) { m.remove(); URL.revokeObjectURL(url); } });
+  } catch (x) { toast('Could not open this file.', true); }
+  busy(b, false);
+});
+
 function confirmBox(title, body, okLabel, kind) {
   return new Promise(res => {
     const m = document.createElement('div'); m.className = 'modal';
@@ -570,7 +586,7 @@ function wire(root = document) {
     busy(b, true, 'Deleting…'); try { const res = await api('deleteCards', { cohort: COHORT }); toast(res.ok ? res.message : 'Could not delete.', !res.ok); if (res.ok) load(); } catch (x) {} busy(b, false);
   }));
   $$('[data-certnew]', root).forEach(b => b.addEventListener('click', async () => {
-    if (!await confirmBox('Use the new certificate design?', 'Makes a new certificate template from the poster-style artwork. The old template stays in Drive.', 'Use it')) return;
+    if (!await confirmBox('Rebuild the certificate template?', 'Only needed if the certificate artwork changed. Makes a fresh template from the artwork on the website; the old one stays in Drive.', 'Rebuild')) return;
     busy(b, true, 'Building…'); try { const res = await api('rebuildCertificate'); toast(res.ok ? res.message : 'Could not build. Google may ask you to allow access in Apps Script first.', !res.ok); if (res.ok) load(); } catch (x) {} busy(b, false);
   }));
   $$('[data-certprev]', root).forEach(b => b.addEventListener('click', async () => {
