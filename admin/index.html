@@ -356,7 +356,7 @@ function cohorts() {
   <p class="mono sec-title">This cohort: ${esc(COHORT)}</p>
   <div class="grid two">
     <div class="panel"><h2>${ico('trash-2')}Clean up</h2><div class="bulk">
-      <div class="row"><div><b>Delete test registrations</b><small>${/^y/i.test((D.cohorts.find(c => c.Code === COHORT) || {})['Test cohort']) ? 'Test cohort: deletes every registration in it' : 'Deletes only rows marked TEST (made with the test payment code)'}</small></div><button class="btn ghost sm" data-cleartest>Delete</button></div>
+      <div class="row"><div><b>Delete test registrations</b><small>${/^y/i.test((D.cohorts.find(c => c.Code === COHORT) || {})['Test cohort']) ? 'Test cohort: deletes every registration in it' : 'Deletes rows marked TEST: made with the test payment code, or with an email containing +test'}</small></div><button class="btn ghost sm" data-cleartest>Delete</button></div>
       <div class="row"><div><b>Delete student cards</b><small>After the session. Moves this cohort's card photos to the Drive bin (privacy promise).</small></div><button class="btn ghost sm" data-delcards>Delete</button></div>
     </div></div>
     <div class="panel"><h2>${ico('star')}Certificate</h2><p class="hint" style="margin-bottom:12px">Poster-style design with the name, date and a verify link. Certificates are sent from Overview → Send to everyone.</p><div class="actions">
