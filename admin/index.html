@@ -243,9 +243,8 @@ $('#refresh').addEventListener('click', () => load());
 $('#cohortSel').addEventListener('change', e => { COHORT = e.target.value; load(); });
 
 async function load(first) {
-  if (!first) $('#refresh').innerHTML = '<span class="spin dark"></span>Refreshing';
-  const r = await api('load', COHORT ? { cohort: COHORT } : {});
-  $('#refresh').innerHTML = ico('refresh-cw') + 'Refresh';
+  if (!first) workOn(['Refreshing', 'Loading registrations from your Sheet', 'Nearly done']);
+  let r; try { r = await api('load', COHORT ? { cohort: COHORT } : {}); } finally { if (!first) workOff(); }
   if (!r.ok) { const old = r.error === 'missing'; if (first) { $('#lockErr').textContent = old ? 'The live script is an older version. Deploy the new version in Apps Script, then try again.' : 'Could not load: ' + (r.error || 'unknown'); $('#lockErr').hidden = false; } else toast(old ? 'The live script is an older version. Deploy the new version.' : 'Could not load: ' + (r.error || 'unknown'), true); return null; }
   try { localStorage.setItem('abtc-admin-data', JSON.stringify(r)); } catch (x) {}
   applyData(r); return r;

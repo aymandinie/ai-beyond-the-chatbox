@@ -70,6 +70,7 @@ form{position:relative;display:grid;gap:14px;margin:18px auto 60px}
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxad2ugFPJ1kPqEXEMzr0Gth8CPIjaBw0CP8rvPbPUV2PFCR-669Ep9YYf99qpA9nBh/exec';
 const f = document.getElementById('f'), err = document.getElementById('err'), go = document.getElementById('go');
 try { const saved = localStorage.getItem('abtc-email'); if (saved) document.getElementById('email').value = saved; } catch (e) {}
+try { const pe = new URLSearchParams(location.search).get('e'); if (pe) document.getElementById('email').value = pe; } catch (e) {}
 const stars = [...document.querySelectorAll('#stars label')];
 stars.forEach((l, i) => l.querySelector('input').addEventListener('change', () => stars.forEach((s, j) => s.classList.toggle('lit', j <= i))));
 const REQ = ['email', 'rating', 'before', 'after', 'nps', 'finished', 'level2'];

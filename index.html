@@ -620,7 +620,7 @@ footer .sel{color:var(--cream)}
 @media (max-width:420px){header.top .brand.logo img{width:124px}}
 .sending{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:24px;background:rgba(16,21,44,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:sfade .25s}
 @keyframes sfade{from{opacity:0}}
-.sending .box{display:grid;justify-items:center;gap:18px;text-align:center;max-width:400px;color:var(--cream)}
+.sending .sbox{display:grid;justify-items:center;gap:18px;text-align:center;max-width:400px;color:var(--cream)}
 .sending .ring{width:56px;height:56px;border-radius:50%;border:4px solid rgba(243,234,216,.2);border-top-color:var(--cream);animation:sspin .8s linear infinite}
 @keyframes sspin{to{transform:rotate(360deg)}}
 .sending p{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:34px;line-height:1.1;min-height:76px}
@@ -1318,7 +1318,7 @@ form.addEventListener('submit', async e => {
   go.disabled = true; go.innerHTML = '<span class="spin" aria-hidden="true"></span> Sending your registration…';
   const steps = ['Sending your registration', ...(data.card ? ['Uploading your student card'] : []), ...(data.proof ? ['Uploading your receipt'] : []), 'Holding your seat', 'Emailing your confirmation', 'Nearly done'];
   const ov = document.createElement('div'); ov.className = 'sending'; ov.setAttribute('role', 'status'); ov.setAttribute('aria-live', 'polite');
-  ov.innerHTML = `<div class="box"><span class="ring" aria-hidden="true"></span><p></p><div class="dots" aria-hidden="true">${steps.map(() => '<i></i>').join('')}</div><small>This takes about 10 to 20 seconds. Please keep this page open and don't press Register again.</small></div>`;
+  ov.innerHTML = `<div class="sbox"><span class="ring" aria-hidden="true"></span><p></p><div class="dots" aria-hidden="true">${steps.map(() => '<i></i>').join('')}</div><small>This takes about 10 to 20 seconds. Please keep this page open and don't press Register again.</small></div>`;
   document.body.append(ov); let si = 0; const sp = ov.querySelector('p'), sd = [...ov.querySelectorAll('.dots i')];
   const sshow = () => { sp.textContent = steps[si] + '…'; sd.forEach((d, k) => d.classList.toggle('on', k <= si)); }; sshow();
   const stimer = setInterval(() => { if (si < steps.length - 1) { si++; sshow(); } }, 3000);

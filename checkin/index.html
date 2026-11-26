@@ -41,6 +41,7 @@ input{background:#fff!important;color:var(--ink)}
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxad2ugFPJ1kPqEXEMzr0Gth8CPIjaBw0CP8rvPbPUV2PFCR-669Ep9YYf99qpA9nBh/exec';
 const f = document.getElementById('f'), go = document.getElementById('go'), err = document.getElementById('err');
 try { const saved = localStorage.getItem('abtc-email'); if (saved) document.getElementById('email').value = saved; } catch (e) {}
+try { const pe = new URLSearchParams(location.search).get('e'); if (pe) document.getElementById('email').value = pe; } catch (e) {}
 f.addEventListener('submit', async e => {
   e.preventDefault(); err.hidden = true;
   const email = document.getElementById('email').value.trim();
