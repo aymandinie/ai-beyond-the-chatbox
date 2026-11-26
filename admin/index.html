@@ -116,6 +116,10 @@ iframe{width:100%;height:calc(100vh - 40px);min-height:520px;border:0;border-rad
 .statusmap{display:grid;gap:8px}
 .statusmap div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;align-items:center}
 .mobilenav{display:none}
+.p-waitlist{background:#EFE9FB;color:#5B3FA8}
+.warnbox{display:grid;gap:4px;padding:10px 12px;border-radius:12px;background:var(--warn-bg);color:var(--warn);font-size:13.5px;font-weight:600}
+.fbox{display:grid;gap:12px;margin:6px 0 4px}.fbox label{display:grid;gap:5px;font-size:13.5px;font-weight:600;color:var(--navy)}.fbox small{font-weight:400;color:var(--mut)}
+.more{display:flex;flex-wrap:wrap;gap:6px}
 .working{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:24px;background:rgba(16,21,44,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:fade .2s}
 .working .box{display:grid;justify-items:center;gap:16px;text-align:center;max-width:380px;color:var(--cream)}
 .working .spin{width:44px;height:44px;border-width:3.5px}
@@ -216,8 +220,9 @@ const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxad2ugFPJ1kPqEXEMzr0G
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const ico = n => `<svg class="ico"><use href="#i-${n}"/></svg>`;
-const NEXT = { 'Pending payment': ['Paid', 'Not found', 'Released', 'Refunded'], 'Not found': ['Paid', 'Released', 'Refunded'], 'Released': ['Paid'], 'Paid': ['Refunded'], 'Refunded': [] };   // same rules as the script
-const PILL = { 'Pending payment': 'pending', 'Paid': 'paid', 'Not found': 'notfound', 'Released': 'released', 'Refunded': 'refunded' };
+const NEXT = { 'Pending payment': ['Paid', 'Not found', 'Released', 'Refunded'], 'Not found': ['Paid', 'Released', 'Refunded'], 'Released': ['Paid'], 'Paid': ['Refunded'], 'Waitlist': ['Pending payment', 'Released'], 'Refunded': [] };   // same rules as the script
+const PILL_EXTRA = { 'Waitlist': 'waitlist' };
+const PILL = { 'Pending payment': 'pending', 'Paid': 'paid', 'Not found': 'notfound', 'Released': 'released', 'Refunded': 'refunded', 'Waitlist': 'waitlist' };
 const pill = st => `<span class="pill p-${PILL[st] || 'released'}"><i></i>${esc(st || 'No status')}</span>`;
 const rm = n => 'RM' + Number(n || 0).toLocaleString('en-MY');
 const when = iso => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? esc(iso) : d.toLocaleString('en-MY', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }); };
@@ -271,17 +276,27 @@ function render() {
 }
 
 /* ---------- overview ---------- */
+/* Possible duplicates: the same WhatsApp number, or the same payment reference, on another live row. */
+function dupes(r) {
+  const live = x => x.ID !== r.ID && ['Pending payment', 'Not found', 'Paid', 'Waitlist'].includes(x.Status);
+  const digits = v => String(v || '').replace(/\D/g, '').slice(-9), ref = v => String(v || '').trim().toLowerCase();
+  const all = D.allRows || D.rows, out = [];
+  const w = digits(r.WhatsApp); if (w.length >= 8) all.filter(x => live(x) && digits(x.WhatsApp) === w).forEach(x => out.push(`Same WhatsApp number as ${x.ID} (${x.Name})`));
+  const pr = ref(r['Payment ref']); if (pr && pr !== 'see receipt upload' && pr.length >= 4) all.filter(x => live(x) && ref(x['Payment ref']) === pr).forEach(x => out.push(`Same payment reference as ${x.ID} (${x.Name})`));
+  return out;
+}
 function stats() {
   const R = D.rows, by = st => R.filter(r => r.Status === st);
   const paid = by('Paid'), pend = by('Pending payment'), nf = by('Not found');
   const cap = Number((D.cohorts.find(c => c.Code === COHORT) || {})['Seat cap'] || 30);
-  return { R, paid, pend, nf, cap, taken: paid.length + pend.length + nf.length, money: paid.reduce((a, r) => a + Number(r['Amount (RM)'] || 0), 0),
+  return { R, paid, pend, nf, cap, taken: paid.length + pend.length + nf.length, money: paid.reduce((a, r) => a + Number(r['Amount (RM)'] || 0) - Number(r['Refunded (RM)'] || 0), 0), wl: by('Waitlist'),
     t: k => paid.filter(r => String(r.Ticket).startsWith(k)).length, checked: paid.filter(r => r['Checked in']).length, fb: paid.filter(r => r.Feedback).length };
 }
 function overview() {
   const s = stats();
   const attn = [...s.pend.map(r => ({ r, why: hoursAgo(r.Submitted) >= 24 ? 'Waiting over 24 h · check your statement' : 'Check the reference on your statement', acts: ['Paid', 'Not found'] })),
-    ...s.nf.map(r => ({ r, why: hoursAgo(r.Submitted) >= 72 ? 'Not found for over 72 h · release the seat?' : 'Payment not found · waiting for their reply', acts: ['Paid', 'Released'] }))]
+    ...s.nf.map(r => ({ r, why: hoursAgo(r.Submitted) >= 72 ? 'Not found for over 72 h · release the seat?' : 'Payment not found · waiting for their reply', acts: ['Paid', 'Released'] })),
+    ...s.wl.map((r, i) => { const free = Math.max(0, s.cap - s.taken); return { r, why: `Waitlist number ${i + 1} · ${free ? free + ' seat' + (free === 1 ? '' : 's') + ' free, offer it' : 'no seat free yet'}`, acts: free ? ['Pending payment', 'Released'] : ['Released'] }; })]
     .sort((a, b) => new Date(a.r.Submitted) - new Date(b.r.Submitted));
   const L = D.links;
   return `
@@ -298,8 +313,8 @@ function overview() {
   <p class="mono sec-title">Needs your attention</p>
   <div class="grid two">
     <div class="panel"><h2>${ico('inbox')}Payments to check <span class="pill p-pending">${attn.length}</span></h2>
-      <div class="attn">${attn.length ? attn.slice(0, 12).map(a => `<div class="row"><div><b>${esc(a.r.Name)} · ${rm(a.r['Amount (RM)'])}</b><small>Ref <b style="display:inline">${esc(a.r['Payment ref'])}</b>${a.r['Payment proof'] ? ' · <b style="display:inline;color:var(--ok)">Receipt uploaded</b>' : ''}${a.r['Student card'] && /drive/.test(a.r['Student card']) ? ' · <b style="display:inline;color:var(--blue)">Student card</b>' : ''} · ${esc(a.r['Paid with'])} · ${when(a.r.Submitted)} · ${esc(a.why)}</small></div>
-        <div class="acts">${a.r['Payment proof'] ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(a.r['Payment proof'])}" data-title="${esc('Receipt · ' + a.r.Name)}">${ico('banknote')}Receipt</button>` : ''}${a.r['Student card'] && /drive/.test(a.r['Student card']) ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(a.r['Student card'])}" data-title="${esc('Student card · ' + a.r.Name)}">${ico('graduation-cap')}Card</button>` : ''}<button class="btn ghost sm" data-open="${esc(a.r.ID)}">${ico('eye')}View</button>${a.acts.map(st => `<button class="btn sm ${st === 'Paid' ? 'green' : st === 'Released' ? 'dark' : 'ghost'}" data-status="${st}" data-id="${esc(a.r.ID)}">${st === 'Paid' ? ico('circle-check') + 'Mark paid' : st === 'Released' ? ico('rotate-ccw') + 'Release' : ico('circle-alert') + 'Not found'}</button>`).join('')}</div></div>`).join('')
+      <div class="attn">${attn.length ? attn.slice(0, 12).map(a => `<div class="row"><div><b>${esc(a.r.Name)} · ${rm(a.r['Amount (RM)'])}</b>${dupes(a.r).length ? `<small style="display:block;color:var(--warn);font-weight:600;margin:2px 0">${ico('circle-alert')} ${esc(dupes(a.r).join(' · '))}</small>` : ''}<small>Ref <b style="display:inline">${esc(a.r['Payment ref'])}</b>${a.r['Payment proof'] ? ' · <b style="display:inline;color:var(--ok)">Receipt uploaded</b>' : ''}${a.r['Student card'] && /drive/.test(a.r['Student card']) ? ' · <b style="display:inline;color:var(--blue)">Student card</b>' : ''} · ${esc(a.r['Paid with'])} · ${when(a.r.Submitted)} · ${esc(a.why)}</small></div>
+        <div class="acts">${a.r['Payment proof'] ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(a.r['Payment proof'])}" data-title="${esc('Receipt · ' + a.r.Name)}">${ico('banknote')}Receipt</button>` : ''}${a.r['Student card'] && /drive/.test(a.r['Student card']) ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(a.r['Student card'])}" data-title="${esc('Student card · ' + a.r.Name)}">${ico('graduation-cap')}Card</button>` : ''}<button class="btn ghost sm" data-open="${esc(a.r.ID)}">${ico('eye')}View</button>${a.acts.map(st => `<button class="btn sm ${st === 'Paid' || st === 'Pending payment' ? 'green' : st === 'Released' ? 'dark' : 'ghost'}" data-status="${st}" data-id="${esc(a.r.ID)}">${st === 'Paid' ? ico('circle-check') + 'Mark paid' : st === 'Pending payment' ? ico('send') + 'Offer the seat' : st === 'Released' ? ico('rotate-ccw') + (a.r.Status === 'Waitlist' ? 'Take off waitlist' : 'Release') : ico('circle-alert') + 'Not found'}</button>`).join('')}</div></div>`).join('')
         : `<p class="empty">${ico('circle-check')}All caught up. Nothing to check.</p>`}</div></div>
     <div class="grid" style="align-content:start">
       <div class="panel"><h2>${ico('send')}Send to everyone</h2><div class="bulk">${D.bulk.map(b => `<div class="row"><span class="n">${b.count}</span><div><b>${esc(b.label)}${b.due && b.count ? ' <span class="pill p-pending">Due</span>' : ''}</b><small>${b.guard ? esc(b.guard) : esc(b.hint || (b.count ? 'Ready to send' : 'Nobody waiting for this'))}</small></div><button class="btn sm ${b.count && !b.guard ? '' : 'ghost'}" data-bulk="${b.key}" ${b.count && !b.guard ? '' : 'disabled'}>Review</button></div>`).join('')}</div></div>
@@ -332,17 +347,25 @@ function people() {
 function openRow(id) {
   const r = D.rows.find(x => x.ID === id); if (!r) return;
   const nexts = NEXT[r.Status] || [];
-  const label = { 'Paid': [ico('circle-check') + 'Mark paid', 'green'], 'Not found': [ico('circle-alert') + 'Payment not found', 'ghost'], 'Released': [ico('rotate-ccw') + 'Release seat', 'dark'], 'Refunded': [ico('banknote') + 'Mark refunded', 'ghost'] };
+  const label = { 'Pending payment': [ico('send') + 'Offer the seat', 'green'], 'Paid': [ico('circle-check') + 'Mark paid', 'green'], 'Not found': [ico('circle-alert') + 'Payment not found', 'ghost'], 'Released': [ico('rotate-ccw') + 'Release seat', 'dark'], 'Refunded': [ico('banknote') + 'Mark refunded', 'ghost'] };
   const resend = r.Status === 'Paid' ? [['confirmed', 'Confirmation and receipt'], ['dayBefore', 'Day-before reminder']] : r.Status === 'Not found' ? [['notFound', 'Payment not found'], ['payReminder', 'Reminder with QR']] : r.Status === 'Pending payment' ? [['howToPay', 'Registration received']] : [];
   const F = (k, v) => v ? `<div><dt>${k}</dt><dd>${v}</dd></div>` : '';
   const dr = document.createElement('div'); dr.className = 'drawer'; dr.innerHTML = `<div class="sheetx" role="dialog" aria-label="${esc(r.Name)}">
     <header><div style="flex:1"><span class="mono" style="color:var(--blue)">${esc(r.ID)} · ${when(r.Submitted)}</span><h2>${esc(r.Name)}</h2><div style="margin-top:8px">${pill(r.Status)}${/TEST/.test(r.Notes) ? ' <span class="pill p-test">TEST</span>' : ''}</div></div><button class="x" data-close aria-label="Close">${ico('x')}</button></header>
-    ${nexts.length ? `<div class="actions">${nexts.map(st => `<button class="btn ${label[st][1]}" data-status="${st}" data-id="${esc(r.ID)}">${label[st][0]}</button>`).join('')}</div><p class="hint">Each button emails them straight away.</p>` : ''}
+    ${dupes(r).length ? `<div class="warnbox">${dupes(r).map(x => `<span>${ico('circle-alert')} ${esc(x)}</span>`).join('')}<span style="font-weight:400">Check it isn't the same person registered twice, or one payment covering two people.</span></div>` : ''}
+    ${nexts.length ? `<div class="actions">${nexts.map(st => `<button class="btn ${label[st][1]}" data-status="${st}" data-id="${esc(r.ID)}">${r.Status === 'Waitlist' && st === 'Released' ? ico('rotate-ccw') + 'Take off the waitlist' : label[st][0]}</button>`).join('')}</div><p class="hint">Each button emails them straight away.</p>` : ''}
     <dl class="kv">${F('Email', `<a href="mailto:${esc(r.Email)}">${esc(r.Email)}</a>`)}${F('WhatsApp', `<a href="https://wa.me/${String(r.WhatsApp).replace(/\D/g, '')}" target="_blank" rel="noopener">${esc(r.WhatsApp)}</a>`)}${F('Ticket', esc(r.Ticket) + ' · ' + rm(r['Amount (RM)']))}
-      ${F('Paid with', esc(r['Paid with']))}${F('Payment ref', `<b>${esc(r['Payment ref'])}</b>`)}${F('Receipt upload', r['Payment proof'] ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(r['Payment proof'])}" data-title="${esc('Receipt · ' + r.Name)}">${ico('banknote')}View their receipt</button>` : '<span class="hint">None uploaded</span>')}${F('Paying name', esc(r['Paying name']))}${F('Receipt', esc(r['Receipt no']))}
+      ${F('Refunded so far', Number(r['Refunded (RM)']) ? rm(r['Refunded (RM)']) : '')}${F('Balance due', Number(r['Balance due (RM)']) ? rm(r['Balance due (RM)']) : '')}${F('Paid with', esc(r['Paid with']))}${F('Payment ref', `<b>${esc(r['Payment ref'])}</b>`)}${F('Receipt upload', r['Payment proof'] ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(r['Payment proof'])}" data-title="${esc('Receipt · ' + r.Name)}">${ico('banknote')}View their receipt</button>` : '<span class="hint">None uploaded</span>')}${F('Paying name', esc(r['Paying name']))}${F('Receipt', esc(r['Receipt no']))}
       ${F('College', esc(r.College))}${F('Student ID', esc(r['Student ID']))}${F('Student card', /drive/.test(r['Student card'] || '') ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(r['Student card'])}" data-title="${esc('Student card · ' + r.Name)}">${ico('graduation-cap')}View student card</button>` : esc(r['Student card'] || ''))}
       ${F('Occupation', esc(r.Occupation))}${F('AI use', esc(r['AI use']))}${F('AI tools', esc(r['AI tools']))}${F('App idea', esc(r['App idea']))}${F('Laptop', esc(r.Laptop))}${F('Heard from', esc(r['Heard from']))}
       ${F('Checked in', r.Status === 'Paid' ? (r['Checked in'] ? esc(r['Checked in']) + ` <button class="btn ghost sm" data-checkin="${esc(r.ID)}" data-undo="1">Undo</button>` : `<button class="btn ghost sm" data-checkin="${esc(r.ID)}">${ico('user-check')}Mark checked in</button>`) : esc(r['Checked in']))}${F('Feedback', esc(r.Feedback))}${F('Certificate', esc(r['Certificate no']))}</dl>
+    <div class="field"><label>More actions</label><div class="more">
+      <button class="btn ghost sm" data-more="edit" data-id="${esc(r.ID)}">${ico('square-pen')}Edit details</button>
+      ${r.Status === 'Paid' ? `<button class="btn ghost sm" data-more="transfer" data-id="${esc(r.ID)}">${ico('users')}Transfer seat</button>` : ''}
+      ${['Paid', 'Pending payment', 'Not found', 'Waitlist'].includes(r.Status) && D.cohorts.filter(c => c.Code !== (r.Cohort || 'C1') && c.Status !== 'Done').length ? `<button class="btn ghost sm" data-more="move" data-id="${esc(r.ID)}">${ico('calendar')}Move to another cohort</button>` : ''}
+      ${r.Status === 'Paid' ? `<button class="btn ghost sm" data-more="partial" data-id="${esc(r.ID)}">${ico('banknote')}Partial refund</button>` : ''}
+      ${['Pending payment', 'Not found'].includes(r.Status) ? `<button class="btn ghost sm" data-more="balance" data-id="${esc(r.ID)}">${ico('circle-alert')}Ask for the balance</button>` : ''}
+    </div></div>
     <div class="field"><label for="note">Notes</label><textarea id="note">${esc(r.Notes)}</textarea><div><button class="btn ghost sm" data-note="${esc(r.ID)}">${ico('square-pen')}Save note</button></div></div>
     <div class="field"><label>Emails sent to them</label><div class="hist">${(D.log.filter(l => String(l.to).toLowerCase() === String(r.Email).toLowerCase()).map(l => `<div><b>${esc(({ howToPay: 'Registration received', confirmed: 'Seat confirmed', notFound: 'Payment not found', payReminder: 'Payment reminder', released: 'Seat released', prep: 'One week to go', dayBefore: 'Day-before reminder', thankYou: 'Thank you', noShow: 'Sorry we missed you', feedbackReminder: 'Feedback reminder', certificate: 'Certificate' })[l.email] || l.email)}</b><span>${l.result === 'Sent' ? '' : esc(l.result) + ' · '}${esc(l.time)}</span></div>`).join('')) || '<p class="hint">No emails yet.</p>'}</div></div>
     ${resend.length ? `<div class="field"><label>Send an email again</label><div class="actions">${resend.map(([k, l]) => `<button class="btn ghost sm" data-resend="${k}" data-id="${esc(r.ID)}">${ico('send')}${l}</button>`).join('')}</div></div>` : ''}
@@ -489,8 +512,9 @@ function guide() {
     <div>${pill('Paid')}<span>Sends the confirmation with the receipt PDF and calendar invite.</span></div>
     <div>${pill('Not found')}<span>Asks them to reply with their receipt. If they still haven't sorted it, send the reminder with the QR from Send to everyone.</span></div>
     <div>${pill('Released')}<span>Tells them the seat was released. The seat opens up on the website. If their payment turns up later, you can still mark them Paid.</span></div>
+    <div>${pill('Waitlist')}<span>Joined the waitlist while the session was full. No seat, no payment. When a seat frees up, Offer the seat: they get 24 hours to pay.</span></div>
     <div>${pill('Refunded')}<span>Frees the seat and emails them that the refund is on its way. Then do the bank transfer yourself; pay-later refunds go through Touch 'n Go. This is final.</span></div></div>
-    <p class="hint" style="margin-top:10px"><b>Allowed changes:</b> Pending → Paid, Not found, Released or Refunded · Not found → Paid, Released or Refunded · Released → Paid · Paid → Refunded. Anything else is refused, in the Sheet too.</p>
+    <p class="hint" style="margin-top:10px"><b>Allowed changes:</b> Pending → Paid, Not found, Released or Refunded · Not found → Paid, Released or Refunded · Released → Paid (if a seat is free) · Paid → Refunded · Waitlist → Offer the seat or take off the list. Anything else is refused, in the Sheet too.</p>
     <p class="hint" style="margin-top:12px">Emails go out the moment you press a button. They cannot be unsent.</p></div>
   <div class="panel"><h2>${ico('clock')}Automatic vs. you</h2><ul><li><b>Automatic:</b> only "Registration received, we're checking your payment", the moment someone registers.</li><li><b>You confirm:</b> everything else. Under <b>Overview → Send to everyone</b>, items show <b>Due</b> when it's time (payment reminders, one week before, the day before, thank-yous). Review the list, then send.</li></ul></div>
   <div class="panel"><h2>${ico('user-check')}On the day</h2><ul><li>Start: post the <b>check-in page</b> link in the meeting chat (Quick links).</li><li>End: post the <b>feedback page</b> link.</li><li>Same evening: <b>Send to everyone → Thank-you emails</b>. Next day: feedback reminders, then certificates.</li></ul></div>
@@ -518,6 +542,53 @@ document.addEventListener('click', async e => {
   busy(b, false);
 });
 
+/* A small form in a dialog. fields: [{k, label, type, value, options, hint}]. Resolves with the values, or null. */
+function formBox(title, intro, fields, okLabel) {
+  return new Promise(res => {
+    const m = document.createElement('div'); m.className = 'modal';
+    m.innerHTML = `<div class="box" role="dialog"><h3>${esc(title)}</h3>${intro ? `<div class="hint" style="font-size:14px">${intro}</div>` : ''}<div class="fbox">${fields.map(f => `<label>${esc(f.label)}${f.type === 'select'
+      ? `<select data-k="${esc(f.k)}">${f.options.map(o => `<option value="${esc(o[0])}" ${o[0] === f.value ? 'selected' : ''}>${esc(o[1])}</option>`).join('')}</select>`
+      : `<input data-k="${esc(f.k)}" type="${f.type || 'text'}" value="${esc(f.value ?? '')}" ${f.type === 'number' ? 'step="0.01" min="0"' : ''}>`}${f.hint ? `<small>${esc(f.hint)}</small>` : ''}</label>`).join('')}</div>
+      <div class="row"><button class="btn ghost" data-no>Cancel</button><button class="btn" data-yes>${okLabel}</button></div></div>`;
+    document.body.append(m); const first = m.querySelector('input,select'); if (first) first.focus();
+    m.addEventListener('click', e => {
+      if (e.target === m || e.target.closest('[data-no]')) { m.remove(); res(null); }
+      if (e.target.closest('[data-yes]')) { const v = {}; m.querySelectorAll('[data-k]').forEach(i => { v[i.dataset.k] = i.value; }); m.remove(); res(v); }
+    });
+  });
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-more]'); if (!b) return;
+  const r = D.rows.find(x => x.ID === b.dataset.id) || (D.allRows || []).find(x => x.ID === b.dataset.id); if (!r) return;
+  const kind = b.dataset.more; let op = '', extra = null, txt = 'Saving…';
+  if (kind === 'edit') {
+    const fields = [{ k: 'Name', label: 'Full name (goes on the certificate)', value: r.Name }, { k: 'Preferred name', label: 'Preferred name', value: r['Preferred name'] }, { k: 'Email', label: 'Email', type: 'email', value: r.Email }, { k: 'WhatsApp', label: 'WhatsApp', value: r.WhatsApp }];
+    if (['Pending payment', 'Not found', 'Waitlist'].includes(r.Status)) fields.push({ k: 'Ticket', label: 'Ticket', type: 'select', value: r.Ticket, options: [['Student', 'Student'], ['Early bird', 'Early bird'], ['Normal', 'Normal']], hint: 'The amount updates to match.' });
+    const v = await formBox(`Edit ${r.Name}`, r['Certificate sent'] ? 'Their certificate was already sent. Changing the name reissues it with the same ID and emails it again.' : '', fields, 'Save'); if (!v) return;
+    op = 'editPerson'; extra = { values: v };
+  } else if (kind === 'transfer') {
+    const v = await formBox(`Transfer ${r.Name}'s seat`, 'The seat and its payment move to the new person. Both get an email; the new person gets the calendar invite.', [{ k: 'name', label: 'New person\'s full name' }, { k: 'pref', label: 'Preferred name (optional)' }, { k: 'email', label: 'Email', type: 'email' }, { k: 'wa', label: 'WhatsApp' }], 'Transfer and email both'); if (!v) return;
+    op = 'transfer'; extra = v; txt = 'Transferring…';
+  } else if (kind === 'move') {
+    const opts = D.cohorts.filter(c => c.Code !== (r.Cohort || 'C1') && c.Status !== 'Done').map(c => [c.Code, `${c.Code} · ${c.Name}${c['Session date (YYYY-MM-DD)'] ? ' · ' + c['Session date (YYYY-MM-DD)'] : ''} (${Math.max(0, Number(c['Seat cap'] || 30) - Number(c.held || 0))} seats free)`]);
+    const v = await formBox(`Move ${r.Name} to another cohort`, 'Their payment carries over. They get the new date and calendar invite.', [{ k: 'code', label: 'Cohort', type: 'select', value: opts[0] && opts[0][0], options: opts }], 'Move and email'); if (!v) return;
+    op = 'moveCohort'; extra = v; txt = 'Moving…';
+  } else if (kind === 'partial') {
+    const v = await formBox(`Partial refund for ${r.Name}`, `They keep their seat. Ticket ${rm(r['Amount (RM)'])}${Number(r['Refunded (RM)']) ? ', already refunded ' + rm(r['Refunded (RM)']) : ''}. For a full refund, use Mark refunded instead.`, [{ k: 'amount', label: 'Amount to refund (RM)', type: 'number' }, { k: 'reason', label: 'Reason', value: 'Overpayment', hint: 'Shown in their email, e.g. "Paid twice" or "Paid RM230 during early bird".' }], 'Record and email'); if (!v) return;
+    op = 'partialRefund'; extra = v; txt = 'Refunding…';
+  } else if (kind === 'balance') {
+    const v = await formBox(`Ask ${r.Name} for the balance`, `Ticket ${rm(r['Amount (RM)'])}. They get the QR and the amount still owed. Mark paid once it lands.`, [{ k: 'amount', label: 'Amount still owed (RM)', type: 'number', value: r['Balance due (RM)'] || '' }], 'Email them'); if (!v) return;
+    op = 'balanceDue'; extra = v; txt = 'Requesting…';
+  }
+  busy(b, true, txt);
+  try {
+    const res = await api(op, Object.assign({ id: r.ID }, extra));
+    if (res.ok) { toast(res.message); Object.assign(r, res.row); $$('.drawer').forEach(d => d.remove()); if (op === 'moveCohort') { busy(b, false); load(); return; } render(); openRow(r.ID); }
+    else toast(res.message || 'Could not save.', true);
+  } catch (x) { if (x.message !== 'key') toast('Could not reach the Sheet.', true); }
+  busy(b, false);
+});
+
 function confirmBox(title, body, okLabel, kind) {
   return new Promise(res => {
     const m = document.createElement('div'); m.className = 'modal';
@@ -527,10 +598,10 @@ function confirmBox(title, body, okLabel, kind) {
   });
 }
 /* Every action that talks to the Sheet shows a full-screen message, so it's clear something is happening. */
-const WORK_STATUS = { 'Paid': ['Saving the payment', 'Making the receipt PDF', 'Emailing the confirmation and calendar invite', 'Nearly done'],
+const WORK_STATUS = { 'Pending payment': ['Offering the seat', 'Emailing them the payment details'], 'Paid': ['Saving the payment', 'Making the receipt PDF', 'Emailing the confirmation and calendar invite', 'Nearly done'],
   'Not found': ['Updating the status', 'Emailing them to resend the reference'], 'Released': ['Releasing the seat', 'Emailing them'],
   'Refunded': ['Marking the refund', 'Freeing the seat', 'Emailing them about the refund'] };
-const WORK_TEXT = { 'Sending…': ['Sending', 'Writing each email', 'Nearly done'], 'Deleting…': ['Deleting', 'Moving files to the Drive bin'],
+const WORK_TEXT = { 'Transferring…': ['Transferring the seat', 'Emailing both people', 'Nearly done'], 'Moving…': ['Moving them to the new date', 'Emailing the new calendar invite'], 'Refunding…': ['Recording the refund', 'Emailing them'], 'Requesting…': ['Saving the balance', 'Emailing them the QR'], 'Sending…': ['Sending', 'Writing each email', 'Nearly done'], 'Deleting…': ['Deleting', 'Moving files to the Drive bin'],
   'Building…': ['Building the certificate template', 'Placing the artwork'], 'Making PDF…': ['Making the certificate PDF', 'Saving it to Drive'],
   'Opening…': ['Opening'], 'Saving…': ['Saving'], 'Loading…': ['Loading'] };
 let WORK = null;
@@ -555,8 +626,10 @@ function wire(root = document) {
   $$('[data-status]', root).forEach(b => b.addEventListener('click', async e => {
     e.stopPropagation();
     const r = D.rows.find(x => x.ID === b.dataset.id), st = b.dataset.status;
-    const what = { 'Paid': `This emails <b>${esc(r.Email)}</b> their confirmation, receipt and calendar invite.`, 'Not found': `This emails <b>${esc(r.Email)}</b> to resend their payment reference.`, 'Released': `This emails <b>${esc(r.Email)}</b> that their seat was released.`, 'Refunded': `This frees their seat and emails <b>${esc(r.Email)}</b> that the refund is on its way. Then do the transfer yourself.` }[st];
-    if (!await confirmBox(`${st === 'Paid' ? 'Mark paid' : st} · ${r.Name}?`, `${what}<br><br>Reference <b>${esc(r['Payment ref'])}</b> · ${rm(r['Amount (RM)'])}`, st === 'Paid' ? 'Mark paid and send' : st === 'Refunded' ? 'Mark refunded and send' : 'Send', st === 'Paid' ? 'green' : st === 'Released' ? 'dark' : '')) return;
+    const sd = (D.cohorts.find(c => c.Code === (r.Cohort || 'C1')) || {})['Session date (YYYY-MM-DD)'], daysLeft = sd ? Math.ceil((new Date(sd + 'T09:00:00+08:00') - Date.now()) / 864e5) : 99;
+    const late = st === 'Refunded' && r.Status === 'Paid' && daysLeft < 7 ? `<div class="warnbox" style="margin-bottom:10px">${ico('circle-alert')} The session is ${daysLeft <= 0 ? 'today or over' : 'in ' + daysLeft + ' day' + (daysLeft === 1 ? '' : 's')}. Your policy is a full refund only up to 7 days before; after that, a transfer. Continue only if this is an exception.</div>` : '';
+    const what = { 'Pending payment': `A seat is free. This emails <b>${esc(r.Email)}</b> that it's theirs if they pay within 24 hours.`, 'Paid': `This emails <b>${esc(r.Email)}</b> their confirmation, receipt and calendar invite.`, 'Not found': `This emails <b>${esc(r.Email)}</b> to resend their payment reference.`, 'Released': `This emails <b>${esc(r.Email)}</b> that their seat was released.`, 'Refunded': `This frees their seat and emails <b>${esc(r.Email)}</b> that the refund is on its way. Then do the transfer yourself.` }[st];
+    if (!await confirmBox(`${st === 'Paid' ? 'Mark paid' : st === 'Pending payment' ? 'Offer the seat' : r.Status === 'Waitlist' && st === 'Released' ? 'Take off the waitlist' : st} · ${r.Name}?`, `${late}${r.Status === 'Waitlist' && st === 'Released' ? 'They are removed from the waitlist. No email is sent.' : what}<br><br>Reference <b>${esc(r['Payment ref'])}</b> · ${rm(r['Amount (RM)'])}`, st === 'Paid' ? 'Mark paid and send' : st === 'Refunded' ? 'Mark refunded and send' : 'Send', st === 'Paid' ? 'green' : st === 'Released' ? 'dark' : '')) return;
     busy(b, true, 'Sending…');
     try { const res = await api('setStatus', { id: r.ID, status: st }); if (res.ok) { toast(res.message); Object.assign(r, res.row); $$('.drawer').forEach(d => d.remove()); render(); } else toast('Could not update: ' + (res.message || res.error), true); }
     catch (x) { if (x.message !== 'key') toast('Could not reach the Sheet.', true); }

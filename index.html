@@ -627,6 +627,11 @@ footer .sel{color:var(--cream)}
 .sending small{font-size:15px;line-height:1.55;color:#C9CCDA}
 .sending .dots{display:flex;gap:7px}.sending .dots i{width:9px;height:9px;border-radius:50%;background:rgba(243,234,216,.22);transition:background .3s}.sending .dots i.on{background:var(--cream)}
 @media (prefers-reduced-motion:reduce){.sending .ring{animation:none}}
+.wl{display:grid;gap:14px;margin-top:20px}.wl label{display:grid;gap:6px;font-size:15px;font-weight:600}
+.wl input,.wl select{min-height:50px;border:1.5px solid var(--line2);border-radius:14px;padding:0 14px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+.wl input:focus,.wl select:focus{outline:3px solid var(--tint);border-color:var(--blue)}
+.wl .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media (max-width:620px){.wl .two{grid-template-columns:1fr}}
+.wl .err{color:var(--err);font-weight:600;font-size:15px}.wl .done{padding:18px;border-radius:16px;background:var(--tint);color:var(--navy);font-weight:600}
 </style></head><body>
 <script>document.documentElement.classList.add('js')</script>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -1123,9 +1128,40 @@ fetch(ENDPOINT).then(r => r.json()).then(s => {
 
 function showClosed(reason) {
   const c = $('#closed');
-  const msg = reason === 'full' ? ['Fully booked', 'All 30 seats are taken. WhatsApp +6011 1068 2544 to join the waitlist for the next date.']
+  if (reason === 'full') return showWaitlist();
+  const msg = reason === 'full' ? ['Fully booked', '']
     : reason === 'over' ? ['Registration has closed', 'Thank you for your interest. Follow us for the next date.'] : ['Registration is paused', 'Please check back soon, or WhatsApp +6011 1068 2544.'];
   c.innerHTML = `<h3>${msg[0]}</h3><p>${msg[1]}</p>`; c.hidden = false; $('#regGrid').hidden = true;
+}
+
+/* ---------- waitlist (shown only when every seat is taken) ---------- */
+function showWaitlist() {
+  const c = $('#closed');
+  c.innerHTML = `<h3>Fully booked</h3><p>Every seat is taken. Join the waitlist: if a seat frees up, we email people in order, and you get 24 hours to pay. No payment now.</p>
+  <form class="wl" id="wlForm" novalidate>
+    <div class="two"><label>Full name<input name="name" autocomplete="name" required></label><label>Preferred name <small style="font-weight:400;color:var(--mut)">optional</small><input name="pref"></label></div>
+    <div class="two"><label>Email<input name="email" type="email" autocomplete="email" inputmode="email" required></label><label>WhatsApp number<input name="wa" type="tel" autocomplete="tel" inputmode="tel" placeholder="e.g. 012 345 6789" required></label></div>
+    <label>Ticket you'd like<select name="ticket"><option value="${earlyBird ? 'Early bird' : 'Normal'}">${earlyBird ? 'Early bird · RM' + PRICES['Early bird'] : 'Normal · RM' + PRICES['Normal']}</option><option value="Student">Student · RM${PRICES['Student']} (student card needed later)</option></select></label>
+    <label class="trap" aria-hidden="true">Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+    <p class="err" id="wlErr" hidden></p>
+    <button class="btn" type="submit" id="wlGo">Join the waitlist <span class="ar">→</span></button>
+  </form>`;
+  c.hidden = false; $('#regGrid').hidden = true;
+  $('#wlForm').addEventListener('submit', async e => {
+    e.preventDefault(); const f = e.target, err = $('#wlErr'), d = Object.fromEntries(new FormData(f).entries());
+    err.hidden = true;
+    if (!d.name.trim() || !d.wa.trim()) { err.textContent = 'Please fill in your name and WhatsApp number.'; err.hidden = false; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(d.email.trim())) { err.textContent = 'That email doesn\'t look right.'; err.hidden = false; return; }
+    const digits = d.wa.replace(/\D/g, '').replace(/^60/, '').replace(/^0/, ''); d.wa = '+60' + digits;
+    const ov = document.createElement('div'); ov.className = 'sending'; ov.innerHTML = `<div class="sbox"><span class="ring" aria-hidden="true"></span><p>Adding you to the waitlist…</p><small>This takes a few seconds. Please keep this page open.</small></div>`; document.body.append(ov);
+    try {
+      const res = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(Object.assign({ action: 'waitlist' }, d)) }).then(r => r.json());
+      ov.remove();
+      if (res.ok) { f.outerHTML = `<div class="done">You're number ${res.position} on the waitlist. We've emailed you the details; if a seat frees up, you'll hear from us first in line order.</div>`; return; }
+      err.textContent = { duplicate: 'This email is already on the list or already has a seat. Check your inbox.', open: 'Good news: seats just opened up. Reload the page to register.', email: 'That email doesn\'t look right.', missing: 'Please fill in your name, email and WhatsApp number.' }[res.error] || 'We couldn\'t add you. Please try again or WhatsApp +6011 1068 2544.';
+      err.hidden = false;
+    } catch (x) { ov.remove(); err.textContent = 'Couldn\'t connect. Check your internet and try again.'; err.hidden = false; }
+  });
 }
 
 /* ---------- validation ---------- */
