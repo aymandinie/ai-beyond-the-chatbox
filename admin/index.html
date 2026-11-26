@@ -71,10 +71,11 @@ tbody tr{cursor:pointer;transition:background .15s}
 tbody tr:hover{background:var(--tint)}
 td.name b{display:block}td.name small{color:var(--mut)}
 td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
-.drawer{position:fixed;inset:0;z-index:60;display:flex;justify-content:flex-end;background:rgba(16,21,44,.45);animation:fade .25s}
+.drawer{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:rgba(16,21,44,.55);animation:fade .2s}
 @keyframes fade{from{opacity:0}}
-.sheetx{width:min(520px,100%);height:100%;overflow:auto;background:var(--cream);padding:24px;display:grid;align-content:start;gap:16px;animation:slide .35s var(--ease)}
-@keyframes slide{from{transform:translateX(40px);opacity:0}}
+.sheetx{width:min(640px,100%);max-height:calc(100vh - 48px);overflow:auto;background:var(--cream);border-radius:26px;padding:26px;display:grid;align-content:start;gap:16px;box-shadow:0 40px 80px -30px rgba(0,0,0,.5);animation:popin .3s var(--ease)}
+@keyframes popin{from{transform:translateY(14px) scale(.97);opacity:0}}
+@media (max-width:560px){.drawer{padding:12px}.sheetx{padding:20px;border-radius:22px;max-height:calc(100vh - 24px)}}
 .sheetx header{display:flex;align-items:flex-start;gap:12px}
 .sheetx header h2{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:34px;line-height:1;flex:1}
 .x{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:0;background:#fff;cursor:pointer;flex:none}
