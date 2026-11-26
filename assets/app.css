@@ -1,0 +1,40 @@
+/* Shared look for the admin, check-in and feedback pages. Same DNA as the registration site. */
+:root{--night:#10152C;--navy:#1B2140;--navy2:#232B52;--blue:#2B4ACB;--blue-d:#2340B5;--lb:#9DB2FF;--tint:#EEF2FD;--cream:#F3EAD8;--paper:#FBF6EA;--white:#FFFDF8;
+  --ink:#1F2433;--mut:#655F52;--soft:#8C8574;--line:#DED2BA;--line2:#CBBE9F;--ok:#1E6B3A;--ok-bg:#E5F4E4;--warn:#7A5300;--warn-bg:#FFF3D6;--err:#B3261E;--err-bg:#FDECEA;
+  --ease:cubic-bezier(.2,.75,.2,1);color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--cream);color:var(--ink);font:15px/1.55 Geist,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--blue)}
+button,input,select,textarea{font:inherit;color:inherit}
+[hidden]{display:none!important}
+.ico{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.mono{font-family:'Courier Prime',ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:11.5px}
+.serif{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 18px;border-radius:999px;border:0;background:var(--blue);color:#fff;font-weight:600;font-size:14.5px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:transform .2s var(--ease),background .2s,box-shadow .2s,opacity .2s}
+.btn:hover{background:var(--blue-d);transform:translateY(-1px);box-shadow:0 10px 20px -12px rgba(43,74,203,.7)}
+.btn:active{transform:none}
+.btn:disabled{opacity:.6;cursor:progress;transform:none}
+.btn.ghost{background:#fff;color:var(--navy);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1.5px var(--blue);background:var(--tint)}
+.btn.dark{background:var(--navy)}.btn.dark:hover{background:#262E57}
+.btn.green{background:#1FAF54}.btn.green:hover{background:#199347}
+.btn.red{background:var(--err)}.btn.red:hover{background:#962019}
+.btn.sm{min-height:34px;padding:0 13px;font-size:13.5px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.p-pending{background:var(--warn-bg);color:var(--warn)}.p-paid{background:var(--ok-bg);color:var(--ok)}.p-notfound{background:var(--err-bg);color:var(--err)}.p-released{background:#ECEAE4;color:var(--mut)}.p-refunded{background:var(--tint);color:var(--blue)}
+.p-test{background:#FFF3D6;color:#7A5300}
+input[type=text],input[type=email],input[type=password],input[type=url],input[type=number],select,textarea{width:100%;min-height:46px;border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:10px 14px;font-size:15.5px;transition:border-color .2s,box-shadow .2s}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 4px rgba(43,74,203,.15)}
+:focus-visible{outline:3px solid var(--lb);outline-offset:2px;border-radius:8px}
+.spin{width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:sp .7s linear infinite}
+.spin.dark{border-color:rgba(27,33,64,.18);border-top-color:var(--navy)}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:10px;max-width:min(560px,calc(100vw - 32px));padding:13px 18px;border-radius:16px;background:var(--navy);color:var(--cream);font-weight:600;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);animation:up .35s var(--ease)}
+.toast.err{background:var(--err)}
+.brand{display:flex;align-items:baseline;gap:6px;font-weight:800;letter-spacing:-.01em;color:inherit;text-decoration:none}
+.brand i{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:1.25em}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
