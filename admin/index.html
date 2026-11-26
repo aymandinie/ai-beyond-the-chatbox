@@ -44,9 +44,9 @@ main{min-width:0;padding:26px clamp(16px,3vw,40px) 60px}
 .two{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
 .sec-title{margin:28px 0 12px;color:var(--blue)}
 .attn{display:grid;gap:8px}
-.attn .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--paper);border:1px solid var(--line)}
+.attn .row{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start;padding:12px 14px;border-radius:14px;background:var(--paper);border:1px solid var(--line)}
 .attn .row b{display:block}.attn .row small{color:var(--mut)}
-.attn .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.attn .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start}
 .empty{color:var(--mut);padding:14px 0;display:flex;align-items:center;gap:10px}
 .links{display:grid;gap:6px}
 .links a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;color:var(--navy);text-decoration:none;font-weight:600;transition:background .2s}
@@ -116,6 +116,12 @@ iframe{width:100%;height:calc(100vh - 40px);min-height:520px;border:0;border-rad
 .statusmap{display:grid;gap:8px}
 .statusmap div{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;align-items:center}
 .mobilenav{display:none}
+.working{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:24px;background:rgba(16,21,44,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:fade .2s}
+.working .box{display:grid;justify-items:center;gap:16px;text-align:center;max-width:380px;color:var(--cream)}
+.working .spin{width:44px;height:44px;border-width:3.5px}
+.working p{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:30px;line-height:1.1;min-height:66px}
+.working small{font-size:14px;color:#C9CCDA;line-height:1.5}
+.working .dots{display:flex;gap:6px}.working .dots i{width:8px;height:8px;border-radius:50%;background:rgba(243,234,216,.25);transition:background .3s}.working .dots i.on{background:var(--cream)}
 .dwrap{display:grid;gap:22px}.dwrap .sec-title{margin:8px 0 -8px}.dwrap .panel h2{margin-bottom:10px}
 .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
 .dcard{background:var(--white);border:1.5px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
@@ -160,7 +166,7 @@ iframe{width:100%;height:calc(100vh - 40px);min-height:520px;border:0;border-rad
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-layout-dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1" /> <rect width="7" height="5" x="14" y="3" rx="1" /> <rect width="7" height="9" x="14" y="12" rx="1" /> <rect width="7" height="5" x="3" y="16" rx="1" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" /></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2" /> <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></symbol><symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /> <circle cx="12" cy="12" r="3" /></symbol><symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></symbol><symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 7v14" /> <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></symbol><symbol id="i-log-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /> <polyline points="16 17 21 12 16 7" /> <line x1="21" x2="9" y1="12" y2="12" /></symbol><symbol id="i-refresh-cw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" /> <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" /></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /> <path d="m21 21-4.3-4.3" /></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></symbol><symbol id="i-send" viewBox="0 0 24 24"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" /> <path d="m21.854 2.147-10.94 10.939" /></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /> <circle cx="12" cy="12" r="3" /></symbol><symbol id="i-external-link" viewBox="0 0 24 24"><path d="M15 3h6v6" /> <path d="M10 14 21 3" /> <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></symbol><symbol id="i-file-text" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /> <path d="M14 2v4a2 2 0 0 0 2 2h4" /> <path d="M10 9H8" /> <path d="M16 13H8" /> <path d="M16 17H8" /></symbol><symbol id="i-user-check" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <circle cx="9" cy="7" r="4" /> <polyline points="16 11 18 13 22 9" /></symbol><symbol id="i-message-square" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></symbol><symbol id="i-circle-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <circle cx="12" cy="12" r="1" /></symbol><symbol id="i-circle-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <line x1="12" x2="12" y1="8" y2="12" /> <line x1="12" x2="12.01" y1="16" y2="16" /></symbol><symbol id="i-circle-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="m9 12 2 2 4-4" /></symbol><symbol id="i-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></symbol><symbol id="i-ticket" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /> <path d="M13 5v2" /> <path d="M13 17v2" /> <path d="M13 11v2" /></symbol><symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M5 22h14" /> <path d="M5 2h14" /> <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" /> <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" /></symbol><symbol id="i-link-2" viewBox="0 0 24 24"><path d="M9 17H7A5 5 0 0 1 7 7h2" /> <path d="M15 7h2a5 5 0 1 1 0 10h-2" /> <line x1="8" x2="16" y1="12" y2="12" /></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /></symbol><symbol id="i-key-round" viewBox="0 0 24 24"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" /> <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" /></symbol><symbol id="i-filter" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /> <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></symbol><symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" /></symbol><symbol id="i-square-pen" viewBox="0 0 24 24"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /> <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" /></symbol><symbol id="i-trash-2" viewBox="0 0 24 24"><path d="M3 6h18" /> <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /> <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /> <line x1="10" x2="10" y1="11" y2="17" /> <line x1="14" x2="14" y1="11" y2="17" /></symbol><symbol id="i-rotate-ccw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /> <path d="M3 3v5h5" /></symbol><symbol id="i-graduation-cap" viewBox="0 0 24 24"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /> <path d="M22 10v6" /> <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" /></symbol><symbol id="i-sunrise" viewBox="0 0 24 24"><path d="M12 2v8" /> <path d="m4.93 10.93 1.41 1.41" /> <path d="M2 18h2" /> <path d="M20 18h2" /> <path d="m19.07 10.93-1.41 1.41" /> <path d="M22 22H2" /> <path d="m8 6 4-4 4 4" /> <path d="M16 18a4 4 0 0 0-8 0" /></symbol><symbol id="i-armchair" viewBox="0 0 24 24"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3" /> <path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z" /> <path d="M5 18v2" /> <path d="M19 18v2" /></symbol><symbol id="i-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /> <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></symbol><symbol id="i-list-checks" viewBox="0 0 24 24"><path d="m3 17 2 2 4-4" /> <path d="m3 7 2 2 4-4" /> <path d="M13 6h8" /> <path d="M13 12h8" /> <path d="M13 18h8" /></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <polyline points="12 6 12 12 16 14" /></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol><symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /> <circle cx="12" cy="10" r="3" /></symbol><symbol id="i-credit-card" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2" /> <line x1="2" x2="22" y1="10" y2="10" /></symbol><symbol id="i-party-popper" viewBox="0 0 24 24"><path d="M5.8 11.3 2 22l10.7-3.79" /> <path d="M4 3h.01" /> <path d="M22 8h.01" /> <path d="M15 2h.01" /> <path d="M22 20h.01" /> <path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10" /> <path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17" /> <path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7" /> <path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z" /></symbol><symbol id="i-smartphone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2" /> <path d="M12 18h.01" /></symbol><symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <polyline points="7 10 12 15 17 10" /> <line x1="12" x2="12" y1="15" y2="3" /></symbol><symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol><symbol id="i-user-round" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5" /> <path d="M20 21a8 8 0 0 0-16 0" /></symbol><symbol id="i-qr-code" viewBox="0 0 24 24"><rect width="5" height="5" x="3" y="3" rx="1" /> <rect width="5" height="5" x="16" y="3" rx="1" /> <rect width="5" height="5" x="3" y="16" rx="1" /> <path d="M21 16h-3a2 2 0 0 0-2 2v3" /> <path d="M21 21v.01" /> <path d="M12 7v3a2 2 0 0 1-2 2H7" /> <path d="M3 12h.01" /> <path d="M12 3h.01" /> <path d="M12 16v.01" /> <path d="M16 12h1" /> <path d="M21 12v.01" /> <path d="M12 21v-1" /></symbol><symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /> <path d="M20 3v4" /> <path d="M22 5h-4" /> <path d="M4 17v2" /> <path d="M5 18H3" /></symbol><symbol id="i-whatsapp" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol></defs></svg>
 
-<section class="lockscreen" id="signing" hidden><div class="signing"><span class="spin" style="width:28px;height:28px"></span><p>Signing you in…</p></div></section>
+<section class="lockscreen" id="signing" hidden><div class="signing"><span class="spin" style="width:44px;height:44px;border-width:3.5px"></span><p style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:30px">Signing you in…</p><small style="color:#C9CCDA;max-width:320px;text-align:center;line-height:1.5">Loading registrations from your Google Sheet. The first load can take up to 10 seconds.</small></div></section>
 <section class="lockscreen" id="lock">
 <form class="lockcard" id="lockForm">
 <img src="../assets/brand/logo-wide-small.png" alt="AI Beyond the Chatbox" style="width:210px;max-width:100%;height:auto;display:block">
@@ -210,6 +216,7 @@ const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxad2ugFPJ1kPqEXEMzr0G
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const ico = n => `<svg class="ico"><use href="#i-${n}"/></svg>`;
+const NEXT = { 'Pending payment': ['Paid', 'Not found', 'Released', 'Refunded'], 'Not found': ['Paid', 'Released', 'Refunded'], 'Released': ['Paid'], 'Paid': ['Refunded'], 'Refunded': [] };   // same rules as the script
 const PILL = { 'Pending payment': 'pending', 'Paid': 'paid', 'Not found': 'notfound', 'Released': 'released', 'Refunded': 'refunded' };
 const pill = st => `<span class="pill p-${PILL[st] || 'released'}"><i></i>${esc(st || 'No status')}</span>`;
 const rm = n => 'RM' + Number(n || 0).toLocaleString('en-MY');
@@ -224,7 +231,7 @@ async function api(op, extra = {}) {
   if (!res.ok && res.error === 'key') { lock('That key no longer works. Check the Admin key on the Settings tab.'); throw new Error('key'); }
   return res;
 }
-function lock(msg) { try { localStorage.removeItem('abtc-admin'); } catch (e) {} KEY = ''; $('#app').hidden = true; $('#lock').hidden = false; if (msg) { $('#lockErr').textContent = msg; $('#lockErr').hidden = false; } }
+function lock(msg) { try { localStorage.removeItem('abtc-admin'); localStorage.removeItem('abtc-admin-data'); } catch (e) {} KEY = ''; $('#app').hidden = true; $('#lock').hidden = false; if (msg) { $('#lockErr').textContent = msg; $('#lockErr').hidden = false; } }
 $('#lockForm').addEventListener('submit', async e => {
   e.preventDefault(); KEY = $('#keyIn').value.trim(); const b = $('#lockBtn'); b.disabled = true; b.innerHTML = '<span class="spin"></span>Checking…';
   try { const r = await load(true); if (r) { try { localStorage.setItem('abtc-admin', KEY); } catch (x) {} } }
@@ -240,13 +247,17 @@ async function load(first) {
   const r = await api('load', COHORT ? { cohort: COHORT } : {});
   $('#refresh').innerHTML = ico('refresh-cw') + 'Refresh';
   if (!r.ok) { const old = r.error === 'missing'; if (first) { $('#lockErr').textContent = old ? 'The live script is an older version. Deploy the new version in Apps Script, then try again.' : 'Could not load: ' + (r.error || 'unknown'); $('#lockErr').hidden = false; } else toast(old ? 'The live script is an older version. Deploy the new version.' : 'Could not load: ' + (r.error || 'unknown'), true); return null; }
-  D = r; COHORT = r.cohort || 'C1'; D.cohorts = D.cohorts || []; D.cohortStatus = D.cohortStatus || ['Draft', 'Open', 'Closed', 'Done']; $('#lock').hidden = true; $('#app').hidden = false;
+  try { localStorage.setItem('abtc-admin-data', JSON.stringify(r)); } catch (x) {}
+  applyData(r); return r;
+}
+function applyData(r, cached) {
+  D = r; COHORT = COHORT || r.cohort || 'C1'; D.cohorts = D.cohorts || []; D.cohortStatus = D.cohortStatus || ['Draft', 'Open', 'Closed', 'Done']; $('#lock').hidden = true; $('#app').hidden = false;
   D.allRows = D.rows; D.rows = D.allRows.filter(x => (x.Cohort || 'C1') === COHORT);
   $('#cohortSel').innerHTML = D.cohorts.map(c => `<option value="${esc(c.Code)}" ${c.Code === COHORT ? 'selected' : ''}>${esc(c.Code)} · ${esc(c.Name)}${c.Status === 'Open' ? ' (open)' : ''}</option>`).join('');
-  $('#updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-MY', { hour: 'numeric', minute: '2-digit' });
+  $('#updated').textContent = cached ? 'Showing last saved data · updating…' : 'Updated ' + new Date().toLocaleTimeString('en-MY', { hour: 'numeric', minute: '2-digit' });
   $('#navCount').textContent = D.rows.length;
   const s = D.status; $('#regState').innerHTML = s.open ? `<span class="pill p-paid"><i></i>Open · ${s.seatsLeft} seats left${s.earlyBird ? ' · early bird' : ''}</span>` : `<span class="pill p-notfound"><i></i>Closed (${esc(s.reason)})</span>`;
-  render(); return r;
+  render();
 }
 function go(v) { VIEW = v; $$('#nav button, #mnav button').forEach(b => b.classList.toggle('on', b.dataset.v === v)); render(); scrollTo({ top: 0 }); }
 $$('#nav button, #mnav button').forEach(b => b.addEventListener('click', () => go(b.dataset.v)));
@@ -321,18 +332,18 @@ function people() {
 }
 function openRow(id) {
   const r = D.rows.find(x => x.ID === id); if (!r) return;
-  const nexts = { 'Pending payment': ['Paid', 'Not found', 'Released'], 'Not found': ['Paid', 'Released'], 'Paid': ['Refunded'], 'Released': [], 'Refunded': [] }[r.Status] || ['Paid'];
+  const nexts = NEXT[r.Status] || [];
   const label = { 'Paid': [ico('circle-check') + 'Mark paid', 'green'], 'Not found': [ico('circle-alert') + 'Payment not found', 'ghost'], 'Released': [ico('rotate-ccw') + 'Release seat', 'dark'], 'Refunded': [ico('banknote') + 'Mark refunded', 'ghost'] };
   const resend = r.Status === 'Paid' ? [['confirmed', 'Confirmation and receipt'], ['dayBefore', 'Day-before reminder']] : r.Status === 'Not found' ? [['notFound', 'Payment not found'], ['payReminder', 'Reminder with QR']] : r.Status === 'Pending payment' ? [['howToPay', 'Registration received']] : [];
   const F = (k, v) => v ? `<div><dt>${k}</dt><dd>${v}</dd></div>` : '';
   const dr = document.createElement('div'); dr.className = 'drawer'; dr.innerHTML = `<div class="sheetx" role="dialog" aria-label="${esc(r.Name)}">
     <header><div style="flex:1"><span class="mono" style="color:var(--blue)">${esc(r.ID)} · ${when(r.Submitted)}</span><h2>${esc(r.Name)}</h2><div style="margin-top:8px">${pill(r.Status)}${/TEST/.test(r.Notes) ? ' <span class="pill p-test">TEST</span>' : ''}</div></div><button class="x" data-close aria-label="Close">${ico('x')}</button></header>
-    ${nexts.length ? `<div class="actions">${nexts.map(st => `<button class="btn ${label[st][1]}" data-status="${st}" data-id="${esc(r.ID)}">${label[st][0]}</button>`).join('')}</div><p class="hint">Each button emails them straight away, except Mark refunded.</p>` : ''}
+    ${nexts.length ? `<div class="actions">${nexts.map(st => `<button class="btn ${label[st][1]}" data-status="${st}" data-id="${esc(r.ID)}">${label[st][0]}</button>`).join('')}</div><p class="hint">Each button emails them straight away.</p>` : ''}
     <dl class="kv">${F('Email', `<a href="mailto:${esc(r.Email)}">${esc(r.Email)}</a>`)}${F('WhatsApp', `<a href="https://wa.me/${String(r.WhatsApp).replace(/\D/g, '')}" target="_blank" rel="noopener">${esc(r.WhatsApp)}</a>`)}${F('Ticket', esc(r.Ticket) + ' · ' + rm(r['Amount (RM)']))}
       ${F('Paid with', esc(r['Paid with']))}${F('Payment ref', `<b>${esc(r['Payment ref'])}</b>`)}${F('Receipt upload', r['Payment proof'] ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(r['Payment proof'])}" data-title="${esc('Receipt · ' + r.Name)}">${ico('banknote')}View their receipt</button>` : '<span class="hint">None uploaded</span>')}${F('Paying name', esc(r['Paying name']))}${F('Receipt', esc(r['Receipt no']))}
       ${F('College', esc(r.College))}${F('Student ID', esc(r['Student ID']))}${F('Student card', /drive/.test(r['Student card'] || '') ? `<button class="btn ghost sm" type="button" data-viewfile="${esc(r['Student card'])}" data-title="${esc('Student card · ' + r.Name)}">${ico('graduation-cap')}View student card</button>` : esc(r['Student card'] || ''))}
       ${F('Occupation', esc(r.Occupation))}${F('AI use', esc(r['AI use']))}${F('AI tools', esc(r['AI tools']))}${F('App idea', esc(r['App idea']))}${F('Laptop', esc(r.Laptop))}${F('Heard from', esc(r['Heard from']))}
-      ${F('Checked in', esc(r['Checked in']))}${F('Feedback', esc(r.Feedback))}${F('Certificate', esc(r['Certificate no']))}</dl>
+      ${F('Checked in', r.Status === 'Paid' ? (r['Checked in'] ? esc(r['Checked in']) + ` <button class="btn ghost sm" data-checkin="${esc(r.ID)}" data-undo="1">Undo</button>` : `<button class="btn ghost sm" data-checkin="${esc(r.ID)}">${ico('user-check')}Mark checked in</button>`) : esc(r['Checked in']))}${F('Feedback', esc(r.Feedback))}${F('Certificate', esc(r['Certificate no']))}</dl>
     <div class="field"><label for="note">Notes</label><textarea id="note">${esc(r.Notes)}</textarea><div><button class="btn ghost sm" data-note="${esc(r.ID)}">${ico('square-pen')}Save note</button></div></div>
     <div class="field"><label>Emails sent to them</label><div class="hist">${(D.log.filter(l => String(l.to).toLowerCase() === String(r.Email).toLowerCase()).map(l => `<div><b>${esc(({ howToPay: 'Registration received', confirmed: 'Seat confirmed', notFound: 'Payment not found', payReminder: 'Payment reminder', released: 'Seat released', prep: 'One week to go', dayBefore: 'Day-before reminder', thankYou: 'Thank you', noShow: 'Sorry we missed you', feedbackReminder: 'Feedback reminder', certificate: 'Certificate' })[l.email] || l.email)}</b><span>${l.result === 'Sent' ? '' : esc(l.result) + ' · '}${esc(l.time)}</span></div>`).join('')) || '<p class="hint">No emails yet.</p>'}</div></div>
     ${resend.length ? `<div class="field"><label>Send an email again</label><div class="actions">${resend.map(([k, l]) => `<button class="btn ghost sm" data-resend="${k}" data-id="${esc(r.ID)}">${ico('send')}${l}</button>`).join('')}</div></div>` : ''}
@@ -478,8 +489,9 @@ function guide() {
     <div>${pill('Pending payment')}<span>Every new registration starts here. They got "Registration received". Nothing is sent when you set it.</span></div>
     <div>${pill('Paid')}<span>Sends the confirmation with the receipt PDF and calendar invite.</span></div>
     <div>${pill('Not found')}<span>Asks them to reply with their receipt. If they still haven't sorted it, send the reminder with the QR from Send to everyone.</span></div>
-    <div>${pill('Released')}<span>Tells them the seat was released. The seat opens up on the website.</span></div>
-    <div>${pill('Refunded')}<span>Marks the refund. No email. Do the bank transfer yourself; pay-later refunds go through Touch 'n Go.</span></div></div>
+    <div>${pill('Released')}<span>Tells them the seat was released. The seat opens up on the website. If their payment turns up later, you can still mark them Paid.</span></div>
+    <div>${pill('Refunded')}<span>Frees the seat and emails them that the refund is on its way. Then do the bank transfer yourself; pay-later refunds go through Touch 'n Go. This is final.</span></div></div>
+    <p class="hint" style="margin-top:10px"><b>Allowed changes:</b> Pending → Paid, Not found, Released or Refunded · Not found → Paid, Released or Refunded · Released → Paid · Paid → Refunded. Anything else is refused, in the Sheet too.</p>
     <p class="hint" style="margin-top:12px">Emails go out the moment you press a button. They cannot be unsent.</p></div>
   <div class="panel"><h2>${ico('clock')}Automatic vs. you</h2><ul><li><b>Automatic:</b> only "Registration received, we're checking your payment", the moment someone registers.</li><li><b>You confirm:</b> everything else. Under <b>Overview → Send to everyone</b>, items show <b>Due</b> when it's time (payment reminders, one week before, the day before, thank-yous). Review the list, then send.</li></ul></div>
   <div class="panel"><h2>${ico('user-check')}On the day</h2><ul><li>Start: post the <b>check-in page</b> link in the meeting chat (Quick links).</li><li>End: post the <b>feedback page</b> link.</li><li>Same evening: <b>Send to everyone → Thank-you emails</b>. Next day: feedback reminders, then certificates.</li></ul></div>
@@ -515,7 +527,27 @@ function confirmBox(title, body, okLabel, kind) {
     m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-no]')) { m.remove(); res(false); } if (e.target.closest('[data-yes]')) { m.remove(); res(true); } });
   });
 }
-const busy = (b, on, txt) => { if (!b) return; if (on) { b.dataset.html = b.innerHTML; b.disabled = true; b.innerHTML = `<span class="spin${b.classList.contains('ghost') ? ' dark' : ''}"></span>${txt || 'Working…'}`; } else { b.disabled = false; b.innerHTML = b.dataset.html; } };
+/* Every action that talks to the Sheet shows a full-screen message, so it's clear something is happening. */
+const WORK_STATUS = { 'Paid': ['Saving the payment', 'Making the receipt PDF', 'Emailing the confirmation and calendar invite', 'Nearly done'],
+  'Not found': ['Updating the status', 'Emailing them to resend the reference'], 'Released': ['Releasing the seat', 'Emailing them'],
+  'Refunded': ['Marking the refund', 'Freeing the seat', 'Emailing them about the refund'] };
+const WORK_TEXT = { 'Sending…': ['Sending', 'Writing each email', 'Nearly done'], 'Deleting…': ['Deleting', 'Moving files to the Drive bin'],
+  'Building…': ['Building the certificate template', 'Placing the artwork'], 'Making PDF…': ['Making the certificate PDF', 'Saving it to Drive'],
+  'Opening…': ['Opening'], 'Saving…': ['Saving'], 'Loading…': ['Loading'] };
+let WORK = null;
+function workOn(steps) {
+  workOff(); const w = document.createElement('div'); w.className = 'working'; w.setAttribute('role', 'status'); w.setAttribute('aria-live', 'polite');
+  w.innerHTML = `<div class="box"><span class="spin"></span><p></p>${steps.length > 1 ? `<div class="dots">${steps.map(() => '<i></i>').join('')}</div>` : ''}<small>Talking to your Google Sheet. This usually takes 3 to 15 seconds. Please keep this page open.</small></div>`;
+  document.body.append(w); const p = w.querySelector('p'), dots = [...w.querySelectorAll('.dots i')]; let i = 0;
+  const show = () => { p.textContent = steps[i] + '…'; dots.forEach((d, k) => d.classList.toggle('on', k <= i)); }; show();
+  WORK = { w, t: setInterval(() => { if (i < steps.length - 1) { i++; show(); } }, 2600) };
+}
+function workOff() { if (WORK) { clearInterval(WORK.t); WORK.w.remove(); WORK = null; } }
+const busy = (b, on, txt) => {
+  if (!b) return;
+  if (on) { b.dataset.html = b.innerHTML; b.disabled = true; workOn((b.dataset.status && WORK_STATUS[b.dataset.status]) || WORK_TEXT[txt] || [String(txt || 'Working').replace(/…$/, '')]); }
+  else { b.disabled = false; b.innerHTML = b.dataset.html; workOff(); }
+};
 function wire(root = document) {
   $$('[data-open]', root).forEach(el => el.addEventListener('click', e => { if (e.target.closest('button[data-status]')) return; openRow(el.dataset.open); }));
   $$('[data-filter]', root).forEach(b => b.addEventListener('click', () => { FILTER = b.dataset.filter; render(); }));
@@ -524,10 +556,16 @@ function wire(root = document) {
   $$('[data-status]', root).forEach(b => b.addEventListener('click', async e => {
     e.stopPropagation();
     const r = D.rows.find(x => x.ID === b.dataset.id), st = b.dataset.status;
-    const what = { 'Paid': `This emails <b>${esc(r.Email)}</b> their confirmation, receipt and calendar invite.`, 'Not found': `This emails <b>${esc(r.Email)}</b> to resend their payment reference.`, 'Released': `This emails <b>${esc(r.Email)}</b> that their seat was released.`, 'Refunded': 'No email is sent. Do the transfer yourself.' }[st];
-    if (!await confirmBox(`${st === 'Paid' ? 'Mark paid' : st} · ${r.Name}?`, `${what}<br><br>Reference <b>${esc(r['Payment ref'])}</b> · ${rm(r['Amount (RM)'])}`, st === 'Paid' ? 'Mark paid and send' : st === 'Refunded' ? 'Mark refunded' : 'Send', st === 'Paid' ? 'green' : st === 'Released' ? 'dark' : '')) return;
+    const what = { 'Paid': `This emails <b>${esc(r.Email)}</b> their confirmation, receipt and calendar invite.`, 'Not found': `This emails <b>${esc(r.Email)}</b> to resend their payment reference.`, 'Released': `This emails <b>${esc(r.Email)}</b> that their seat was released.`, 'Refunded': `This frees their seat and emails <b>${esc(r.Email)}</b> that the refund is on its way. Then do the transfer yourself.` }[st];
+    if (!await confirmBox(`${st === 'Paid' ? 'Mark paid' : st} · ${r.Name}?`, `${what}<br><br>Reference <b>${esc(r['Payment ref'])}</b> · ${rm(r['Amount (RM)'])}`, st === 'Paid' ? 'Mark paid and send' : st === 'Refunded' ? 'Mark refunded and send' : 'Send', st === 'Paid' ? 'green' : st === 'Released' ? 'dark' : '')) return;
     busy(b, true, 'Sending…');
     try { const res = await api('setStatus', { id: r.ID, status: st }); if (res.ok) { toast(res.message); Object.assign(r, res.row); $$('.drawer').forEach(d => d.remove()); render(); } else toast('Could not update: ' + (res.message || res.error), true); }
+    catch (x) { if (x.message !== 'key') toast('Could not reach the Sheet.', true); }
+    busy(b, false);
+  }));
+  $$('[data-checkin]', root).forEach(b => b.addEventListener('click', async () => {
+    busy(b, true, 'Saving…');
+    try { const res = await api('checkIn', { id: b.dataset.checkin, undo: !!b.dataset.undo }); if (res.ok) { toast(res.message); const r = D.rows.find(x => x.ID === b.dataset.checkin); Object.assign(r, res.row); $$('.drawer').forEach(d => d.remove()); render(); openRow(r.ID); } else toast(res.message || 'Could not update.', true); }
     catch (x) { if (x.message !== 'key') toast('Could not reach the Sheet.', true); }
     busy(b, false);
   }));
@@ -600,6 +638,10 @@ function wire(root = document) {
   }));
 }
 
-if (KEY) { $('#lock').hidden = true; $('#signing').hidden = false; load(true).catch(() => {}).finally(() => { $('#signing').hidden = true; if ($('#app').hidden) $('#lock').hidden = false; }); }
+if (KEY) {
+  let cached = null; try { cached = JSON.parse(localStorage.getItem('abtc-admin-data') || 'null'); } catch (e) {}
+  if (cached && cached.ok) { $('#lock').hidden = true; applyData(cached, true); load(true).catch(() => {}); }   // show the last data at once, then refresh
+  else { $('#lock').hidden = true; $('#signing').hidden = false; load(true).catch(() => {}).finally(() => { $('#signing').hidden = true; if ($('#app').hidden) $('#lock').hidden = false; }); }
+}
 </script>
 </body></html>

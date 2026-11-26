@@ -618,6 +618,15 @@ footer .sel{color:var(--cream)}
 }
 .brand.logo{display:block;line-height:0}.brand.logo img{height:auto;display:block}
 @media (max-width:420px){header.top .brand.logo img{width:124px}}
+.sending{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:24px;background:rgba(16,21,44,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:sfade .25s}
+@keyframes sfade{from{opacity:0}}
+.sending .box{display:grid;justify-items:center;gap:18px;text-align:center;max-width:400px;color:var(--cream)}
+.sending .ring{width:56px;height:56px;border-radius:50%;border:4px solid rgba(243,234,216,.2);border-top-color:var(--cream);animation:sspin .8s linear infinite}
+@keyframes sspin{to{transform:rotate(360deg)}}
+.sending p{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:34px;line-height:1.1;min-height:76px}
+.sending small{font-size:15px;line-height:1.55;color:#C9CCDA}
+.sending .dots{display:flex;gap:7px}.sending .dots i{width:9px;height:9px;border-radius:50%;background:rgba(243,234,216,.22);transition:background .3s}.sending .dots i.on{background:var(--cream)}
+@media (prefers-reduced-motion:reduce){.sending .ring{animation:none}}
 </style></head><body>
 <script>document.documentElement.classList.add('js')</script>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -1307,12 +1316,20 @@ form.addEventListener('submit', async e => {
   if (data.ticket === 'Student') data.card = card; else { delete data.college; delete data.sid; }
   if (proof) data.proof = proof;
   go.disabled = true; go.innerHTML = '<span class="spin" aria-hidden="true"></span> Sending your registration…';
+  const steps = ['Sending your registration', ...(data.card ? ['Uploading your student card'] : []), ...(data.proof ? ['Uploading your receipt'] : []), 'Holding your seat', 'Emailing your confirmation', 'Nearly done'];
+  const ov = document.createElement('div'); ov.className = 'sending'; ov.setAttribute('role', 'status'); ov.setAttribute('aria-live', 'polite');
+  ov.innerHTML = `<div class="box"><span class="ring" aria-hidden="true"></span><p></p><div class="dots" aria-hidden="true">${steps.map(() => '<i></i>').join('')}</div><small>This takes about 10 to 20 seconds. Please keep this page open and don't press Register again.</small></div>`;
+  document.body.append(ov); let si = 0; const sp = ov.querySelector('p'), sd = [...ov.querySelectorAll('.dots i')];
+  const sshow = () => { sp.textContent = steps[si] + '…'; sd.forEach((d, k) => d.classList.toggle('on', k <= si)); }; sshow();
+  const stimer = setInterval(() => { if (si < steps.length - 1) { si++; sshow(); } }, 3000);
+  const sclose = () => { clearInterval(stimer); ov.remove(); };
   try {
     const res = await fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data) }).then(r => r.json());
     if (!res.ok) throw new Error(res.error || 'unknown');
     try { localStorage.removeItem(KEY); } catch (x) {}
-    done(data, res);
+    sclose(); done(data, res);
   } catch (x) {
+    sclose();
     err.innerHTML = `<b>${ERRORS[x.message] || 'We couldn\'t send your registration.'}</b>${ERRORS[x.message] ? '' : '<p style="margin-top:6px">Check your connection and try again. Your answers are still here. If it keeps happening, WhatsApp +6011 1068 2544.</p>'}`;
     err.hidden = false; go.disabled = false; go.innerHTML = `<span id="goTxt">Register · RM${PRICES[data.ticket]}</span> <span class="ar">→</span>`;
     if (x.message === 'early-bird-closed') { $('#ebOpt').hidden = true; $('#nOpt').hidden = false; }

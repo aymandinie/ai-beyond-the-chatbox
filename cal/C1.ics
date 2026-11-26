@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Ayman Dinie//AI Beyond the Chatbox//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:C1@aibeyondthechatbox
+DTSTAMP:20261126T110914Z
+DTSTART:20261219T010000Z
+DTEND:20261219T040000Z
+SUMMARY:AI Beyond the Chatbox (online workshop)
+DESCRIPTION:Online on Google Meet. The join link arrives by email the day before.\nBring a laptop with Chrome and a free Claude account.
+LOCATION:Online (Google Meet)
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:AI Beyond the Chatbox starts in 1 hour
+END:VALARM
+END:VEVENT
+END:VCALENDAR
