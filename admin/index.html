@@ -132,7 +132,7 @@ iframe{width:100%;height:calc(100vh - 40px);min-height:520px;border:0;border-rad
 .lrow div{flex:1;min-width:0}.lrow b{display:block;font-size:14.5px}.lrow small{display:block;color:var(--mut);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lrow .x{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;border:1.5px solid var(--line);background:var(--white);color:var(--navy);cursor:pointer;flex:none;text-decoration:none}
 .lrow .x:hover{border-color:var(--blue);color:var(--blue)}
-.lrow.off{opacity:.55}.paths code{font-family:'Courier Prime',monospace;font-size:12.5px;background:var(--tint);padding:2px 6px;border-radius:6px;word-break:break-all}
+.lrow.off{opacity:.55}.paths ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.paths li{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:4px 12px;align-items:baseline;padding:8px 10px;border-radius:10px;background:var(--paper,#FBF6EA)}.paths li b{font-weight:600;font-size:14px}@media (max-width:640px){.paths li{grid-template-columns:1fr}}.paths code{font-family:'Courier Prime',monospace;font-size:12.5px;background:var(--tint);padding:2px 6px;border-radius:6px;word-break:break-all}
 .cohortsel{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:4px 6px 4px 14px;font-weight:600;font-size:13.5px}
 .cohortsel select{border:0;min-height:30px;padding:0 26px 0 6px;font-weight:700;background:transparent;width:auto;box-shadow:none;font-size:14px}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
@@ -435,11 +435,11 @@ function designs() {
     </div>
   </div>
   <div class="panel paths"><h2>${ico('download')}Files on your Mac</h2><p class="hint" style="margin-bottom:10px">Inside the "AI Beyond the Chatbox" folder:</p><ul>
-    <li>Posters (full size): <code>5 Deliverables/PERSONAL AI Beyond the Chatbox Posters/</code></li>
-    <li>Proposal for Adam: <code>5 Deliverables/PERSONAL AI Beyond the Chatbox Proposal v5.pdf</code></li>
-    <li>Slides: <code>5 Deliverables/PERSONAL AI Beyond the Chatbox Deck v1.html</code></li>
-    <li>Script to paste into Apps Script: <code>4 Working/Registration/apps-script/All in one.gs</code></li>
-    <li>Wordmark and certificate artwork: <code>5 Deliverables/GitHub Site/assets/brand/</code></li>
+    <li><b>Posters (full size)</b><code>5 Deliverables/PERSONAL AI Beyond the Chatbox Posters/</code></li>
+    <li><b>Proposal for Adam</b><code>5 Deliverables/PERSONAL AI Beyond the Chatbox Proposal v5.pdf</code></li>
+    <li><b>Slides</b><code>5 Deliverables/PERSONAL AI Beyond the Chatbox Deck v1.html</code></li>
+    <li><b>Script to paste into Apps Script</b><code>4 Working/Registration/apps-script/All in one.gs</code></li>
+    <li><b>Wordmark and certificate artwork</b><code>5 Deliverables/GitHub Site/assets/brand/</code></li>
   </ul></div></div>`;
 }
 
