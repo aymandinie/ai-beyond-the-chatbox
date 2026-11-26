@@ -12,7 +12,7 @@ body{min-height:100vh}
 .lockcard{width:min(440px,100%);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);border-radius:26px;padding:34px;display:grid;gap:18px;animation:up .5s var(--ease)}
 .lockcard h1{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:42px;line-height:1}
 .lockcard p{color:#C9CCDA}
-.lockcard input{background:rgba(255,255,255,.95)}
+.lockcard input{background:#fff;color:var(--ink);letter-spacing:.08em}
 .lockcard .err{color:#FFB4AB;font-weight:600}
 .app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
 .side{position:sticky;top:0;height:100vh;background:var(--night);color:var(--cream);padding:22px 16px;display:flex;flex-direction:column;gap:22px}
@@ -204,7 +204,7 @@ async function load(first) {
   if (!first) $('#refresh').innerHTML = '<span class="spin dark"></span>Refreshing';
   const r = await api('load');
   $('#refresh').innerHTML = ico('refresh-cw') + 'Refresh';
-  if (!r.ok) { toast('Could not load: ' + (r.error || 'unknown'), true); return null; }
+  if (!r.ok) { const old = r.error === 'missing'; if (first) { $('#lockErr').textContent = old ? 'The live script is an older version. Deploy the new version in Apps Script, then try again.' : 'Could not load: ' + (r.error || 'unknown'); $('#lockErr').hidden = false; } else toast(old ? 'The live script is an older version. Deploy the new version.' : 'Could not load: ' + (r.error || 'unknown'), true); return null; }
   D = r; $('#lock').hidden = true; $('#app').hidden = false;
   $('#updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-MY', { hour: 'numeric', minute: '2-digit' });
   $('#navCount').textContent = D.rows.length;
@@ -255,7 +255,7 @@ function overview() {
         <div class="acts"><button class="btn ghost sm" data-open="${esc(a.r.ID)}">${ico('eye')}View</button>${a.acts.map(st => `<button class="btn sm ${st === 'Paid' ? 'green' : st === 'Released' ? 'dark' : 'ghost'}" data-status="${st}" data-id="${esc(a.r.ID)}">${st === 'Paid' ? ico('circle-check') + 'Mark paid' : st === 'Released' ? ico('rotate-ccw') + 'Release' : ico('circle-alert') + 'Not found'}</button>`).join('')}</div></div>`).join('')
         : `<p class="empty">${ico('circle-check')}All caught up. Nothing to check.</p>`}</div></div>
     <div class="grid" style="align-content:start">
-      <div class="panel"><h2>${ico('send')}Send to everyone</h2><div class="bulk">${D.bulk.map(b => `<div class="row"><span class="n">${b.count}</span><div><b>${esc(b.label)}</b><small>${b.guard ? esc(b.guard) : b.count ? 'Ready to send' : 'Nobody waiting for this'}</small></div><button class="btn sm ${b.count && !b.guard ? '' : 'ghost'}" data-bulk="${b.key}" ${b.count && !b.guard ? '' : 'disabled'}>Review</button></div>`).join('')}</div></div>
+      <div class="panel"><h2>${ico('send')}Send to everyone</h2><div class="bulk">${D.bulk.map(b => `<div class="row"><span class="n">${b.count}</span><div><b>${esc(b.label)}${b.due && b.count ? ' <span class="pill p-pending">Due</span>' : ''}</b><small>${b.guard ? esc(b.guard) : esc(b.hint || (b.count ? 'Ready to send' : 'Nobody waiting for this'))}</small></div><button class="btn sm ${b.count && !b.guard ? '' : 'ghost'}" data-bulk="${b.key}" ${b.count && !b.guard ? '' : 'disabled'}>Review</button></div>`).join('')}</div></div>
       <div class="panel"><h2>${ico('link-2')}Quick links</h2><div class="links">
         <a href="${L.site}" target="_blank" rel="noopener">${ico('globe')}Registration page<span class="ext">${ico('arrow-up-right')}</span></a>
         <a href="${L.checkin}" target="_blank" rel="noopener">${ico('user-check')}Check-in page · post at the start<span class="ext">${ico('arrow-up-right')}</span></a>
@@ -342,11 +342,11 @@ function guide() {
   <div class="panel"><h2>${ico('circle-dot')}What each status does</h2><div class="statusmap">
     <div>${pill('Pending payment')}<span>Every new registration starts here. They got "Registration received". Nothing is sent when you set it.</span></div>
     <div>${pill('Paid')}<span>Sends the confirmation with the receipt PDF and calendar invite.</span></div>
-    <div>${pill('Not found')}<span>Asks them to reply with their receipt. 48 hours after registering, a reminder with the QR goes out automatically.</span></div>
+    <div>${pill('Not found')}<span>Asks them to reply with their receipt. If they still haven't sorted it, send the reminder with the QR from Send to everyone.</span></div>
     <div>${pill('Released')}<span>Tells them the seat was released. The seat opens up on the website.</span></div>
     <div>${pill('Refunded')}<span>Marks the refund. No email. Do the bank transfer yourself; pay-later refunds go through Touch 'n Go.</span></div></div>
     <p class="hint" style="margin-top:12px">Emails go out the moment you press a button. They cannot be unsent.</p></div>
-  <div class="panel"><h2>${ico('clock')}Automatic</h2><ul><li>On registering: "Registration received, we're checking your payment".</li><li>7 days before: "One week to go" to everyone Paid. 1 day before: the reminder with the meeting link. Both need the session date in Settings.</li></ul></div>
+  <div class="panel"><h2>${ico('clock')}Automatic vs. you</h2><ul><li><b>Automatic:</b> only "Registration received, we're checking your payment", the moment someone registers.</li><li><b>You confirm:</b> everything else. Under <b>Overview → Send to everyone</b>, items show <b>Due</b> when it's time (payment reminders, one week before, the day before, thank-yous). Review the list, then send.</li></ul></div>
   <div class="panel"><h2>${ico('user-check')}On the day</h2><ul><li>Start: post the <b>check-in page</b> link in the meeting chat (Quick links).</li><li>End: post the <b>feedback page</b> link.</li><li>Same evening: <b>Send to everyone → Thank-you emails</b>. Next day: feedback reminders, then certificates.</li></ul></div>
   <div class="panel"><h2>${ico('key-round')}Testing</h2><p>Put a secret code in <b>Settings → Test payment code</b>. A registration with that exact code as its payment reference is confirmed at once and marked TEST. Clear the code when you're done.</p></div>
   <div class="panel"><h2>${ico('lock')}Your data</h2><p>Everything lives in your Google Sheet. This page only shows it after the admin key unlocks it, and only keeps the key on this device. To lock every device out, change the Admin key on the Settings tab.</p></div>
